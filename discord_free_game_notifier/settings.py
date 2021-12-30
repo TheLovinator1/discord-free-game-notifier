@@ -1,4 +1,5 @@
 import configparser
+import logging
 import os
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ class Settings:
                 "webhook_url",
                 "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz",
             )
+            config.set("config", "log_level", "INFO")
 
             config.write(config_file)
         sys.exit(f"Please edit the config file at {config_location}")
@@ -32,3 +34,9 @@ class Settings:
 
     # Get the webhook url from the config file
     webhook_url = config.get("config", "webhook_url")
+
+    # Log severity. Can be CRITICAL, ERROR, WARNING, INFO or DEBUG
+    log_level = config.get("config", "log_level")
+
+    logger = logging
+    logger.basicConfig(level=log_level)
