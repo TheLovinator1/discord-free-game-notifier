@@ -8,5 +8,8 @@ OnCalendar=hourly
 # Trigger the service immediately if it missed the last start time (e.g. system was down)
 Persistent=true
 
+# Start the service at exactly the given time
+AccuracySec=1us
+
 [Install]
 WantedBy=timers.target
