@@ -1,0 +1,15 @@
+[Unit]
+Description=Check for new games hourly
+Wants=discord-free-game.timer
+
+[Service]
+Type=oneshot
+
+# Change lovinator to your user
+User=lovinator
+Group=lovinator
+WorkingDirectory=/home/lovinator/discord-free-game-notifier
+ExecStart=poetry run python discord_free_game_notifier/discord_free_game_notifier.py
+
+[Install]
+WantedBy=multi-user.target
