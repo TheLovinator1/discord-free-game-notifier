@@ -4,17 +4,17 @@ import os
 import sys
 from pathlib import Path
 
-import typer
+from platformdirs import user_data_dir
 
 
 class Settings:
-    app_dir = typer.get_app_dir("discord_free_game_notifier")
+    app_dir = user_data_dir("discord_free_game_notifier", "TheLovinator", roaming=True)
     os.makedirs(app_dir, exist_ok=True)
 
     config_location: Path = Path(app_dir) / "config.conf"
 
     if not os.path.isfile(config_location):
-        typer.echo("No config file found, creating one...")
+        print("No config file found, creating one...")
         with open(config_location, "w") as config_file:
             config = configparser.ConfigParser()
             config.add_section("config")
@@ -40,3 +40,5 @@ class Settings:
 
     logger = logging
     logger.basicConfig(level=log_level)
+
+    logger.debug(f"Config location: {config_location}")

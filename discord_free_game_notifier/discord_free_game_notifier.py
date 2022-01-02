@@ -1,4 +1,3 @@
-import typer
 from dhooks import Webhook
 
 from epic import get_free_epic_games
@@ -14,8 +13,8 @@ def main():
             hook.send(embed=game)
     except Exception as e:
         hook.send(f"Error: {e}")
-        typer.echo(e)
+        print(e)
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    main()
