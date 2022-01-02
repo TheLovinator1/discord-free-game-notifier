@@ -70,6 +70,15 @@ def get_free_epic_games() -> List[Embed]:
                         Settings.logger.debug("\tHas already been posted before. Skipping!")
                         continue
 
+            # Get developer and publisher
+            for attribute in game["customAttributes"]:
+                if attribute["key"] == "publisherName":
+                    publisher = attribute["value"]
+                if attribute["key"] == "developerName":
+                    developer = attribute["value"]
+            Settings.logger.debug(f"\tPublisher: {publisher}")
+            Settings.logger.debug(f"\tDeveloper: {developer}")
+
             # Get the game's image. Image is 2560x1440
             for image in game["keyImages"]:
                 if image["type"] == "DieselStoreFrontWide":
@@ -97,7 +106,14 @@ def get_free_epic_games() -> List[Embed]:
             # <t:1641142179:T> = 17:49:39
             embed.add_field(name="Start", value=f"<t:{start_date}:R>")
             embed.add_field(name="End", value=f"<t:{end_date}:R>")
-            embed.set_footer(text=game["seller"]["name"])
+
+            # Only add developer if it's not the same as the publisher
+            # Otherwise, it'll will look like "Square Enix | Square Enix"
+            if publisher == developer:
+                embed.set_footer(text=f"{publisher}")
+            else:
+                embed.set_footer(text=f"{publisher} | {developer}")
+
             # Only add the image if it's not empty
             if image_url:
                 embed.set_image(image_url)
