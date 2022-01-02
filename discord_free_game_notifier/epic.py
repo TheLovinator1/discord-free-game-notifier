@@ -1,4 +1,5 @@
 """Modified version of https://github.com/andrewguest/slack-free-epic-games"""
+
 import os
 import time
 from pathlib import Path
@@ -14,13 +15,16 @@ def get_free_epic_games() -> List[Embed]:
     """Uses an API from Epic to parse a list of free games to find this week's free games.
 
     Original source: https://github.com/andrewguest/slack-free-epic-games/blob/main/lambda_function.py#L18
-    image_url = ""
-    start_date = 0
-    end_date = 0
 
     Returns:
         List[Embed]: List of Embeds that will be sent to Discord.
     """
+    image_url: str = ""
+    publisher: str = ""
+    developer: str = ""
+    start_date: int = 0
+    end_date: int = 0
+
     # Save previous free games to a file so we don't post the same games again
     previous_games: Path = Path(Settings.app_dir) / "epic.txt"
     Settings.logger.debug(f"Previous games file: {previous_games}")
