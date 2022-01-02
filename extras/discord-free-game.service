@@ -9,7 +9,7 @@ Type=oneshot
 User=lovinator
 Group=lovinator
 WorkingDirectory=/home/lovinator/discord-free-game-notifier
-ExecStart=poetry run python discord_free_game_notifier/discord_free_game_notifier.py
+ExecStart=poetry run bot
 
 [Install]
 WantedBy=multi-user.target

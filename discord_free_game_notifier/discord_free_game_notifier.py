@@ -1,7 +1,7 @@
 from dhooks import Webhook
 
-from epic import get_free_epic_games
-from settings import Settings
+from .epic import get_free_epic_games
+from .settings import Settings
 
 hook = Webhook(Settings.webhook_url)
 

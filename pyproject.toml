@@ -14,6 +14,12 @@ keywords = [
   "free-game-notifier",
 ]
 
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/TheLovinator1/discord-free-game-notifier/issues"
+
+[tool.poetry.scripts]
+bot = "discord_free_game_notifier.discord_free_game_notifier:main"
+
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.26.0"

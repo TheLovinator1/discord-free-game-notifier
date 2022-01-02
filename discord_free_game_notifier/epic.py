@@ -8,7 +8,7 @@ from typing import Dict, List
 import requests
 from dhooks import Embed
 
-from settings import Settings
+from .settings import Settings
 
 
 def get_free_epic_games() -> List[Embed]:
