@@ -13,6 +13,10 @@ def get_free_epic_games() -> List[Embed]:
     """Uses an API from Epic to parse a list of free games to find this week's free games.
 
     Modified version of https://github.com/andrewguest/slack-free-epic-games"""
+    image_url = ""
+    start_date = 0
+    end_date = 0
+
     previous_games: Path = Path(Settings.app_dir) / "epic.txt"
     Settings.logger.debug(f"Previous games file: {previous_games}")
 
@@ -70,10 +74,13 @@ def get_free_epic_games() -> List[Embed]:
                 url=game_url,
                 icon_url="https://lovinator.space/Epic_Games_logo.png",
             )
+
             embed.add_field(name="Start", value=f"<t:{start_date}:R>")
             embed.add_field(name="End", value=f"<t:{end_date}:R>")
             embed.set_footer(text=game["seller"]["name"])
-            embed.set_image(image_url)
+            if image_url:
+                embed.set_image(image_url)
+
             free_games.append(embed)
 
             with open(previous_games, "a") as f:
