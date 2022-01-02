@@ -1,5 +1,10 @@
 # discord-free-game-notifier
 
+<p align="center">
+  <img src="extras/Bot.jpg" title="New free game: Rise of the Tomb Raider"/>
+</p>
+<p align="center"><sup>Theme is https://github.com/KillYoy/DiscordNight<sup></p>
+
 Send webhook to Discord when a new game releases on Epic.
 
 ## Usage (GNU/Linux)
@@ -13,7 +18,8 @@ Send webhook to Discord when a new game releases on Epic.
 - Change webhook_url in the config file to the webhook URL you want to use.
   - `nano ~/.config/discord_free_game_notifier/config.conf`
 - Add timer to systemd and enable it. Don't forget to change the username.
-  - `sudo cp extras/* /etc/systemd/system/`
+  - `sudo cp extras/discord-free-game.service /etc/systemd/system/`
+  - `sudo cp extras/discord-free-game.timer /etc/systemd/system/`
   - `systemctl enable discord-free-game`
 - The bot will now start every hour and if it finds a new game it will send a message to the webhook.
 
