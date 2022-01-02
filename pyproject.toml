@@ -1,8 +1,18 @@
 [tool.poetry]
 name = "discord-free-game-notifier"
 version = "0.1.0"
-description = ""
+description = "Send webhook to Discord when a new game releases on Epic"
 authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://github.com/TheLovinator1/discord-free-game-notifier"
+repository = "https://github.com/TheLovinator1/discord-free-game-notifier"
+keywords = [
+  "webhook",
+  "discord",
+  "epic-games",
+  "free-game-notifier",
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -21,3 +31,6 @@ types-requests = "^2.26.3"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 119
