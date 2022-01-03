@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# The only thing we have in this file is python.pythonPath, and it is different for each user.
+.vscode/settings.json
