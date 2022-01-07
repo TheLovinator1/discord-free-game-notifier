@@ -29,6 +29,10 @@ def get_free_epic_games() -> List[Embed]:
     previous_games: Path = Path(Settings.app_dir) / "epic.txt"
     Settings.logger.debug(f"Previous games file: {previous_games}")
 
+    # Create file if it doesn't exist
+    if not os.path.exists(previous_games):
+        open(previous_games, "w").close()
+
     # HTTP params for the US free games
     free_games_params: Dict[str, str] = {"locale": "en-US", "country": "US", "allowCountries": "US"}
 
@@ -122,7 +126,11 @@ def get_free_epic_games() -> List[Embed]:
             free_games.append(embed)
 
             # Save the game title to the previous games file so we don't post it again
-            with open(previous_games, "a") as f:
+            with open(previous_games, "a+") as f:
                 f.write(f"{game_name}\n")
 
     return free_games
+
+
+if __name__ == "__main__":
+    get_free_epic_games()

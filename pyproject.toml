@@ -18,13 +18,14 @@ keywords = [
 "Bug Tracker" = "https://github.com/TheLovinator1/discord-free-game-notifier/issues"
 
 [tool.poetry.scripts]
-bot = "discord_free_game_notifier.discord_free_game_notifier:main"
+bot = "discord_free_game_notifier.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.26.0"
 dhooks = {git = "https://github.com/kyb3r/dhooks.git"}
 platformdirs = "^2.4.1"
+beautifulsoup4 = "^4.10.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
