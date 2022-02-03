@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - URL is now using urlSlug instead of productSlug
+- Updated dependencies (0 installs, 6 updates, 0 removals)
+  - Updated multidict (5.2.0 -> 6.0.2)
+  - Updated charset-normalizer (2.0.10 -> 2.0.11)
+  - Updated pyparsing (3.0.6 -> 3.0.7)
+  - Updated types-urllib3 (1.26.7 -> 1.26.9)
+  - Updated bandit (1.7.1 -> 1.7.2)
+  - Updated types-requests (2.27.7 -> 2.27.8)
 
 ## [0.2.0] - 2022-01-07
 
