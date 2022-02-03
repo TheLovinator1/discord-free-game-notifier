@@ -90,7 +90,7 @@ def get_free_epic_games() -> List[Embed]:
                     Settings.logger.debug(f"\tImage URL: {image_url}")
 
             # If you click the game name in Discord, you'll be taken to the game's page on Epic
-            game_url = f"https://www.epicgames.com/store/en-US/p/{game['productSlug']}"
+            game_url = f"https://www.epicgames.com/store/en-US/p/{game['urlSlug']}"
             Settings.logger.debug(f"\tURL: {game_url}")
 
             embed = Embed(description=game["description"], color=0xFFFFFF, timestamp="now")

@@ -5,6 +5,12 @@ All notable changes to discord-free-game-notifier will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## Changed
+
+- URL is now using urlSlug instead of productSlug
+
 ## [0.2.0] - 2022-01-07
 
 ### Added
