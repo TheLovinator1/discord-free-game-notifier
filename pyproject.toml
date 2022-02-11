@@ -29,7 +29,7 @@ beautifulsoup4 = "^4.10.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-mypy = "^0.930"
+mypy = "^0.931"
 bandit = "^1.7.1"
 flake8 = "^4.0.1"
 black = {version = "^21.12b0", allow-prereleases = true}
