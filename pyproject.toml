@@ -24,16 +24,16 @@ bot = "discord_free_game_notifier.main:main"
 python = "^3.9"
 requests = "^2.27.1"
 dhooks = {git = "https://github.com/kyb3r/dhooks.git"}
-platformdirs = "^2.4.1"
+platformdirs = "^2.5.0"
 beautifulsoup4 = "^4.10.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
-mypy = "^0.930"
-bandit = "^1.7.1"
+pytest = "^7.0.1"
+mypy = "^0.931"
+bandit = "^1.7.2"
 flake8 = "^4.0.1"
-black = {version = "^21.12b0", allow-prereleases = true}
-types-requests = "^2.26.3"
+black = "^22.1.0"
+types-requests = "^2.27.9"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
