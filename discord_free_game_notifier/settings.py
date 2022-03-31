@@ -8,7 +8,11 @@ from platformdirs import user_data_dir
 
 
 class Settings:
-    app_dir = user_data_dir("discord_free_game_notifier", "TheLovinator", roaming=True)
+    app_dir = user_data_dir(
+        "discord_free_game_notifier",
+        "TheLovinator",
+        roaming=True,
+    )
     os.makedirs(app_dir, exist_ok=True)
 
     config_location: Path = Path(app_dir) / "config.conf"

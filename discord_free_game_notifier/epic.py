@@ -12,9 +12,11 @@ from .settings import Settings
 
 
 def get_free_epic_games() -> List[Embed]:
-    """Uses an API from Epic to parse a list of free games to find this week's free games.
+    """Uses an API from Epic to parse a list of free games to find this
+    week's free games.
 
-    Original source: https://github.com/andrewguest/slack-free-epic-games/blob/main/lambda_function.py#L18
+    Original source:
+    https://github.com/andrewguest/slack-free-epic-games/blob/main/lambda_function.py#L18
 
     Returns:
         List[Embed]: List of Embeds that will be sent to Discord.
@@ -34,10 +36,16 @@ def get_free_epic_games() -> List[Embed]:
         open(previous_games, "w").close()
 
     # HTTP params for the US free games
-    free_games_params: Dict[str, str] = {"locale": "en-US", "country": "US", "allowCountries": "US"}
+    free_games_params: Dict[str, str] = {
+        "locale": "en-US",
+        "country": "US",
+        "allowCountries": "US",
+    }
 
     # Epic's backend API URL for the free games promotion
-    epic_api_url: str = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
+    epic_api_url: str = (
+        "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
+    )
 
     # Connect to the Epic API and get the free games
     response = requests.get(epic_api_url, params=free_games_params)
@@ -51,7 +59,8 @@ def get_free_epic_games() -> List[Embed]:
         original_price = game["price"]["totalPrice"]["originalPrice"]
         discount = game["price"]["totalPrice"]["discount"]
 
-        # Check if the original price and the discount is equal and that the game is not free to play
+        # Check if the original price and the discount is equal and that
+        # the game is not free to play
         if (original_price - discount) == 0 and (original_price != 0 and discount != 0):
             Settings.logger.debug(f"Game: {game_name}")
             Settings.logger.debug(f"\tPrice: {original_price/100}$")
@@ -59,19 +68,33 @@ def get_free_epic_games() -> List[Embed]:
             if game["promotions"]:
                 for promotion in game["promotions"]["promotionalOffers"]:
                     for offer in promotion["promotionalOffers"]:
-                        start_date = int(time.mktime(time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ")))
-                        end_date = int(time.mktime(time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ")))
+                        start_date = int(
+                            time.mktime(
+                                time.strptime(
+                                    offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                                )
+                            )
+                        )
+                        end_date = int(
+                            time.mktime(
+                                time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                            )
+                        )
                         Settings.logger.debug(f"\tStarted: {start_date}")
                         Settings.logger.debug(f"\tEnds in: {end_date}")
             else:
-                Settings.logger.debug(f"\tNo promotions found for {game['title']}, skipping")
+                Settings.logger.debug(
+                    f"\tNo promotions found for {game['title']}, skipping"
+                )
                 continue
 
             # Check if the game has already been posted
             if os.path.isfile(previous_games):
                 with open(previous_games, "r") as f:
                     if game_name in f.read():
-                        Settings.logger.debug("\tHas already been posted before. Skipping!")
+                        Settings.logger.debug(
+                            "\tHas already been posted before. Skipping!"
+                        )
                         continue
 
             # Get developer and publisher
@@ -89,11 +112,16 @@ def get_free_epic_games() -> List[Embed]:
                     image_url = image["url"]
                     Settings.logger.debug(f"\tImage URL: {image_url}")
 
-            # If you click the game name in Discord, you'll be taken to the game's page on Epic
+            # If you click the game name in Discord, you'll be taken to
+            # the game's page on Epic
             game_url = f"https://www.epicgames.com/store/en-US/p/{game['urlSlug']}"
             Settings.logger.debug(f"\tURL: {game_url}")
 
-            embed = Embed(description=game["description"], color=0xFFFFFF, timestamp="now")
+            embed = Embed(
+                description=game["description"],
+                color=0xFFFFFF,
+                timestamp="now",
+            )
             embed.set_author(
                 name=game_name,
                 url=game_url,
@@ -125,7 +153,8 @@ def get_free_epic_games() -> List[Embed]:
             # Add the game to the list of free games
             free_games.append(embed)
 
-            # Save the game title to the previous games file so we don't post it again
+            # Save the game title to the previous games file so we don't
+            # post it again
             with open(previous_games, "a+") as f:
                 f.write(f"{game_name}\n")
 

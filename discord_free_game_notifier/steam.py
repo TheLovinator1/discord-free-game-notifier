@@ -38,7 +38,9 @@ def get_free_steam_games() -> List[Embed]:
             game_id = link.get("data-ds-appid")
             Settings.logger.debug(f"\tURL: {game_url}")
 
-        image_url = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
+        image_url = (
+            f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
+        )
 
         # Check if the game has already been posted
         if os.path.isfile(previous_games):
