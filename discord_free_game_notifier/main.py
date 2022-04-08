@@ -1,3 +1,7 @@
+"""Main file for discord_free_game_notifier.
+
+This file contains the main function for discord_free_game_notifier.
+"""
 from dhooks import Webhook
 
 from discord_free_game_notifier import settings
@@ -9,6 +13,9 @@ hook = Webhook(settings.webhook_url)
 
 
 def main():
+    """Check for free games on Epic and Steam and send them to Discord.
+    If there is an error, it will be sent to Discord.
+    """
     try:
         epic_embed = get_free_epic_games()
         for game in epic_embed:
