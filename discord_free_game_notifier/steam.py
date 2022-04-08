@@ -13,9 +13,12 @@ STEAM_URL = "https://store.steampowered.com/search/?maxprice=free&specials=1"
 
 
 def get_free_steam_games() -> List[Embed]:
+    """Go to the Steam store and check for free games and return them.
+
+    Returns:
+        List[Embed]: List of Embeds containing the free Steam games.
+    """
     image_url: str = ""
-    game_url: str = STEAM_URL
-    game_id: int = 0
 
     # Save previous free games to a file so we don't post the same games again
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
@@ -30,18 +33,19 @@ def get_free_steam_games() -> List[Embed]:
 
     request = requests.get(STEAM_URL)
     soup = BeautifulSoup(request.text, "html.parser")
-    games = soup.find_all("div", {"id": "search_resultsRows"})
+
+    games = soup.find_all("a", class_="search_result_row")
     for game in games:
         game_name_class = game.find("span", class_="title")
         game_name = game_name_class.text
         settings.logger.debug(f"Game: {game_name}")
 
-        for link in soup.find_all("a", class_="search_result_row"):
-            game_url = link.get("href")
-            game_id = link.get("data-ds-appid")
-            settings.logger.debug(f"\tURL: {game_url}")
+        image_url_class = game.find("img", attrs={"src": True})
+        image_url = image_url_class["src"]
+        settings.logger.debug(f"\tImage: {image_url}")
 
-        image_url = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"  # noqa: E501, pylint: disable=line-too-long
+        game_url = game["href"]
+        settings.logger.debug(f"\tURL: {game_url}")
 
         # Check if the game has already been posted
         if os.path.isfile(previous_games):
@@ -52,8 +56,7 @@ def get_free_steam_games() -> List[Embed]:
                     )
                     continue
 
-            # TODO: Implement description
-            embed = Embed(description="Hello", color=0xFFFFFF, timestamp="now")
+            embed = Embed(color=0xFFFFFF, timestamp="now")
             embed.set_author(
                 name=game_name,
                 url=game_url,
