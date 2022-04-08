@@ -9,7 +9,7 @@ from dhooks import Embed
 from discord_free_game_notifier import settings
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"  # noqa: E501
-GOG_URL = "https://www.gog.com/en/games?priceRange=0,0&order=desc:discount&discounted=true&showDLCs=true"  # noqa: E501, pylint: disable=C0301
+GOG_URL = "https://www.gog.com/en/games?priceRange=0,0&order=desc:discount&discounted=true&showDLCs=true"  # noqa: E501, pylint: disable=line-too-long
 
 
 def get_free_gog_games() -> List[Embed]:
