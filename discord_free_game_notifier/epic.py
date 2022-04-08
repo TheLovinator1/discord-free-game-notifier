@@ -8,7 +8,7 @@ from typing import Dict, List
 import requests
 from dhooks import Embed
 
-from .settings import Settings
+from discord_free_game_notifier import settings
 
 
 def get_free_epic_games() -> List[Embed]:

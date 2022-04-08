@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from dhooks import Embed
 
-from discord_free_game_notifier.settings import Settings
+from discord_free_game_notifier import settings
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
 
@@ -15,8 +15,8 @@ def get_free_steam_games() -> List[Embed]:
     image_url: str = ""
 
     # Save previous free games to a file so we don't post the same games again
-    previous_games: Path = Path(Settings.app_dir) / "steam.txt"
-    Settings.logger.debug(f"Previous games file: {previous_games}")
+    previous_games: Path = Path(settings.app_dir) / "steam.txt"
+    settings.logger.debug(f"Previous games file: {previous_games}")
 
     # Create file if it doesn't exist
     if not os.path.exists(previous_games):

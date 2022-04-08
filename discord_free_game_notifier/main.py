@@ -1,11 +1,11 @@
 from dhooks import Webhook
 
+from discord_free_game_notifier import settings
 from discord_free_game_notifier.epic import get_free_epic_games
 from discord_free_game_notifier.gog import get_free_gog_games
-from discord_free_game_notifier.settings import Settings
 from discord_free_game_notifier.steam import get_free_steam_games
 
-hook = Webhook(Settings.webhook_url)
+hook = Webhook(settings.webhook_url)
 
 
 def main():
