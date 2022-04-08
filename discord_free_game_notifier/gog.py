@@ -59,7 +59,7 @@ def get_free_gog_games() -> List[Embed]:
                     )
                     continue
 
-            embed = Embed(description="Hello", color=0xFFFFFF, timestamp="now")
+            embed = Embed(color=0xFFFFFF, timestamp="now")
             embed.set_author(
                 name=game_name,
                 url=game_url,
