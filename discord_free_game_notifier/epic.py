@@ -33,10 +33,7 @@ def game_original_price(game):
         _type_: Returns the price in cents of the game before discount.
     """
     # TODO: Add support for different currencies
-    price = game["price"]["totalPrice"]["originalPrice"]
-    settings.logger.debug(f"\tPrice: {price/100}$")
-
-    return price
+    return game["price"]["totalPrice"]["originalPrice"]
 
 
 def game_discount(game):
@@ -49,10 +46,7 @@ def game_discount(game):
         _type_: Returns the discount in cents.
     """
     # TODO: Add support for different currencies
-    discount = game["price"]["totalPrice"]["discount"]
-    settings.logger.debug(f"\tDiscount: {discount/100}$")
-
-    return discount
+    return game["price"]["totalPrice"]["discount"]
 
 
 def game_final_price(original_price, discount):
@@ -141,8 +135,6 @@ def game_publisher(game):
     if publisher is None:
         publisher = "Unknown"
 
-    settings.logger.debug(f"\tPublisher: {publisher}")
-
     return publisher
 
 
@@ -163,8 +155,6 @@ def game_developer(game):
 
     if developer is None:
         developer = "Unknown"
-
-    settings.logger.debug(f"\tDeveloper: {developer}")
 
     return developer
 
@@ -229,6 +219,7 @@ def get_free_epic_games() -> List[Embed]:
     # Find the free games in the response
     for game in response.json()["data"]["Catalog"]["searchStore"]["elements"]:
         game_name = game["title"]
+
         original_price = game_original_price(game)
         discount = game_discount(game)
         final_price = game_final_price(original_price, discount)
@@ -253,6 +244,15 @@ def get_free_epic_games() -> List[Embed]:
                         continue
 
             image_url = game_image(game)
+            publisher = game_publisher(game)
+            developer = game_developer(game)
+
+            # If we log this before the if statement we will spam the
+            # logs with unnecessary information for games that are not free
+            settings.logger.debug(f"\tPrice: {original_price/100}$")
+            settings.logger.debug(f"\tDiscount: {discount/100}$")
+            settings.logger.debug(f"\tPublisher: {publisher}")
+            settings.logger.debug(f"\tDeveloper: {developer}")
 
             embed = Embed(
                 description=game["description"],
@@ -284,12 +284,10 @@ def get_free_epic_games() -> List[Embed]:
 
             # Only add developer if it's not the same as the publisher
             # Otherwise, it'll will look like "Square Enix | Square Enix"
-            if game_publisher(game) == game_developer(game):
-                embed.set_footer(text=f"{game_publisher(game)}")
+            if publisher == developer:
+                embed.set_footer(text=f"{publisher}")
             else:
-                embed.set_footer(
-                    text=f"{game_publisher(game)} | {game_developer(game)}"
-                )
+                embed.set_footer(text=f"{publisher} | {developer}")
 
             # Only add the image if it's not empty
             if image_url:
