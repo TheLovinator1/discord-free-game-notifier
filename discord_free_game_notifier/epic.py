@@ -1,5 +1,6 @@
 """Modified version of https://github.com/andrewguest/slack-free-epic-games"""
 
+import calendar
 import os
 import time
 from pathlib import Path
@@ -70,6 +71,8 @@ def game_final_price(original_price, discount):
 def promotion_start(game):
     """Get the start date of a game's promotion.
 
+    offer["startDate"] = "2022-04-07T15:00:00.000Z"
+
     Args:
         game (_type_): The free game to get the start date of.
 
@@ -81,13 +84,13 @@ def promotion_start(game):
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-                start_date = time.mktime(
-                    time.strptime(
-                        offer["startDate"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
+
+                start_date = calendar.timegm(
+                    time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
                 )
 
+    # Convert to int to remove the microseconds
+    start_date = int(start_date)
     settings.logger.debug(f"\tStarted: {start_date}")
 
     return start_date
@@ -95,6 +98,8 @@ def promotion_start(game):
 
 def promotion_end(game):
     """Get the end date of a game's promotion.
+
+    offer["endDate"] = "2022-04-07T15:00:00.000Z"
 
     Args:
         game (_type_): The free game to get the end date of.
@@ -108,12 +113,11 @@ def promotion_end(game):
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
                 end_date = time.mktime(
-                    time.strptime(
-                        offer["endDate"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
+                    time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
                 )
 
+    # Convert to int to remove the microseconds
+    end_date = int(end_date)
     settings.logger.debug(f"\tEnds in: {end_date}")
 
     return end_date
