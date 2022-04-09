@@ -1,0 +1,17 @@
+services:
+  discord-free-game-notifier:
+    container_name: discord-free-game-notifier
+    # image: thelovinator/discord-free-game-notifier
+    build: .
+    env_file:
+      - .env
+    environment:
+      # Discord Webhook URL
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      # Log severity. Can be CRITICAL, ERROR, WARNING, INFO or DEBUG
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - discord-free-game-notifier:/home/botuser/.local/share/discord_free_game_notifier/
+    restart: unless-stopped
+volumes:
+  discord-free-game-notifier:
