@@ -18,7 +18,7 @@ def get_free_steam_games() -> List[Embed]:
     Returns:
         List[Embed]: List of Embeds containing the free Steam games.
     """
-    image_url: str = ""
+    free_games: List[Embed] = []
 
     # Save previous free games to a file so we don't post the same games again
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
@@ -27,9 +27,6 @@ def get_free_steam_games() -> List[Embed]:
     # Create file if it doesn't exist
     if not os.path.exists(previous_games):
         open(previous_games, "w", encoding="utf-8").close()
-
-    # List of dictionaries containing Embeds to send to Discord
-    free_games: List[Embed] = []
 
     request = requests.get(STEAM_URL)
     soup = BeautifulSoup(request.text, "html.parser")
@@ -40,12 +37,12 @@ def get_free_steam_games() -> List[Embed]:
         game_name = game_name_class.text
         settings.logger.debug(f"Game: {game_name}")
 
-        image_url_class = game.find("img", attrs={"src": True})
-        image_url = image_url_class["src"]
-        settings.logger.debug(f"\tImage: {image_url}")
-
         game_url = game["href"]
         settings.logger.debug(f"\tURL: {game_url}")
+
+        game_id = game["data-ds-appid"]
+        image_url = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"  # noqa: E501, pylint: disable=line-too-long
+        settings.logger.debug(f"\tImage: {image_url}")
 
         # Check if the game has already been posted
         if os.path.isfile(previous_games):
@@ -63,9 +60,7 @@ def get_free_steam_games() -> List[Embed]:
                 icon_url="https://lovinator.space/Steam_logo.png",
             )
 
-            # Only add the image if it's not empty
-            if image_url:
-                embed.set_image(image_url)
+            embed.set_image(image_url)
 
             # Add the game to the list of free games
             free_games.append(embed)
