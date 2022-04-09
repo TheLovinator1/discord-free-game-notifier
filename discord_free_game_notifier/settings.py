@@ -40,12 +40,17 @@ config = configparser.ConfigParser()
 config.read(config_location)
 
 # Get the webhook url from the config file
-webhook_url = config.get("config", "webhook_url")
+config_webhook_url = config.get("config", "webhook_url")
 
 # Log severity. Can be CRITICAL, ERROR, WARNING, INFO or DEBUG
-log_level = config.get("config", "log_level")
+config_log_level = config.get("config", "log_level")
+
+# If user has environment variable set, use that instead
+webhook_url = os.getenv("WEBHOOK_URL", config_webhook_url)
+log_level = os.getenv("LOG_LEVEL", config_log_level)
 
 logger = logging
 logger.basicConfig(level=log_level)
 
 logger.debug(f"Config location: {config_location}")
+logger.debug(f"Webhook url: {webhook_url}")
