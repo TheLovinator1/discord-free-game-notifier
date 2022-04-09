@@ -1,8 +1,7 @@
 services:
   discord-free-game-notifier:
     container_name: discord-free-game-notifier
-    # image: thelovinator/discord-free-game-notifier
-    build: .
+    image: ghcr.io/thelovinator1/discord-free-game-notifier:master
     env_file:
       - .env
     environment:
