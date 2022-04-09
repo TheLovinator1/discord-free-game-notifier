@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "discord-free-game-notifier"
 version = "0.2.0"
-description = "Send webhook to Discord when a new game releases on Epic"
+description = "Send webhook to Discord when a new game releases on Epic, Steam or GOG."
 authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"

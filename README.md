@@ -5,7 +5,13 @@
 </p>
 <p align="center"><sup>Theme is https://github.com/KillYoy/DiscordNight<sup></p>
 
-Send webhook to Discord when a new game releases on Epic.
+Send webhook to Discord when a new game releases on Epic, Steam or GOG.
+
+## Docker
+
+There is a docker-compose.yml file in the root of the repository.
+You need to add your Discord webhook URL to the `WEBHOOK_URL`
+environment variable.
 
 ## Usage (GNU/Linux)
 
@@ -16,12 +22,10 @@ Send webhook to Discord when a new game releases on Epic.
 - Run the bot once to create the config file.
   - `poetry run bot`
 - Change webhook_url in the config file to the webhook URL you want to use.
-  - `nano ~/.config/discord_free_game_notifier/config.conf`
-- Add timer to systemd and enable it. Don't forget to change the username.
-  - `sudo cp extras/discord-free-game.service /etc/systemd/system/`
-  - `sudo cp extras/discord-free-game.timer /etc/systemd/system/`
-  - `systemctl enable discord-free-game`
-- The bot will now start every hour and if it finds a new game it will send a message to the webhook.
+  - `nano ~/.local/share/discord_free_game_notifier/config.conf`
+- Start the bot for real.
+  - `poetry run bot`
+- The bot will now check for free games every 30 minutes and send a message to the webhook.
 
 ## Need help?
 
