@@ -32,7 +32,6 @@ def game_original_price(game):
     Returns:
         _type_: Returns the price in cents of the game before discount.
     """
-    # TODO: Add support for different currencies
     return game["price"]["totalPrice"]["originalPrice"]
 
 
@@ -45,7 +44,6 @@ def game_discount(game):
     Returns:
         _type_: Returns the discount in cents.
     """
-    # TODO: Add support for different currencies
     return game["price"]["totalPrice"]["discount"]
 
 
