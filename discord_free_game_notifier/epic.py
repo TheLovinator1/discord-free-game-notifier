@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import requests
-from dhooks import Embed
+from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 
@@ -175,7 +175,7 @@ def game_url(game) -> str:
     return url
 
 
-def get_free_epic_games() -> List[Embed]:
+def get_free_epic_games() -> List[DiscordEmbed]:
     """Uses an API from Epic to parse a list of free games to find this
     week's free games.
 
@@ -183,9 +183,9 @@ def get_free_epic_games() -> List[Embed]:
     https://github.com/andrewguest/slack-free-epic-games/blob/main/lambda_function.py#L18
 
     Returns:
-        List[Embed]: List of Embeds that will be sent to Discord.
+        List[DiscordEmbed]: List of Embeds that will be sent to Discord.
     """
-    free_games: List[Embed] = []
+    free_games: List[DiscordEmbed] = []
 
     # Save previous free games to a file so we don't post the same games again
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
@@ -230,11 +230,11 @@ def get_free_epic_games() -> List[Embed]:
             settings.logger.debug(f"\tPrice: {original_price/100}$")
             settings.logger.debug(f"\tDiscount: {discount/100}$")
 
-            embed = Embed(
+            embed = DiscordEmbed(
                 description=game["description"],
-                color=0xFFFFFF,
-                timestamp="now",
+                color="0xFFFFFF",
             )
+
             url = game_url(game)
             embed.set_author(
                 name=game_name,
@@ -250,11 +250,11 @@ def get_free_epic_games() -> List[Embed]:
             # <t:1641142179:F> = Sunday, 2 January 2022 17:49
             # <t:1641142179:R> = 2 minutes ago
             # <t:1641142179:T> = 17:49:39
-            embed.add_field(
+            embed.add_embed_field(
                 name="Start",
                 value=f"<t:{promotion_start(game)}:R>",
             )
-            embed.add_field(
+            embed.add_embed_field(
                 name="End",
                 value=f"<t:{promotion_end(game)}:R>",
             )
@@ -262,7 +262,7 @@ def get_free_epic_games() -> List[Embed]:
             embed.set_footer(text=f"{game_seller(game)}")
 
             if image_url := game_image(game):
-                embed.set_image(image_url)
+                embed.set_image(url=image_url)
 
             # Add the game to the list of free games
             free_games.append(embed)

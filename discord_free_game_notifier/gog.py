@@ -4,7 +4,7 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-from dhooks import Embed
+from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 
@@ -12,11 +12,11 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/
 GOG_URL = "https://www.gog.com/en/games?priceRange=0,0&order=desc:discount&discounted=true&showDLCs=true"  # noqa: E501, pylint: disable=line-too-long
 
 
-def get_free_gog_games() -> List[Embed]:
+def get_free_gog_games() -> List[DiscordEmbed]:
     """Get a list of free GOG games.
 
     Returns:
-        List[Embed]: List of Embeds containing the free GOG games.
+        List[DiscordEmbed]: List of Embeds containing the free GOG games.
     """
     image_url: str = ""
 
@@ -29,7 +29,7 @@ def get_free_gog_games() -> List[Embed]:
         open(previous_games, "w", encoding="utf-8").close()
 
     # List of dictionaries containing Embeds to send to Discord
-    free_games: List[Embed] = []
+    free_games: List[DiscordEmbed] = []
 
     request = requests.get(GOG_URL)
     soup = BeautifulSoup(request.text, "html.parser")
@@ -59,7 +59,7 @@ def get_free_gog_games() -> List[Embed]:
                     )
                     continue
 
-            embed = Embed(color=0xFFFFFF, timestamp="now")
+            embed = DiscordEmbed(color=0xFFFFFF, timestamp="now")
             embed.set_author(
                 name=game_name,
                 url=game_url,
@@ -68,7 +68,7 @@ def get_free_gog_games() -> List[Embed]:
 
             # Only add the image if it's not empty
             if image_url:
-                embed.set_image(image_url)
+                embed.set_image(url=image_url)
 
             # Add the game to the list of free games
             free_games.append(embed)
@@ -82,4 +82,6 @@ def get_free_gog_games() -> List[Embed]:
 
 
 if __name__ == "__main__":
+    # Remember to delete previous games if you are testing
+    # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
     get_free_gog_games()

@@ -4,7 +4,7 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-from dhooks import Embed
+from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 
@@ -12,13 +12,13 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/
 STEAM_URL = "https://store.steampowered.com/search/?maxprice=free&specials=1"
 
 
-def get_free_steam_games() -> List[Embed]:
+def get_free_steam_games() -> List[DiscordEmbed]:
     """Go to the Steam store and check for free games and return them.
 
     Returns:
-        List[Embed]: List of Embeds containing the free Steam games.
+        List[DiscordEmbed]: List of Embeds containing the free Steam games.
     """
-    free_games: List[Embed] = []
+    free_games: List[DiscordEmbed] = []
 
     # Save previous free games to a file so we don't post the same games again
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
@@ -53,14 +53,14 @@ def get_free_steam_games() -> List[Embed]:
                     )
                     continue
 
-            embed = Embed(color=0xFFFFFF, timestamp="now")
+            embed = DiscordEmbed(color=0xFFFFFF, timestamp="now")
             embed.set_author(
                 name=game_name,
                 url=game_url,
                 icon_url="https://lovinator.space/Steam_logo.png",
             )
 
-            embed.set_image(image_url)
+            embed.set_image(url=image_url)
 
             # Add the game to the list of free games
             free_games.append(embed)
@@ -74,4 +74,6 @@ def get_free_steam_games() -> List[Embed]:
 
 
 if __name__ == "__main__":
+    # Remember to delete previous games if you are testing
+    # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
     get_free_steam_games()

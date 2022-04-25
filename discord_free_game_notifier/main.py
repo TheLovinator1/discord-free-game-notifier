@@ -7,34 +7,38 @@ import datetime
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.blocking import BlockingScheduler
-from dhooks import Webhook
 
-from discord_free_game_notifier import settings
 from discord_free_game_notifier.epic import get_free_epic_games
 from discord_free_game_notifier.gog import get_free_gog_games
 from discord_free_game_notifier.steam import get_free_steam_games
+from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
-hook = Webhook(settings.webhook_url)
 sched = BlockingScheduler()
 
 
 def my_listener(event):
     """Send a message to the webhook when a job failed."""
     if event.exception:
-        hook.send(f"Job failed: {event.exception}")
+        send_webhook(f"Job failed: {event.exception}")
 
 
 def check_free_games():
-    """Check for free games on Epic and Steam and send them to Discord."""
+    """Check for free games on Epic, Steam and GOG and send them to
+    Discord."""
+    # Check for free games on Epic
     epic_embed = get_free_epic_games()
     for game in epic_embed:
-        hook.send(embed=game)
+        send_embed_webhook(game)
+
+    # Check for free games on Steam
     steam_embed = get_free_steam_games()
     for game in steam_embed:
-        hook.send(embed=game)
+        send_embed_webhook(game)
+
+    # Check for free games on GOG
     gog_embed = get_free_gog_games()
     for game in gog_embed:
-        hook.send(embed=game)
+        send_embed_webhook(game)
 
 
 def main():
