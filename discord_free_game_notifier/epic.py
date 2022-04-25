@@ -115,58 +115,32 @@ def promotion_end(game):
     return end_date
 
 
-def game_publisher(game):
+def game_seller(game) -> str:
     """Get the publisher of a game.
 
     Args:
         game (_type_): The free game to get the publisher of.
 
     Returns:
-        _type_: Returns the publisher of the game.
+        str: Returns the publisher of the game.
     """
-    publisher = ""
+    seller = game["seller"]["name"] if game["seller"] else "Unknown"
+    settings.logger.debug(f"\tSeller: {seller}")
 
-    for attribute in game["customAttributes"]:
-        if attribute["key"] == "publisherName":
-            publisher = attribute["value"]
-
-    if publisher is None:
-        publisher = "Unknown"
-
-    return publisher
+    return seller
 
 
-def game_developer(game):
-    """Get the developer of a game.
-
-    Args:
-        game (_type_): The free game to get the developer of.
-
-    Returns:
-        _type_: Returns the developer of the game.
-    """
-    developer = ""
-
-    for attribute in game["customAttributes"]:
-        if attribute["key"] == "developerName":
-            developer = attribute["value"]
-
-    if developer is None:
-        developer = "Unknown"
-
-    return developer
-
-
-def game_image(game):
+def game_image(game) -> str:
     """Get a image URL for the game.
 
     Args:
         game (_type_): The free game to get the image of.
 
     Returns:
-        _type_: Returns the image URL of the game.
+        str: Returns the image URL of the game.
     """
     # Get the game's image. Image is 2560x1440
+    # TODO: Get other image if Thumbnail is not available?
     image_url = ""
     for image in game["keyImages"]:
         if image["type"] in ["DieselStoreFrontWide", "Thumbnail"]:
@@ -185,7 +159,17 @@ def game_url(game) -> str:
     Returns:
         str: Returns the URL of the game.
     """
-    url = f"https://www.epicgames.com/store/en-US/p/{game['urlSlug']}"
+    url = "https://store.epicgames.com/"
+    if product_slug := game["productSlug"]:
+        url = f"https://www.epicgames.com/en-US/p/{product_slug}"
+    else:
+        settings.logger.debug("\tProduct slug is empty")
+        for offer in game["offerMappings"]:
+            if offer["pageSlug"]:
+                page_slug = offer["pageSlug"]
+                url = f"https://www.epicgames.com/en-US/p/{page_slug}"
+                settings.logger.debug("\tFound page slug")
+
     settings.logger.debug(f"\tURL: {url}")
 
     return url
@@ -241,25 +225,20 @@ def get_free_epic_games() -> List[Embed]:
                         )
                         continue
 
-            image_url = game_image(game)
-            publisher = game_publisher(game)
-            developer = game_developer(game)
-
             # If we log this before the if statement we will spam the
             # logs with unnecessary information for games that are not free
             settings.logger.debug(f"\tPrice: {original_price/100}$")
             settings.logger.debug(f"\tDiscount: {discount/100}$")
-            settings.logger.debug(f"\tPublisher: {publisher}")
-            settings.logger.debug(f"\tDeveloper: {developer}")
 
             embed = Embed(
                 description=game["description"],
                 color=0xFFFFFF,
                 timestamp="now",
             )
+            url = game_url(game)
             embed.set_author(
                 name=game_name,
-                url=game_url(game),
+                url=url,
                 icon_url="https://lovinator.space/Epic_Games_logo.png",
             )
 
@@ -280,15 +259,9 @@ def get_free_epic_games() -> List[Embed]:
                 value=f"<t:{promotion_end(game)}:R>",
             )
 
-            # Only add developer if it's not the same as the publisher
-            # Otherwise, it'll will look like "Square Enix | Square Enix"
-            if publisher == developer:
-                embed.set_footer(text=f"{publisher}")
-            else:
-                embed.set_footer(text=f"{publisher} | {developer}")
+            embed.set_footer(text=f"{game_seller(game)}")
 
-            # Only add the image if it's not empty
-            if image_url:
+            if image_url := game_image(game):
                 embed.set_image(image_url)
 
             # Add the game to the list of free games
@@ -303,4 +276,6 @@ def get_free_epic_games() -> List[Embed]:
 
 
 if __name__ == "__main__":
+    # Remember to delete previous games if you are testing
+    # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
     get_free_epic_games()
