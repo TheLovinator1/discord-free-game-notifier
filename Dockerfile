@@ -13,8 +13,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # This is useful when the bot crashes before writing messages stuck in the buffer.
 ENV PYTHONUNBUFFERED 1
 
-# Install cron
-RUN apt-get update && apt-get install cron git curl -y --no-install-recommends
+# Update the system and install curl, it is needed for downloading Poetry.
+RUN apt-get update && apt-get install curl -y --no-install-recommends
 
 # Create user so we don't run as root.
 RUN useradd --create-home botuser
