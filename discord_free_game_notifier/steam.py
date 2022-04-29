@@ -53,7 +53,7 @@ def get_free_steam_games() -> List[DiscordEmbed]:
                     )
                     continue
 
-            embed = DiscordEmbed(color=0xFFFFFF, timestamp="now")
+            embed = DiscordEmbed()
             embed.set_author(
                 name=game_name,
                 url=game_url,

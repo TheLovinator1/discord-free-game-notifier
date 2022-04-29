@@ -230,10 +230,7 @@ def get_free_epic_games() -> List[DiscordEmbed]:
             settings.logger.debug(f"\tPrice: {original_price/100}$")
             settings.logger.debug(f"\tDiscount: {discount/100}$")
 
-            embed = DiscordEmbed(
-                description=game["description"],
-                color="0xFFFFFF",
-            )
+            embed = DiscordEmbed(description=game["description"])
 
             url = game_url(game)
             embed.set_author(
