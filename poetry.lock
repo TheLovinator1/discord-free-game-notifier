@@ -60,7 +60,7 @@ unicode_backport = ["unicodedata2"]
 
 [[package]]
 name = "discord-webhook"
-version = "0.15.0"
+version = "0.16.0"
 description = "execute discord webhooks"
 category = "main"
 optional = false
@@ -68,6 +68,9 @@ python-versions = "*"
 
 [package.dependencies]
 requests = ">=2.19.1"
+
+[package.extras]
+async = ["httpx (>=0.20.0)"]
 
 [[package]]
 name = "idna"
@@ -182,7 +185,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "19f90e49d7209139f62e9007b7e20aabb5378e6047aadcdbdcdaf290386e8d93"
+content-hash = "95c2b4b3b5db68f77616764f8e2d4c6d7614b8f178b5bf5970d6dc13ce18da83"
 
 [metadata.files]
 apscheduler = [
@@ -202,8 +205,8 @@ charset-normalizer = [
     {file = "charset_normalizer-2.0.12-py3-none-any.whl", hash = "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"},
 ]
 discord-webhook = [
-    {file = "discord-webhook-0.15.0.tar.gz", hash = "sha256:1557a3a86ec556d5fceeff3d0c8601affd83770280b7358a3c7f4fb7c8ee32e5"},
-    {file = "discord_webhook-0.15.0-py3-none-any.whl", hash = "sha256:5c59e3c5b52be8d9273aebdc5647f564a3c24ce4f75635fd1d9e4d9d8dad30f4"},
+    {file = "discord-webhook-0.16.0.tar.gz", hash = "sha256:6318c2bfab20e35927503cd32f49a449b0aba61f5a848e415fdf5e94e361870c"},
+    {file = "discord_webhook-0.16.0-py3-none-any.whl", hash = "sha256:b142eadc0588c161840a21496052a97c8d72b44457cf3bd3cf4dc0a6f9b5f50a"},
 ]
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},

@@ -18,7 +18,7 @@ bot = "discord_free_game_notifier.main:main"
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.27.1"
-discord-webhook = "^0.15.0"
+discord-webhook = "^0.16.0"
 platformdirs = "^2.5.2"
 beautifulsoup4 = "^4.11.1"
 APScheduler = "^3.9.1"
