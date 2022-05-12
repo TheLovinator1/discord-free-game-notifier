@@ -10,6 +10,7 @@ import requests
 from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
+from discord_free_game_notifier.webhook import send_webhook
 
 # Epic's backend API URL for the free games promotion
 EPIC_API: str = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"  # noqa: E501, pylint: disable=line-too-long
@@ -233,6 +234,20 @@ def get_free_epic_games() -> List[DiscordEmbed]:
             embed = DiscordEmbed(description=game["description"])
 
             url = game_url(game)
+
+            # Jotun had /home appended to the URL, I have no idea if it
+            # is safe to remove it, so we are removing it here and
+            # sending a message to the user that we modified the URL.
+            if url.endswith("/home"):
+                original_url = url
+                url = url[:-5]
+                send_webhook(
+                    f"{game_name} had /home appended to the URL, "
+                    "so I removed it here. I think that breaks URLs but "
+                    "I could be wrong, I am a small robot after all. "
+                    "Beep boop 🤖\n"
+                    f"Original URL: <{original_url}>\n"
+                )
             embed.set_author(
                 name=game_name,
                 url=url,
