@@ -23,44 +23,6 @@ PARAMS: Dict[str, str] = {
 }
 
 
-def game_original_price(game):
-    """Get the original price of a game. This is in cents. Currency is
-    Dollar.
-
-    Args:
-        game (_type_): The free game to get the original price of.
-
-    Returns:
-        _type_: Returns the price in cents of the game before discount.
-    """
-    return game["price"]["totalPrice"]["originalPrice"]
-
-
-def game_discount(game):
-    """Get the discount of a game. This is in cents. Currency is Dollar.
-
-    Args:
-        game (_type_): The free game to get the discount of.
-
-    Returns:
-        _type_: Returns the discount in cents.
-    """
-    return game["price"]["totalPrice"]["discount"]
-
-
-def game_final_price(original_price, discount):
-    """Calculate the final price of a game.
-
-    Args:
-        original_price (_type_): The price before discount.
-        discount (_type_): The discount.
-
-    Returns:
-        _type_: Returns the final price of the game after discount.
-    """
-    return original_price - discount
-
-
 def promotion_start(game):
     """Get the start date of a game's promotion.
 
@@ -116,21 +78,6 @@ def promotion_end(game):
     return end_date
 
 
-def game_seller(game) -> str:
-    """Get the publisher of a game.
-
-    Args:
-        game (_type_): The free game to get the publisher of.
-
-    Returns:
-        str: Returns the publisher of the game.
-    """
-    seller = game["seller"]["name"] if game["seller"] else "Unknown"
-    settings.logger.debug(f"\tSeller: {seller}")
-
-    return seller
-
-
 def game_image(game) -> str:
     """Get a image URL for the game.
 
@@ -176,6 +123,28 @@ def game_url(game) -> str:
     return url
 
 
+def check_promotion(game) -> bool:
+    game_name = game["title"]
+    if not game["promotions"]:
+        settings.logger.debug(
+            f"\tNo promotions found for {game_name}, skipping",
+        )
+        return False
+    return True
+
+
+def already_poster(previous_games, game_name) -> bool:
+    # Check if the game has already been posted
+    if os.path.isfile(previous_games):
+        with open(previous_games, "r", encoding="utf-8") as file:
+            if game_name in file.read():
+                settings.logger.debug(
+                    "\tHas already been posted before. Skipping!",
+                )
+                return True
+    return False
+
+
 def get_free_epic_games() -> List[DiscordEmbed]:
     """Uses an API from Epic to parse a list of free games to find this
     week's free games.
@@ -194,7 +163,7 @@ def get_free_epic_games() -> List[DiscordEmbed]:
 
     # Create file if it doesn't exist
     if not os.path.exists(previous_games):
-        open(previous_games, "w", encoding="utf-8").close()
+        open(previous_games, "w", encoding="utf8").close()
 
     # Connect to the Epic API and get the free games
     response = requests.get(EPIC_API, params=PARAMS)
@@ -203,88 +172,99 @@ def get_free_epic_games() -> List[DiscordEmbed]:
     for game in response.json()["data"]["Catalog"]["searchStore"]["elements"]:
         game_name = game["title"]
 
-        original_price = game_original_price(game)
-        discount = game_discount(game)
-        final_price = game_final_price(original_price, discount)
+        original_price = game["price"]["totalPrice"]["originalPrice"]
+        discount = game["price"]["totalPrice"]["discount"]
+
+        final_price = original_price - discount
+
+        for image in game["keyImages"]:
+            if image["type"] == "VaultOpened":
+                if check_promotion is False:
+                    continue
+
+                if already_poster(previous_games, game_name):
+                    continue
+
+                send_webhook(f"{game_name} - Could be free game? lol")
+                create_embed(free_games, previous_games, game)
 
         # If the original_price - discount is 0, then the game is free
         if (final_price) == 0 and (original_price != 0 and discount != 0):
             settings.logger.debug(f"Game: {game_name}")
 
-            if not game["promotions"]:
-                settings.logger.debug(
-                    f"\tNo promotions found for {game_name}, skipping"
-                )
+            if check_promotion is False:
                 continue
 
-            # Check if the game has already been posted
-            if os.path.isfile(previous_games):
-                with open(previous_games, "r", encoding="utf-8") as file:
-                    if game_name in file.read():
-                        settings.logger.debug(
-                            "\tHas already been posted before. Skipping!"
-                        )
-                        continue
+            if already_poster(previous_games, game_name):
+                continue
 
             # If we log this before the if statement we will spam the
             # logs with unnecessary information for games that are not free
             settings.logger.debug(f"\tPrice: {original_price/100}$")
             settings.logger.debug(f"\tDiscount: {discount/100}$")
 
-            embed = DiscordEmbed(description=game["description"])
-
-            url = game_url(game)
-
-            # Jotun had /home appended to the URL, I have no idea if it
-            # is safe to remove it, so we are removing it here and
-            # sending a message to the user that we modified the URL.
-            if url.endswith("/home"):
-                original_url = url
-                url = url[:-5]
-                send_webhook(
-                    f"{game_name} had /home appended to the URL, "
-                    "so I removed it here. I think that breaks URLs but "
-                    "I could be wrong, I am a small robot after all. "
-                    "Beep boop 🤖\n"
-                    f"Original URL: <{original_url}>\n"
-                )
-            embed.set_author(
-                name=game_name,
-                url=url,
-                icon_url="https://lovinator.space/Epic_Games_logo.png",
-            )
-
-            # Discord has dynamic timestamps. 1641142179 is the Unix timestamp
-            # <t:1641142179:d> = 02/01/2022
-            # <t:1641142179:f> = 2 January 2022 17:49
-            # <t:1641142179:t> = 17:49
-            # <t:1641142179:D> = 2 January 2022
-            # <t:1641142179:F> = Sunday, 2 January 2022 17:49
-            # <t:1641142179:R> = 2 minutes ago
-            # <t:1641142179:T> = 17:49:39
-            embed.add_embed_field(
-                name="Start",
-                value=f"<t:{promotion_start(game)}:R>",
-            )
-            embed.add_embed_field(
-                name="End",
-                value=f"<t:{promotion_end(game)}:R>",
-            )
-
-            embed.set_footer(text=f"{game_seller(game)}")
-
-            if image_url := game_image(game):
-                embed.set_image(url=image_url)
-
-            # Add the game to the list of free games
-            free_games.append(embed)
-
-            # Save the game title to the previous games file so we don't
-            # post it again
-            with open(previous_games, "a+", encoding="utf-8") as file:
-                file.write(f"{game_name}\n")
+            create_embed(free_games, previous_games, game)
 
     return free_games
+
+
+def create_embed(free_games, previous_games, game):
+    embed = DiscordEmbed(description=game["description"])
+
+    url = game_url(game)
+    game_name = game["title"]
+
+    # Jotun had /home appended to the URL, I have no idea if it
+    # is safe to remove it, so we are removing it here and
+    # sending a message to the user that we modified the URL.
+    if url.endswith("/home"):
+        original_url = url
+        url = url[:-5]
+        send_webhook(
+            f"{game_name} had /home appended to the URL, "
+            "so I removed it here. It could be a false positive but "
+            "I could be wrong, I am a small robot after all. "
+            "Beep boop 🤖\n"
+            f"Original URL: <{original_url}>\n"
+        )
+
+    embed.set_author(
+        name=game_name,
+        url=url,
+        icon_url="https://lovinator.space/Epic_Games_logo.png",
+    )
+
+    # Discord has dynamic timestamps. 1641142179 is the Unix timestamp
+    # <t:1641142179:d> = 02/01/2022
+    # <t:1641142179:f> = 2 January 2022 17:49
+    # <t:1641142179:t> = 17:49
+    # <t:1641142179:D> = 2 January 2022
+    # <t:1641142179:F> = Sunday, 2 January 2022 17:49
+    # <t:1641142179:R> = 2 minutes ago
+    # <t:1641142179:T> = 17:49:39
+    embed.add_embed_field(
+        name="Start",
+        value=f"<t:{promotion_start(game)}:R>",
+    )
+    embed.add_embed_field(
+        name="End",
+        value=f"<t:{promotion_end(game)}:R>",
+    )
+
+    seller = game["seller"]["name"] if game["seller"] else "Unknown"
+
+    embed.set_footer(text=f"{seller}")
+
+    if image_url := game_image(game):
+        embed.set_image(url=image_url)
+
+        # Add the game to the list of free games
+    free_games.append(embed)
+
+    # Save the game title to the previous games file so we don't
+    # post it again
+    with open(previous_games, "a+", encoding="utf-8") as file:
+        file.write(f"{game_name}\n")
 
 
 if __name__ == "__main__":
