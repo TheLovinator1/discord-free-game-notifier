@@ -8,6 +8,7 @@ from typing import Dict, List
 
 import requests
 from discord_webhook import DiscordEmbed
+from requests.utils import requote_uri
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.webhook import send_webhook
@@ -93,9 +94,10 @@ def game_image(game) -> str:
     for image in game["keyImages"]:
         if image["type"] in ["DieselStoreFrontWide", "Thumbnail"]:
             image_url = image["url"]
-    settings.logger.debug(f"\tImage URL: {image_url}")
+    settings.logger.debug(f"\tImage URL: {requote_uri(image_url)}")
 
-    return image_url
+    # Epic's image URL has spaces in them, so requote the URL
+    return requote_uri(image_url)
 
 
 def game_url(game) -> str:
@@ -118,9 +120,11 @@ def game_url(game) -> str:
                 url = f"https://www.epicgames.com/en-US/p/{page_slug}"
                 settings.logger.debug("\tFound page slug")
 
-    settings.logger.debug(f"\tURL: {url}")
+    settings.logger.debug(f"\tURL: {requote_uri(url)}")
 
-    return url
+    # Epic's image URL has spaces in them, could happen here too so
+    # requote the URL
+    return requote_uri(url)
 
 
 def check_promotion(game) -> bool:
