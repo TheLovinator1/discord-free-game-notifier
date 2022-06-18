@@ -137,7 +137,7 @@ def check_promotion(game) -> bool:
     return True
 
 
-def already_poster(previous_games, game_name) -> bool:
+def already_posted(previous_games, game_name) -> bool:
     # Check if the game has already been posted
     if os.path.isfile(previous_games):
         with open(previous_games, "r", encoding="utf-8") as file:
@@ -186,7 +186,7 @@ def get_free_epic_games() -> List[DiscordEmbed]:
                 if check_promotion is False:
                     continue
 
-                if already_poster(previous_games, game_name):
+                if already_posted(previous_games, game_name):
                     continue
 
                 send_webhook(f"{game_name} - Could be free game? lol")
@@ -199,7 +199,7 @@ def get_free_epic_games() -> List[DiscordEmbed]:
             if check_promotion is False:
                 continue
 
-            if already_poster(previous_games, game_name):
+            if already_posted(previous_games, game_name):
                 continue
 
             # If we log this before the if statement we will spam the
@@ -262,7 +262,7 @@ def create_embed(free_games, previous_games, game):
     if image_url := game_image(game):
         embed.set_image(url=image_url)
 
-        # Add the game to the list of free games
+    # Add the game to the list of free games
     free_games.append(embed)
 
     # Save the game title to the previous games file so we don't
