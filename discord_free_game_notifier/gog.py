@@ -9,7 +9,7 @@ from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"  # noqa: E501
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
 
 
 def already_posted(previous_games, game_name) -> bool:
@@ -36,11 +36,11 @@ def get_game_name(banner_title_text: str):
 
 
 def create_embed(
-    free_games,
-    previous_games,
-    game_name: str,
-    game_url: str,
-    image_url: str,
+        free_games,
+        previous_games,
+        game_name: str,
+        game_url: str,
+        image_url: str,
 ):
     embed = DiscordEmbed(
         description=f"[Click here to claim {game_name}!](https://www.gog.com/giveaway/claim)"

@@ -14,7 +14,7 @@ from discord_free_game_notifier import settings
 from discord_free_game_notifier.webhook import send_webhook
 
 # Epic's backend API URL for the free games promotion
-EPIC_API: str = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"  # noqa: E501, pylint: disable=line-too-long
+EPIC_API: str = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
 
 # HTTP params for the US free games
 PARAMS: Dict[str, str] = {
@@ -40,7 +40,6 @@ def promotion_start(game):
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-
                 start_date = calendar.timegm(
                     time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
                 )
@@ -204,8 +203,8 @@ def get_free_epic_games() -> List[DiscordEmbed]:
 
             # If we log this before the if statement we will spam the
             # logs with unnecessary information for games that are not free
-            settings.logger.debug(f"\tPrice: {original_price/100}$")
-            settings.logger.debug(f"\tDiscount: {discount/100}$")
+            settings.logger.debug(f"\tPrice: {original_price / 100}$")
+            settings.logger.debug(f"\tDiscount: {discount / 100}$")
 
             create_embed(free_games, previous_games, game)
 

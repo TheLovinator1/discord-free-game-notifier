@@ -28,7 +28,7 @@ if not os.path.isfile(config_location):
         config.set(
             "config",
             "webhook_url",
-            "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz",  # noqa: E501, pylint: disable=line-too-long
+            "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz",
         )
         config.set("config", "log_level", "INFO")
 

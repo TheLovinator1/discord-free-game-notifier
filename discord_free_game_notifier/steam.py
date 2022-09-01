@@ -8,7 +8,7 @@ from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"  # noqa: E501
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
 STEAM_URL = "https://store.steampowered.com/search/?maxprice=free&specials=1"
 
 
@@ -41,7 +41,7 @@ def get_free_steam_games() -> List[DiscordEmbed]:
         settings.logger.debug(f"\tURL: {game_url}")
 
         game_id = game["data-ds-appid"]
-        image_url = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"  # noqa: E501, pylint: disable=line-too-long
+        image_url = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
         settings.logger.debug(f"\tImage: {image_url}")
 
         # Check if the game has already been posted
