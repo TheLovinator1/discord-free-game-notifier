@@ -6,7 +6,6 @@ it. On Windows, the config file is stored in
 import configparser
 import logging
 import os
-import sys
 from pathlib import Path
 
 from dotenv import load_dotenv

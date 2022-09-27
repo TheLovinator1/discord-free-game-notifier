@@ -1,3 +1,5 @@
+import calendar
+import time
 from pathlib import Path
 
 from discord_free_game_notifier.epic import (
@@ -114,20 +116,31 @@ game = {
 
 
 def test_promotion_start():
+    start_date = None
+    if game["promotions"]:
+        for promotion in game["promotions"]["promotionalOffers"]:
+            for offer in promotion["promotionalOffers"]:
+                start_date = calendar.timegm(time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))
+
     result = promotion_start(game)
-    assert result == 1663858800
+    assert result == start_date
 
 
 def test_promotion_end():
+    end_date = None
+    for promotion in game["promotions"]["promotionalOffers"]:
+        for offer in promotion["promotionalOffers"]:
+            end_date = time.mktime(time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))
+
     result = promotion_end(game)
-    assert result == 1664456400
+    assert result == end_date
 
 
 def test_game_image():
     result = game_image(game)
     assert (
-        result
-        == "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg"
+            result
+            == "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg"
     )
 
 
