@@ -35,7 +35,7 @@ if not os.path.isfile(config_location):
         config.set("config", "log_level", "INFO")
 
         config.write(config_file)
-    sys.exit(f"Please edit the config file at {config_location}")
+    print(f"Please edit the config file at {config_location}")
 
 # Read the config file
 config = configparser.ConfigParser()
