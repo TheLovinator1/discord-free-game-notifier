@@ -20,11 +20,11 @@ def get_free_steam_games() -> List[DiscordEmbed]:
     """
     free_games: List[DiscordEmbed] = []
 
-    # Save previous free games to a file so we don't post the same games again
+    # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
     settings.logger.debug(f"Previous games file: {previous_games}")
 
-    # Create file if it doesn't exist
+    # Create the file if it doesn't exist
     if not os.path.exists(previous_games):
         open(previous_games, "w", encoding="utf-8").close()
 
@@ -65,8 +65,8 @@ def get_free_steam_games() -> List[DiscordEmbed]:
             # Add the game to the list of free games
             free_games.append(embed)
 
-            # Save the game title to the previous games file so we don't
-            # post it again
+            # Save the game title to the previous games file, so we don't
+            # post it again.
             with open(previous_games, "a+", encoding="utf-8") as file:
                 file.write(f"{game_name}\n")
 

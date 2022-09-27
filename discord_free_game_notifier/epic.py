@@ -11,6 +11,7 @@ from discord_webhook import DiscordEmbed
 from requests.utils import requote_uri
 
 from discord_free_game_notifier import settings
+from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import send_webhook
 
 # Epic's backend API URL for the free games promotion
@@ -40,9 +41,7 @@ def promotion_start(game):
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-                start_date = calendar.timegm(
-                    time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                )
+                start_date = calendar.timegm(time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))
 
     # Convert to int to remove the microseconds
     start_date = int(start_date)
@@ -67,9 +66,7 @@ def promotion_end(game):
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-                end_date = time.mktime(
-                    time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                )
+                end_date = time.mktime(time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))
 
     # Convert to int to remove the microseconds
     end_date = int(end_date)
@@ -79,7 +76,7 @@ def promotion_end(game):
 
 
 def game_image(game) -> str:
-    """Get a image URL for the game.
+    """Get an image URL for the game.
 
     Args:
         game (_type_): The free game to get the image of.
@@ -95,12 +92,12 @@ def game_image(game) -> str:
             image_url = image["url"]
     settings.logger.debug(f"\tImage URL: {requote_uri(image_url)}")
 
-    # Epic's image URL has spaces in them, so requote the URL
+    # Epic's image URL has spaces in them, so requote the URL.
     return requote_uri(image_url)
 
 
 def game_url(game) -> str:
-    """If you click the game name, you'll be taken to the game's page on Epic
+    """If you click the game name, you'll be taken to the game's page on Epic.
 
     Args:
         game (_type_): The free game to get the URL of.
@@ -122,30 +119,25 @@ def game_url(game) -> str:
     settings.logger.debug(f"\tURL: {requote_uri(url)}")
 
     # Epic's image URL has spaces in them, could happen here too so
-    # requote the URL
+    # requote the URL.
     return requote_uri(url)
 
 
 def check_promotion(game) -> bool:
+    """
+    Check if the game has a promotion, only free games has these.
+
+    Args:
+        game: The game JSON
+
+    Returns:
+        bool: True if game has promotion
+    """
     game_name = game["title"]
     if not game["promotions"]:
-        settings.logger.debug(
-            f"\tNo promotions found for {game_name}, skipping",
-        )
+        settings.logger.debug(f"\tNo promotions found for {game_name}, skipping")
         return False
     return True
-
-
-def already_posted(previous_games, game_name) -> bool:
-    # Check if the game has already been posted
-    if os.path.isfile(previous_games):
-        with open(previous_games, "r", encoding="utf-8") as file:
-            if game_name in file.read():
-                settings.logger.debug(
-                    "\tHas already been posted before. Skipping!",
-                )
-                return True
-    return False
 
 
 def get_free_epic_games() -> List[DiscordEmbed]:
@@ -160,11 +152,11 @@ def get_free_epic_games() -> List[DiscordEmbed]:
     """
     free_games: List[DiscordEmbed] = []
 
-    # Save previous free games to a file so we don't post the same games again
+    # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
     settings.logger.debug(f"Previous games file: {previous_games}")
 
-    # Create file if it doesn't exist
+    # Create the file if it doesn't exist
     if not os.path.exists(previous_games):
         open(previous_games, "w", encoding="utf8").close()
 
@@ -191,8 +183,8 @@ def get_free_epic_games() -> List[DiscordEmbed]:
                 send_webhook(f"{game_name} - Could be free game? lol")
                 create_embed(free_games, previous_games, game)
 
-        # If the original_price - discount is 0, then the game is free
-        if (final_price) == 0 and (original_price != 0 and discount != 0):
+        # If the original_price - discount is 0, then the game is free.
+        if final_price == 0 and (original_price != 0 and discount != 0):
             settings.logger.debug(f"Game: {game_name}")
 
             if check_promotion is False:
@@ -202,7 +194,7 @@ def get_free_epic_games() -> List[DiscordEmbed]:
                 continue
 
             # If we log this before the if statement we will spam the
-            # logs with unnecessary information for games that are not free
+            # logs with unnecessary information for games that are not free.
             settings.logger.debug(f"\tPrice: {original_price / 100}$")
             settings.logger.debug(f"\tDiscount: {discount / 100}$")
 
@@ -212,6 +204,17 @@ def get_free_epic_games() -> List[DiscordEmbed]:
 
 
 def create_embed(free_games, previous_games, game):
+    """
+    Create the embed that we will send to Discord.
+
+    Args:
+        free_games: The list of free games, we will loop through this when we send the embeds.
+        previous_games: The file with previous games in, we will add to it after we sent the webhook.
+        game: The game JSON.
+
+    Returns:
+        Adds the embed to the list.
+    """
     embed = DiscordEmbed(description=game["description"])
 
     url = game_url(game)
@@ -264,10 +267,11 @@ def create_embed(free_games, previous_games, game):
     # Add the game to the list of free games
     free_games.append(embed)
 
-    # Save the game title to the previous games file so we don't
-    # post it again
+    # Save the game title to the previous games file, so we don't post it again.
     with open(previous_games, "a+", encoding="utf-8") as file:
         file.write(f"{game_name}\n")
+
+    return free_games
 
 
 if __name__ == "__main__":

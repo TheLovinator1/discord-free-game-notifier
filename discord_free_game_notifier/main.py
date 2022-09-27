@@ -31,20 +31,14 @@ def check_free_games():
         response = send_embed_webhook(game)
 
         if not response.ok:
-            send_webhook(
-                "Error when checking Epic:\n"
-                f"{response.status_code} - {response.reason}: {response.text}"
-            )
+            send_webhook("Error when checking Epic:\n" f"{response.status_code} - {response.reason}: {response.text}")
     # Check for free games on Steam
     steam_embed = get_free_steam_games()
     for game in steam_embed:
         response = send_embed_webhook(game)
 
         if not response.ok:
-            send_webhook(
-                "Error when checking Steam:\n"
-                f"{response.status_code} - {response.reason}: {response.text}"
-            )
+            send_webhook("Error when checking Steam:\n" f"{response.status_code} - {response.reason}: {response.text}")
 
     # Check for free games on GOG
     gog_embed = get_free_gog_games()
@@ -52,10 +46,7 @@ def check_free_games():
         response = send_embed_webhook(game)
 
         if not response.ok:
-            send_webhook(
-                "Error when checking GOG:\n"
-                f"{response.status_code} - {response.reason}: {response.text}"
-            )
+            send_webhook("Error when checking GOG:\n" f"{response.status_code} - {response.reason}: {response.text}")
 
 
 def main():

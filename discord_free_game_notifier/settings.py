@@ -1,5 +1,5 @@
 """Settings are stored in a config file.
-On first run, a config file is created and the user is asked to edit
+On first run, a config file is created, and the user is asked to edit
 it. On Windows, the config file is stored in
 %appdata%/TheLovinator/discord_free_game_notifier
 """
@@ -9,8 +9,10 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
+load_dotenv()
 app_dir = user_data_dir(
     "discord_free_game_notifier",
     "TheLovinator",
@@ -42,7 +44,7 @@ config.read(config_location)
 # Get the webhook url from the config file
 config_webhook_url = config.get("config", "webhook_url")
 
-# Log severity. Can be CRITICAL, ERROR, WARNING, INFO or DEBUG
+# Log severity. Can be CRITICAL, ERROR, WARNING, INFO or DEBUG.
 config_log_level = config.get("config", "log_level")
 
 # If user has environment variable set, use that instead
