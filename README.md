@@ -31,5 +31,4 @@ environment variable.
 
 - Email: [tlovinator@gmail.com](mailto:tlovinator@gmail.com)
 - Discord: TheLovinator#9276
-- Steam: [TheLovinator](https://steamcommunity.com/id/TheLovinator/)
 - Send an issue: [discord-embed/issues](https://github.com/TheLovinator1/discord-free-game-notifier/issues)
