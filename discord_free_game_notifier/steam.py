@@ -45,7 +45,7 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
                     settings.logger.debug(f"{previous_games} has already been posted before. Skipping!")
                     continue
 
-        embed.set_author(name=game_name, url=game_url, icon_url=settings.steam_image_url)
+        embed.set_author(name=game_name, url=game_url, icon_url=settings.steam_icon)
         embed.set_image(url=image_url)
 
         # Save the game title to the previous games file, so we don't post it again.
