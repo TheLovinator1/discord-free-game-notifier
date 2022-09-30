@@ -31,7 +31,7 @@ def promotion_start(game) -> int:
     offer["startDate"] = "2022-04-07T15:00:00.000Z"
 
     Args:
-        game (_type_): The free game to get the start date of.
+        game: The game JSON.
 
     Returns:
         int: Returns the start date of the game's promotion.
@@ -56,7 +56,7 @@ def promotion_end(game) -> int:
     offer["endDate"] = "2022-04-07T15:00:00.000Z"
 
     Args:
-        game (_type_): The free game to get the end date of.
+        game: The game JSON.
 
     Returns:
         int: Returns the end date of the game's promotion.
@@ -100,7 +100,7 @@ def game_url(game) -> str:
     """If you click the game name, you'll be taken to the game's page on Epic.
 
     Args:
-        game (_type_): The free game to get the URL of.
+        game: The game JSON
 
     Returns:
         str: Returns the URL of the game.
@@ -118,8 +118,7 @@ def game_url(game) -> str:
 
     settings.logger.debug(f"\tURL: {requote_uri(url)}")
 
-    # Epic's image URL has spaces in them, could happen here too so
-    # requote the URL.
+    # Epic's image URL has spaces in them, could happen here too so requote the URL.
     return requote_uri(url)
 
 
@@ -193,8 +192,6 @@ def get_free_epic_games() -> List[DiscordEmbed]:
             if already_posted(previous_games, game_name):
                 continue
 
-            # If we log this before the if statement we will spam the
-            # logs with unnecessary information for games that are not free.
             settings.logger.debug(f"\tPrice: {original_price / 100}$")
             settings.logger.debug(f"\tDiscount: {discount / 100}$")
 

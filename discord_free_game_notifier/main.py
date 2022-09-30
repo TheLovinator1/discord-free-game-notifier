@@ -39,8 +39,7 @@ def check_free_games():
         send_games(game, "Epic")
 
     # Check for free games on Steam
-    steam_embed = get_free_steam_games()
-    for game in steam_embed:
+    for game in get_free_steam_games():
         send_games(game, "Steam")
 
     # Check for free games on GOG
