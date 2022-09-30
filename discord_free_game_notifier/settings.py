@@ -52,6 +52,7 @@ log_level = os.getenv("LOG_LEVEL", config_log_level)
 
 steam_icon = os.getenv("STEAM_ICON", "https://lovinator.space/Steam_logo.png")
 gog_icon = os.getenv("GOG_ICON", "https://lovinator.space/gog_logo.png")
+epic_icon = os.getenv("EPIC_ICON", "https://lovinator.space/Epic_Games_logo.png")
 
 logger = logging
 logger.basicConfig(level=log_level)

@@ -234,7 +234,7 @@ def create_embed(free_games, previous_games, game):
     embed.set_author(
         name=game_name,
         url=url,
-        icon_url="https://lovinator.space/Epic_Games_logo.png",
+        icon_url=settings.epic_icon,
     )
 
     # Discord has dynamic timestamps. 1641142179 is the Unix timestamp
