@@ -9,7 +9,7 @@ from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 from discord_free_game_notifier.epic import get_free_epic_games
-from discord_free_game_notifier.gog import get_free_gog_games
+from discord_free_game_notifier.gog import get_free_gog_game
 from discord_free_game_notifier.steam import get_free_steam_games
 from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
@@ -22,31 +22,31 @@ def my_listener(event):
         send_webhook(f"Job failed: {event.exception}")
 
 
+def send_games(game, game_service="Unknown"):
+    response = send_embed_webhook(game)
+
+    if not response.ok:
+        send_webhook(
+            f"Error when checking game for {game_service}:\n{response.status_code} - {response.reason}: {response.text}")
+
+
 def check_free_games():
     """Check for free games on Epic, Steam and GOG and send them to
     Discord."""
     # Check for free games on Epic
     epic_embed = get_free_epic_games()
     for game in epic_embed:
-        response = send_embed_webhook(game)
+        send_games(game, "Epic")
 
-        if not response.ok:
-            send_webhook("Error when checking Epic:\n" f"{response.status_code} - {response.reason}: {response.text}")
     # Check for free games on Steam
     steam_embed = get_free_steam_games()
     for game in steam_embed:
-        response = send_embed_webhook(game)
-
-        if not response.ok:
-            send_webhook("Error when checking Steam:\n" f"{response.status_code} - {response.reason}: {response.text}")
+        send_games(game, "Steam")
 
     # Check for free games on GOG
-    gog_embed = get_free_gog_games()
-    for game in gog_embed:
-        response = send_embed_webhook(game)
-
-        if not response.ok:
-            send_webhook("Error when checking GOG:\n" f"{response.status_code} - {response.reason}: {response.text}")
+    gog_embed = get_free_gog_game()
+    if gog_embed:
+        send_games(gog_embed, "GOG")
 
 
 def main():

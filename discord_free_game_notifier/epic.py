@@ -25,7 +25,7 @@ PARAMS: Dict[str, str] = {
 }
 
 
-def promotion_start(game):
+def promotion_start(game) -> int:
     """Get the start date of a game's promotion.
 
     offer["startDate"] = "2022-04-07T15:00:00.000Z"
@@ -34,7 +34,7 @@ def promotion_start(game):
         game (_type_): The free game to get the start date of.
 
     Returns:
-        _type_: Returns the start date of the game's promotion.
+        int: Returns the start date of the game's promotion.
     """
     start_date = 0
 
@@ -50,7 +50,7 @@ def promotion_start(game):
     return start_date
 
 
-def promotion_end(game):
+def promotion_end(game) -> int:
     """Get the end date of a game's promotion.
 
     offer["endDate"] = "2022-04-07T15:00:00.000Z"
@@ -59,7 +59,7 @@ def promotion_end(game):
         game (_type_): The free game to get the end date of.
 
     Returns:
-        _type_: Returns the end date of the game's promotion.
+        int: Returns the end date of the game's promotion.
     """
     end_date = 0
 

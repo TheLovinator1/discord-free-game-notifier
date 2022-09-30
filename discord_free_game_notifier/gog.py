@@ -9,6 +9,7 @@ from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
+from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
 
@@ -33,24 +34,22 @@ def get_game_name(banner_title_text: str) -> str:
 
 
 def create_embed(
-    free_games,
-    previous_games,
-    game_name: str,
-    game_url: str,
-    image_url: str,
+        previous_games,
+        game_name: str,
+        game_url: str,
+        image_url: str,
 ):
     """
     Create the embed that we will send to Discord.
 
     Args:
-        free_games: The list of free games, we will loop through this when we send the embeds.
         previous_games: The file with previous games in, we will add to it after we sent the webhook.
         game_name: The game name.
         game_url: URL to the game.
         image_url: Game image.
 
     Returns:
-
+        Embed: The embed we will send to Discord.
     """
     embed = DiscordEmbed(description=f"[Click here to claim {game_name}!](https://www.gog.com/giveaway/claim)")
     embed.set_author(
@@ -63,20 +62,19 @@ def create_embed(
     if image_url:
         embed.set_image(url=image_url)
 
-    # Add the game to the list of free games
-    free_games.append(embed)
-
     # Save the game title to the previous games file, so we don't
     # post it again.
     with open(previous_games, "a+", encoding="utf-8") as file:
         file.write(f"{game_name}\n")
 
+    return embed
 
-def get_free_gog_games() -> List[DiscordEmbed]:
-    """Get a list of free GOG games.
+
+def get_free_gog_game():
+    """Check if free GOG game.
 
     Returns:
-        List[DiscordEmbed]: List of Embeds containing the free GOG games.
+        DiscordEmbed: Embed for the free GOG games.
     """
 
     # Save previous free games to a file, so we don't post the same games again.
@@ -87,16 +85,13 @@ def get_free_gog_games() -> List[DiscordEmbed]:
     if not os.path.exists(previous_games):
         open(previous_games, "w", encoding="utf-8").close()
 
-    # List of dictionaries containing Embeds to send to Discord
-    free_games: List[DiscordEmbed] = []
-
     request = requests.get("https://www.gog.com/")
     soup = BeautifulSoup(request.text, "html.parser")
     giveaway = soup.find("a", {"id": "giveaway"})
 
     # If no giveaway, return an empty list
     if giveaway is None:
-        return free_games
+        return
 
     # Game name
     banner_title = giveaway.find("span", class_="giveaway-banner__title")
@@ -109,27 +104,30 @@ def get_free_gog_games() -> List[DiscordEmbed]:
 
     # Game image
     image_url_class = giveaway.find("source", attrs={"srcset": True})
-    image_url: str = image_url_class.attrs["srcset"].strip().split()
+    image_url = image_url_class.attrs["srcset"].strip().split()
     image_url = f"https:{image_url[0]}"
     settings.logger.debug(f"\tImage URL: {image_url}")
 
     # Check if the game has already been posted
     if already_posted(previous_games, game_name):
-        return free_games
+        return
 
-    # Create the embed and add it to the list of free games
-    create_embed(
-        free_games=free_games,
+    # Create the embed and add it to the list of free games.
+    return create_embed(
         previous_games=previous_games,
         game_name=game_name,
         game_url=game_url,
         image_url=image_url,
     )
 
-    return free_games
-
 
 if __name__ == "__main__":
     # Remember to delete previous games if you are testing
     # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
-    get_free_gog_games()
+    gog_embed = get_free_gog_game()
+    if gog_embed:
+        response = send_embed_webhook(gog_embed)
+
+        if not response.ok:
+            print(
+                f"Error when checking game for GOG:\n{response.status_code} - {response.reason}: {response.text}")
