@@ -34,7 +34,7 @@ if not os.path.isfile(config_location):
         config.set("config", "log_level", "INFO")
 
         config.write(config_file)
-    print(f"Please edit the config file at {config_location}")
+    print(f"Please edit the config file at {config_location} or use environment variables.")
 
 # Read the config file
 config = configparser.ConfigParser()

@@ -7,6 +7,10 @@ services:
     environment:
       - WEBHOOK_URL=${WEBHOOK_URL}
       - LOG_LEVEL=DEBUG
+      # Uncomment these if you want to host the images yourself:
+      # STEAM_ICON=https://lovinator.space/Steam_logo.png
+      # GOG_ICON=https://lovinator.space/gog_logo.png
+      # EPIC_ICON=https://lovinator.space/Epic_Games_logo.png
     volumes:
       - discord-free-game-notifier:/home/botuser/.local/share/discord_free_game_notifier/
     restart: unless-stopped
