@@ -1,7 +1,6 @@
 import os
 import re
 from pathlib import Path
-from typing import List
 
 import requests
 from bs4 import BeautifulSoup
@@ -9,7 +8,7 @@ from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
-from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
+from discord_free_game_notifier.webhook import send_embed_webhook
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
 
@@ -55,7 +54,7 @@ def create_embed(
     embed.set_author(
         name=game_name,
         url=game_url,
-        icon_url="https://lovinator.space/gog_logo.png",
+        icon_url=settings.gog_icon,
     )
 
     # Only add the image if it is not empty
@@ -127,7 +126,6 @@ if __name__ == "__main__":
     gog_embed = get_free_gog_game()
     if gog_embed:
         response = send_embed_webhook(gog_embed)
-
         if not response.ok:
             print(
                 f"Error when checking game for GOG:\n{response.status_code} - {response.reason}: {response.text}")
