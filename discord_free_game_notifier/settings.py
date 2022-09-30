@@ -50,6 +50,8 @@ config_log_level = config.get("config", "log_level")
 webhook_url = os.getenv("WEBHOOK_URL", config_webhook_url)
 log_level = os.getenv("LOG_LEVEL", config_log_level)
 
+steam_image_url = os.getenv("STEAM_IMAGE", "https://lovinator.space/Steam_logo.png")
+
 logger = logging
 logger.basicConfig(level=log_level)
 
