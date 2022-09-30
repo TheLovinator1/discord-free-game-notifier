@@ -23,19 +23,20 @@ def my_listener(event):
 
 
 def send_games(game, game_service="Unknown"):
-    response = send_embed_webhook(game)
+    if game:
+        response = send_embed_webhook(game)
 
-    if not response.ok:
-        send_webhook(
-            f"Error when checking game for {game_service}:\n{response.status_code} - {response.reason}: {response.text}")
+        if not response.ok:
+            send_webhook(
+                f"Error when checking game for {game_service}:\n"
+                f"{response.status_code} - {response.reason}: {response.text}")
 
 
 def check_free_games():
     """Check for free games on Epic, Steam and GOG and send them to
     Discord."""
     # Check for free games on Epic
-    epic_embed = get_free_epic_games()
-    for game in epic_embed:
+    for game in get_free_epic_games():
         send_games(game, "Epic")
 
     # Check for free games on Steam

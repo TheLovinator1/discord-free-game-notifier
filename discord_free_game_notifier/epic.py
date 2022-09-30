@@ -3,8 +3,9 @@
 import calendar
 import os
 import time
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 import requests
 from discord_webhook import DiscordEmbed
@@ -12,7 +13,7 @@ from requests.utils import requote_uri
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
-from discord_free_game_notifier.webhook import send_webhook
+from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
 # Epic's backend API URL for the free games promotion
 EPIC_API: str = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
@@ -139,7 +140,7 @@ def check_promotion(game) -> bool:
     return True
 
 
-def get_free_epic_games() -> List[DiscordEmbed]:
+def get_free_epic_games():
     """Uses an API from Epic to parse a list of free games to find this
     week's free games.
 
@@ -147,10 +148,8 @@ def get_free_epic_games() -> List[DiscordEmbed]:
     https://github.com/andrewguest/slack-free-epic-games/blob/main/lambda_function.py#L18
 
     Returns:
-        List[DiscordEmbed]: List of Embeds that will be sent to Discord.
+        Embed containing a free Epic game.
     """
-    free_games: List[DiscordEmbed] = []
-
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
     settings.logger.debug(f"Previous games file: {previous_games}")
@@ -179,8 +178,8 @@ def get_free_epic_games() -> List[DiscordEmbed]:
                 if already_posted(previous_games, game_name):
                     continue
 
-                send_webhook(f"{game_name} - Could be free game? lol")
-                create_embed(free_games, previous_games, game)
+                send_webhook(f"{game_name} - Could be free game? lol - It is in the 'Epic Vault'")
+                yield create_embed(previous_games, game)
 
         # If the original_price - discount is 0, then the game is free.
         if final_price == 0 and (original_price != 0 and discount != 0):
@@ -195,22 +194,21 @@ def get_free_epic_games() -> List[DiscordEmbed]:
             settings.logger.debug(f"\tPrice: {original_price / 100}$")
             settings.logger.debug(f"\tDiscount: {discount / 100}$")
 
-            create_embed(free_games, previous_games, game)
+            yield create_embed(previous_games, game)
 
-    return free_games
+    return
 
 
-def create_embed(free_games, previous_games, game):
+def create_embed(previous_games, game):
     """
     Create the embed that we will send to Discord.
 
     Args:
-        free_games: The list of free games, we will loop through this when we send the embeds.
         previous_games: The file with previous games in, we will add to it after we sent the webhook.
         game: The game JSON.
 
     Returns:
-        Adds the embed to the list.
+        Embed: The embed with the free game we will send to Discord.
     """
     embed = DiscordEmbed(description=game["description"])
 
@@ -237,41 +235,41 @@ def create_embed(free_games, previous_games, game):
         icon_url=settings.epic_icon,
     )
 
-    # Discord has dynamic timestamps. 1641142179 is the Unix timestamp
-    # <t:1641142179:d> = 02/01/2022
-    # <t:1641142179:f> = 2 January 2022 17:49
-    # <t:1641142179:t> = 17:49
-    # <t:1641142179:D> = 2 January 2022
-    # <t:1641142179:F> = Sunday, 2 January 2022 17:49
-    # <t:1641142179:R> = 2 minutes ago
-    # <t:1641142179:T> = 17:49:39
-    embed.add_embed_field(
-        name="Start",
-        value=f"<t:{promotion_start(game)}:R>",
-    )
-    embed.add_embed_field(
-        name="End",
-        value=f"<t:{promotion_end(game)}:R>",
-    )
+    curr_dt = datetime.now()
+    current_time = int(round(curr_dt.timestamp()))
 
-    seller = game["seller"]["name"] if game["seller"] else "Unknown"
+    end_time = promotion_end(game)
+    if end_time > current_time:
+        embed.add_embed_field(
+            name="Start",
+            value=f"<t:{promotion_start(game)}:R>",
+        )
+        embed.add_embed_field(
+            name="End",
+            value=f"<t:{end_time}:R>",
+        )
 
-    embed.set_footer(text=f"{seller}")
+        seller = game["seller"]["name"] if game["seller"] else "Unknown"
 
-    if image_url := game_image(game):
-        embed.set_image(url=image_url)
+        embed.set_footer(text=f"{seller}")
 
-    # Add the game to the list of free games
-    free_games.append(embed)
+        if image_url := game_image(game):
+            embed.set_image(url=image_url)
 
-    # Save the game title to the previous games file, so we don't post it again.
-    with open(previous_games, "a+", encoding="utf-8") as file:
-        file.write(f"{game_name}\n")
+        # Save the game title to the previous games file, so we don't post it again.
+        with open(previous_games, "a+", encoding="utf-8") as file:
+            file.write(f"{game_name}\n")
 
-    return free_games
+        return embed
 
 
 if __name__ == "__main__":
     # Remember to delete previous games if you are testing
     # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
-    get_free_epic_games()
+    for free_game in get_free_epic_games():
+        if free_game:
+            webhook_response = send_embed_webhook(free_game)
+            if not webhook_response.ok:
+                print(
+                    f"Error when checking game for Epic:\n"
+                    f"{webhook_response.status_code} - {webhook_response.reason}: {webhook_response.text}")

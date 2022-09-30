@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
+from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import send_embed_webhook
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:97.0) Gecko/20100101 Firefox/97.0"
@@ -38,12 +39,8 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
         game_url: str = get_game_url(game)
         image_url: str = get_game_image(game)
 
-        # Check if the game has already been posted
-        if os.path.isfile(previous_games):
-            with open(previous_games, "r", encoding="utf-8") as file:
-                if game_name in file.read():
-                    settings.logger.debug(f"{previous_games} has already been posted before. Skipping!")
-                    continue
+        if already_posted(previous_games, game_name):
+            continue
 
         embed.set_author(name=game_name, url=game_url, icon_url=settings.steam_icon)
         embed.set_image(url=image_url)
@@ -107,7 +104,8 @@ if __name__ == "__main__":
     # Remember to delete previous games if you are testing
     # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
     for free_game in get_free_steam_games():
-        response = send_embed_webhook(free_game)
-        if not response.ok:
-            print(
-                f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}")
+        if free_game:
+            response = send_embed_webhook(free_game)
+            if not response.ok:
+                print(
+                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}")

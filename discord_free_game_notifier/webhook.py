@@ -9,7 +9,7 @@ def send_webhook(message: str):
     Args:
         message (str): Message to send to Discord.
     """
-    webhook = DiscordWebhook(url=settings.webhook_url, content=message)
+    webhook = DiscordWebhook(url=settings.webhook_url, content=message, rate_limit_retry=True)
 
     return webhook.execute()
 
@@ -20,7 +20,7 @@ def send_embed_webhook(embed: DiscordEmbed):
     Args:
         embed (DiscordEmbed): Embed to send to Discord.
     """
-    webhook = DiscordWebhook(url=settings.webhook_url)
+    webhook = DiscordWebhook(url=settings.webhook_url, rate_limit_retry=True)
 
     # Add embed object to webhook
     webhook.add_embed(embed)
