@@ -50,7 +50,9 @@ def create_embed(
     Returns:
         Embed: The embed we will send to Discord.
     """
-    embed = DiscordEmbed(description=f"[Click here to claim {game_name}!](https://www.gog.com/giveaway/claim)")
+    embed = DiscordEmbed(description=f"[Click here to claim {game_name}!](https://www.gog.com/giveaway/claim)\n"
+                                     f"[Click here to unsubscribe from emails!]("
+                                     f"https://www.gog.com/en/account/settings/subscriptions)")
     embed.set_author(
         name=game_name,
         url=game_url,
