@@ -4,9 +4,9 @@ on:
   schedule:
     - cron: "20 6 * * *"
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
   workflow_dispatch:
 env:
   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
@@ -22,8 +22,8 @@ jobs:
       - run: pipx install poetry
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-          cache: 'poetry'
+          python-version: "3.11"
+          cache: "poetry"
       - run: poetry install
       - run: poetry run pytest
       - name: Login to GitHub Container Registry
