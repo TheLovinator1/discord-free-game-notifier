@@ -1,9 +1,10 @@
 from discord_webhook import DiscordEmbed, DiscordWebhook
+from requests import Response
 
 from discord_free_game_notifier import settings
 
 
-def send_webhook(message: str):
+def send_webhook(message: str) -> Response:
     """Send a message to Discord.
 
     Args:
@@ -14,7 +15,7 @@ def send_webhook(message: str):
     return webhook.execute()
 
 
-def send_embed_webhook(embed: DiscordEmbed):
+def send_embed_webhook(embed: DiscordEmbed) -> Response:
     """Send an embed to Discord.
 
     Args:

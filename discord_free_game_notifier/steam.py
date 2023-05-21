@@ -1,10 +1,9 @@
-import os
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
-import bs4
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, ResultSet, Tag
 from discord_webhook import DiscordEmbed
 
 from discord_free_game_notifier import settings
@@ -26,13 +25,14 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
     settings.logger.debug(f"Previous games file: {previous_games}")
 
     # Create the file if it doesn't exist-
-    if not os.path.exists(previous_games):
-        open(previous_games, "w", encoding="utf-8").close()
+    if not Path.exists(previous_games):
+        with Path.open(previous_games, "w", encoding="utf-8") as file:
+            file.write("")
 
-    request = requests.get(STEAM_URL)
+    request: requests.Response = requests.get(STEAM_URL, headers={"User-Agent": UA}, timeout=10)
     soup = BeautifulSoup(request.text, "html.parser")
 
-    games = soup.find_all("a", class_="search_result_row")
+    games: ResultSet[Any] = soup.find_all("a", class_="search_result_row")
     for game in games:
         embed = DiscordEmbed()
         game_name: str = get_game_name(game)
@@ -46,16 +46,15 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
         embed.set_image(url=image_url)
 
         # Save the game title to the previous games file, so we don't post it again.
-        with open(previous_games, "a+", encoding="utf-8") as file:
+        with Path.open(previous_games, "a+", encoding="utf-8") as file:
             file.write(f"{game_name}\n")
 
         yield embed
     return
 
 
-def get_game_image(game):
-    """
-    Get the game ID and create image URL.
+def get_game_image(game: dict) -> str:
+    """Get the game ID and create image URL.
 
     Args:
         game: Contains information about the game.
@@ -63,15 +62,14 @@ def get_game_image(game):
     Returns:
         Image url for the game.
     """
-    game_id = game["data-ds-appid"]
-    image_url = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
+    game_id: str = game["data-ds-appid"]
+    image_url: str = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
     settings.logger.debug(f"\tImage: {image_url}")
     return image_url
 
 
-def get_game_url(game):
-    """
-    Get the game url.
+def get_game_url(game: dict) -> str:
+    """Get the game url.
 
     Args:
         game: Contains information about the game.
@@ -79,14 +77,13 @@ def get_game_url(game):
     Returns:
         Game URL.
     """
-    game_url = game["href"]
+    game_url: str = game["href"]
     settings.logger.debug(f"\tURL: {game_url}")
     return game_url
 
 
-def get_game_name(game):
-    """
-    Get the game name.
+def get_game_name(game: dict) -> str:
+    """Get the game name.
 
     Args:
         game: Contains information about the game.
@@ -94,8 +91,8 @@ def get_game_name(game):
     Returns:
         The game name.
     """
-    game_name_class: bs4.element.Tag = game.find("span", class_="title")
-    game_name = game_name_class.text
+    game_name_class: Tag = game.find("span", class_="title")  # type: ignore  # noqa: PGH003
+    game_name: str = game_name_class.text
     settings.logger.debug(f"Game: {game_name}")
     return game_name
 
@@ -105,7 +102,8 @@ if __name__ == "__main__":
     # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
     for free_game in get_free_steam_games():
         if free_game:
-            response = send_embed_webhook(free_game)
+            response: requests.Response = send_embed_webhook(free_game)
             if not response.ok:
-                print(
-                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}")
+                settings.logger.error(
+                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}",
+                )
