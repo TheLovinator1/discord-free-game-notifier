@@ -37,7 +37,9 @@ pre-commit = "^3.3.2"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1"]
+requires = [
+  "poetry-core>=1",
+]
 
 [tool.isort]
 profile = "black"
