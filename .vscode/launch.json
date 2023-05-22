@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Run main.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/discord_free_game_notifier/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
