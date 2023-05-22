@@ -5,6 +5,7 @@ from typing import Any
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 from discord_webhook import DiscordEmbed
+from loguru import logger
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
@@ -22,7 +23,7 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
     """
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
-    settings.logger.debug(f"Previous games file: {previous_games}")
+    logger.debug(f"Previous games file: {previous_games}")
 
     # Create the file if it doesn't exist-
     if not Path.exists(previous_games):
@@ -64,7 +65,7 @@ def get_game_image(game: dict) -> str:
     """
     game_id: str = game["data-ds-appid"]
     image_url: str = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
-    settings.logger.debug(f"\tImage: {image_url}")
+    logger.debug(f"\tImage: {image_url}")
     return image_url
 
 
@@ -78,7 +79,7 @@ def get_game_url(game: dict) -> str:
         Game URL.
     """
     game_url: str = game["href"]
-    settings.logger.debug(f"\tURL: {game_url}")
+    logger.debug(f"\tURL: {game_url}")
     return game_url
 
 
@@ -93,7 +94,7 @@ def get_game_name(game: dict) -> str:
     """
     game_name_class: Tag = game.find("span", class_="title")  # type: ignore  # noqa: PGH003
     game_name: str = game_name_class.text
-    settings.logger.debug(f"Game: {game_name}")
+    logger.debug(f"Game: {game_name}")
     return game_name
 
 
@@ -104,6 +105,6 @@ if __name__ == "__main__":
         if free_game:
             response: requests.Response = send_embed_webhook(free_game)
             if not response.ok:
-                settings.logger.error(
+                logger.error(
                     f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}",
                 )

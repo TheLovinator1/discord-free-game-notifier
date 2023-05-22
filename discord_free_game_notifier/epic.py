@@ -7,6 +7,7 @@ from typing import Any
 
 import requests
 from discord_webhook import DiscordEmbed
+from loguru import logger
 from pytz import timezone
 from requests.utils import requote_uri
 
@@ -45,7 +46,7 @@ def promotion_start(game: dict) -> int:
 
     # Convert to int to remove the microseconds
     start_date = int(start_date)
-    settings.logger.debug(f"\tStarted: {start_date}")
+    logger.debug(f"\tStarted: {start_date}")
 
     return start_date
 
@@ -70,7 +71,7 @@ def promotion_end(game: dict) -> int:
 
     # Convert to int to remove the microseconds
     end_date = int(end_date)
-    settings.logger.debug(f"\tEnds in: {end_date}")
+    logger.debug(f"\tEnds in: {end_date}")
 
     return end_date
 
@@ -90,7 +91,7 @@ def game_image(game: dict) -> str:
     for image in game["keyImages"]:
         if image["type"] in ["DieselStoreFrontWide", "Thumbnail"]:
             image_url = image["url"]
-    settings.logger.debug(f"\tImage URL: {requote_uri(image_url)}")
+    logger.debug(f"\tImage URL: {requote_uri(image_url)}")
 
     # Epic's image URL has spaces in them, so requote the URL.
     return requote_uri(image_url)
@@ -109,14 +110,14 @@ def game_url(game: dict) -> str:
     if product_slug := game["productSlug"]:
         url: str = f"https://www.epicgames.com/en-US/p/{product_slug}"
     else:
-        settings.logger.debug("\tProduct slug is empty")
+        logger.debug("\tProduct slug is empty")
         for offer in game["offerMappings"]:
             if offer["pageSlug"]:
                 page_slug: str = offer["pageSlug"]
                 url = f"https://www.epicgames.com/en-US/p/{page_slug}"
-                settings.logger.debug("\tFound page slug")
+                logger.debug("\tFound page slug")
 
-    settings.logger.debug(f"\tURL: {requote_uri(url)}")
+    logger.debug(f"\tURL: {requote_uri(url)}")
 
     # Epic's image URL has spaces in them, could happen here too so requote the URL.
     return requote_uri(url)
@@ -133,7 +134,7 @@ def check_promotion(game: dict) -> bool:
     """
     if not game["promotions"]:
         game_name: str = game["title"]
-        settings.logger.debug(f"\tNo promotions found for {game_name}, skipping")
+        logger.debug(f"\tNo promotions found for {game_name}, skipping")
         return False
     return True
 
@@ -146,7 +147,7 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
     """
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
-    settings.logger.debug(f"Previous games file: {previous_games}")
+    logger.debug(f"Previous games file: {previous_games}")
 
     # Create the file if it doesn't exist
     if not Path.exists(previous_games):
@@ -173,12 +174,12 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
                 if already_posted(previous_games, game_name):
                     continue
 
-                send_webhook(f"{game_name} - Could be free game? It is in the 'Epic Vault'")
+                send_webhook(f"{game_name} - Could be free game? It is in the 'Epic Vault'", game_service="Epic")
                 yield create_embed(previous_games, game)
 
         # If the original_price - discount is 0, then the game is free.
         if final_price == 0 and (original_price != 0 and discount != 0):
-            settings.logger.debug(f"Game: {game_name}")
+            logger.debug(f"Game: {game_name}")
 
             if check_promotion is False:
                 continue
@@ -186,8 +187,8 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
             if already_posted(previous_games, game_name):
                 continue
 
-            settings.logger.debug(f"\tPrice: {original_price / 100}$")
-            settings.logger.debug(f"\tDiscount: {discount / 100}$")
+            logger.debug(f"\tPrice: {original_price / 100}$")
+            logger.debug(f"\tDiscount: {discount / 100}$")
 
             yield create_embed(previous_games, game)
 
@@ -259,4 +260,4 @@ if __name__ == "__main__":
                     "Error when checking game for Epic:\n"
                     f"{webhook_response.status_code} - {webhook_response.reason}: {webhook_response.text}"
                 )
-                settings.logger.error(msg)
+                logger.error(msg)

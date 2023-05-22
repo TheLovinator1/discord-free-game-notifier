@@ -4,6 +4,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
 from discord_webhook import DiscordEmbed
+from loguru import logger
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
@@ -73,7 +74,7 @@ def get_free_gog_game() -> DiscordEmbed | None:
     """
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "gog.txt"
-    settings.logger.debug(f"Previous games file: {previous_games}")
+    logger.debug(f"Previous games file: {previous_games}")
 
     # Create the file if it doesn't exist
     if not Path.exists(previous_games):
@@ -93,30 +94,30 @@ def get_free_gog_game() -> DiscordEmbed | None:
 
     # If no banner title, return an empty list
     if banner_title is None:
-        settings.logger.error("No banner title found on GOG for {}", giveaway)
+        logger.error("No banner title found on GOG for {}", giveaway)
         return None
 
     # Game URL
     ng_href: str = giveaway.attrs["ng-href"]  # type: ignore  # noqa: PGH003
     game_url: str = f"https://www.gog.com{ng_href}"
-    settings.logger.debug(f"\tURL: {game_url}")
+    logger.debug(f"\tURL: {game_url}")
 
     # Game image
     image_url_class: Tag | NavigableString | None = giveaway.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003, E501
 
     # If no image URL, return an empty list
     if image_url_class is None:
-        settings.logger.error("No image URL found on GOG for {}", giveaway)
+        logger.error("No image URL found on GOG for {}", giveaway)
         return None
 
     # Check if image_url_class has attrs
     if not hasattr(image_url_class, "attrs"):
-        settings.logger.error("No attrs found on GOG for {}", giveaway)
+        logger.error("No attrs found on GOG for {}", giveaway)
         return None
 
     images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
     image_url: str = f"https:{images[0]}"
-    settings.logger.debug(f"\tImage URL: {image_url}")
+    logger.debug(f"\tImage URL: {image_url}")
 
     # Check if the game has already been posted
     game_name: str = get_game_name(banner_title.text)
@@ -136,7 +137,7 @@ if __name__ == "__main__":
     if gog_embed := get_free_gog_game():
         response: requests.Response = send_embed_webhook(gog_embed)
         if not response.ok:
-            settings.logger.error(
+            logger.error(
                 "Error when checking game for GOG:\n{} - {}: {}",
                 response.status_code,
                 response.reason,

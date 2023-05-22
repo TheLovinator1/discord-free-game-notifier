@@ -1,15 +1,26 @@
 from discord_webhook import DiscordEmbed, DiscordWebhook
+from loguru import logger
 from requests import Response
 
 from discord_free_game_notifier import settings
 
 
-def send_webhook(message: str) -> Response:
+def send_webhook(message: str, game_service: str = "") -> Response:
     """Send a message to Discord.
 
     Args:
         message (str): Message to send to Discord.
+        game_service (str): The name of the game service (Steam/GOG/Epic)
     """
+    if get_webhook_url(game_service):
+        webhook = DiscordWebhook(url=get_webhook_url(game_service), content=message, rate_limit_retry=True)
+        return webhook.execute()
+
+    if not settings.webhook_url:
+        logger.error("No webhook URL set!")
+        logger.error(message)
+        return Response()
+
     webhook = DiscordWebhook(url=settings.webhook_url, content=message, rate_limit_retry=True)
 
     return webhook.execute()
@@ -44,7 +55,11 @@ def send_embed_webhook(embed: DiscordEmbed, game_service: str = "") -> Response:
     if get_webhook_url(game_service):
         webhook = DiscordWebhook(url=get_webhook_url(game_service), rate_limit_retry=True)
         webhook.add_embed(embed)
-        webhook.execute()
+        return webhook.execute()
+
+    if not settings.webhook_url:
+        logger.error("No webhook URL found")
+        return Response()
 
     webhook = DiscordWebhook(url=settings.webhook_url, rate_limit_retry=True)
 
