@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from loguru import logger
 from platformdirs import user_data_dir
 
 load_dotenv()
@@ -15,19 +16,16 @@ app_dir: str = user_data_dir(
 Path.mkdir(Path(app_dir), exist_ok=True)
 
 config_location: Path = Path(app_dir) / "config.conf"
-
+default_webhook_url: str = (
+    "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+)
 if not Path.is_file(config_location):
     logging.info("No config file found, creating one...")
     with Path.open(config_location, "w", encoding="UTF-8") as config_file:
         config = configparser.ConfigParser()
         config.add_section("config")
-        config.set(
-            "config",
-            "webhook_url",
-            "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz",
-        )
+        config.set("config", "webhook_url", default_webhook_url)
         config.set("config", "log_level", "INFO")
-
         config.write(config_file)
     logging.info("Please edit the config file at {} or use environment variables.", config_location)
 
@@ -45,13 +43,13 @@ config_log_level: str = config.get("config", "log_level")
 webhook_url: str = os.getenv("WEBHOOK_URL", config_webhook_url)
 log_level: str = os.getenv("LOG_LEVEL", config_log_level)
 
-# TODO: Add tests for these
 steam_icon: str = os.getenv("STEAM_ICON", "https://lovinator.space/Steam_logo.png")
 gog_icon: str = os.getenv("GOG_ICON", "https://lovinator.space/gog_logo.png")
 epic_icon: str = os.getenv("EPIC_ICON", "https://lovinator.space/Epic_Games_logo.png")
 
-logger = logging
-logger.basicConfig(level=log_level)
+gog_webhook: str = os.getenv("GOG_WEBHOOK", "")
+steam_webhook: str = os.getenv("STEAM_WEBHOOK", "")
+epic_webhook: str = os.getenv("EPIC_WEBHOOK", "")
 
 logger.debug("Config location: {}", config_location)
 logger.debug("Webhook url: {}", webhook_url)

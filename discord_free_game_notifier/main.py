@@ -36,7 +36,7 @@ def send_games(game: DiscordEmbed | None, game_service: str = "Unknown") -> None
         game_service: The name of the game service (Steam/GOG/Epic)
     """
     if game:
-        response: Response = send_embed_webhook(game)
+        response: Response = send_embed_webhook(game, game_service)
 
         if not response.ok:
             send_webhook(

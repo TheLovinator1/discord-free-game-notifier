@@ -211,17 +211,7 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
     # is safe to remove it, so we are removing it here and
     # sending a message to the user that we modified the URL.
     if url.endswith("/home"):
-        original_url: str = url
         url: str = url[:-5]
-        send_webhook(
-            (
-                f"{game_name} had /home appended to the URL, "
-                "so I removed it here. It could be a false positive but "
-                "I could be wrong, I am a small robot after all. "
-                "Beep boop 🤖\n"
-                f"Original URL: <{original_url}>\n"
-            ),
-        )
 
     embed.set_author(
         name=game_name,
