@@ -19,12 +19,10 @@ environment variable.
 - Download or clone the repository.
 - Change directory to the root of the repository.
 - Install the dependencies using `poetry install`.
-- Run the bot once to create the config file.
-    - `poetry run bot`
 - Rename .env.example to .env and fill in the values. You can also set the values as environment variables.
-- Start the bot for real.
+- Start the bot.
     - `poetry run bot`
-- The bot will now check for free games every 30 minutes and send a message to the webhook.
+- The bot will now check for free games every 15 minutes and send a message to the webhook.
 
 ## Need help?
 
