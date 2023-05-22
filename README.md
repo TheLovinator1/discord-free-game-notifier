@@ -21,8 +21,7 @@ environment variable.
 - Install the dependencies using `poetry install`.
 - Run the bot once to create the config file.
     - `poetry run bot`
-- Change webhook_url in the config file to the webhook URL you want to use.
-    - `nano ~/.local/share/discord_free_game_notifier/config.conf`
+- Rename .env.example to .env and fill in the values. You can also set the values as environment variables.
 - Start the bot for real.
     - `poetry run bot`
 - The bot will now check for free games every 30 minutes and send a message to the webhook.

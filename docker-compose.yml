@@ -6,7 +6,12 @@ services:
       - .env
     environment:
       - WEBHOOK_URL=${WEBHOOK_URL}
-      - LOG_LEVEL=DEBUG
+      # You can send notifications from multiple stores to different channels by adding different webhooks for each store.
+      # Note: If you use both WEBHOOK_URL and those below, it will send to both channels.
+      # GOG_WEBHOOK=https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz1
+      # STEAM_WEBHOOK=https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz1
+      # EPIC_WEBHOOK=https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz1
+      - LOG_LEVEL=INFO
       # Uncomment these if you want to host the images yourself:
       # STEAM_ICON=https://lovinator.space/Steam_logo.png
       # GOG_ICON=https://lovinator.space/gog_logo.png

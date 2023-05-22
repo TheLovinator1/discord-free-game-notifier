@@ -1,5 +1,4 @@
 import configparser
-import logging
 import os
 from pathlib import Path
 
@@ -19,15 +18,6 @@ config_location: Path = Path(app_dir) / "config.conf"
 default_webhook_url: str = (
     "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
 )
-if not Path.is_file(config_location):
-    logging.info("No config file found, creating one...")
-    with Path.open(config_location, "w", encoding="UTF-8") as config_file:
-        config = configparser.ConfigParser()
-        config.add_section("config")
-        config.set("config", "webhook_url", default_webhook_url)
-        config.set("config", "log_level", "INFO")
-        config.write(config_file)
-    logging.info("Please edit the config file at {} or use environment variables.", config_location)
 
 # Read the config file
 config = configparser.ConfigParser()
