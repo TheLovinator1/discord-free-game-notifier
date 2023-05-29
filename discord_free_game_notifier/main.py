@@ -26,7 +26,7 @@ sched = BlockingScheduler()
 def my_listener(event: JobExecutionEvent) -> None:
     """Send a message to the webhook when a job failed."""
     if event.exception:
-        send_webhook(f"Job failed: {event.exception}")
+        logger.error("Job failed: {}", event.exception)
 
 
 def send_games(game: DiscordEmbed | None, game_service: str = "Unknown") -> None:
