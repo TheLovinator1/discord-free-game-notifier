@@ -1,0 +1,245 @@
+{
+    "data": {
+        "Catalog": {
+            "searchStore": {
+                "elements": [
+                    {
+                        "title": "Fallout: New Vegas - Ultimate Edition",
+                        "id": "b951f31da58449cd83d6cb1f4ca62d3a",
+                        "namespace": "d5241c76f178492ea1540fce45616757",
+                        "description": "Feel the Heat in New Vegas! Not even nuclear fallout could slow the hustle of Sin City. Explore the vast expanses of the desert wastelands and see the Great Southwest as could only be imagined in Fallout.",
+                        "effectiveDate": "2099-01-01T00:00:00.000Z",
+                        "offerType": "OTHERS",
+                        "expiryDate": null,
+                        "viewableDate": "2023-05-18T14:25:00.000Z",
+                        "status": "ACTIVE",
+                        "isCodeRedemptionOnly": true,
+                        "keyImages": [
+                            {
+                                "type": "OfferImageTall",
+                                "url": "https://cdn1.epicgames.com/offer/d5241c76f178492ea1540fce45616757/fnv-port_1200x1600-45b1c7c6093bfc78539a8faeead2c929"
+                            },
+                            {
+                                "type": "OfferImageWide",
+                                "url": "https://cdn1.epicgames.com/offer/d5241c76f178492ea1540fce45616757/fnv-land_2560x1440-ea034ab626174189b6edc7d38e7c05c4"
+                            },
+                            {
+                                "type": "VaultClosed",
+                                "url": "https://cdn1.epicgames.com/offer/d5241c76f178492ea1540fce45616757/EN-mega-sale-vault-16x9-asset_1920x1080-a27cf3919dde320a72936374a1d47813"
+                            }
+                        ],
+                        "seller": {
+                            "id": "o-ufmrk5furrrxgsp5tdngefzt5rxdcn",
+                            "name": "Epic Dev Test Account"
+                        },
+                        "productSlug": "fallout-new-vegas--ultimate-edition",
+                        "urlSlug": "mystery-game-3",
+                        "url": null,
+                        "items": [
+                            {
+                                "id": "8341d7c7e4534db7848cc428aa4cbe5a",
+                                "namespace": "d5241c76f178492ea1540fce45616757"
+                            }
+                        ],
+                        "customAttributes": [
+                            {
+                                "key": "com.epicgames.app.freegames.vault.close",
+                                "value": "[]"
+                            },
+                            {
+                                "key": "com.epicgames.app.blacklist",
+                                "value": "[]"
+                            },
+                            {
+                                "key": "com.epicgames.app.freegames.vault.slug",
+                                "value": "sales-and-specials/mega-sale-2023"
+                            },
+                            {
+                                "key": "com.epicgames.app.freegames.vault.open",
+                                "value": "[]"
+                            },
+                            {
+                                "key": "com.epicgames.app.productSlug",
+                                "value": "fallout-new-vegas--ultimate-edition"
+                            }
+                        ],
+                        "categories": [
+                            {
+                                "path": "freegames/vaulted"
+                            },
+                            {
+                                "path": "freegames"
+                            },
+                            {
+                                "path": "games"
+                            },
+                            {
+                                "path": "applications"
+                            }
+                        ],
+                        "tags": [],
+                        "catalogNs": {
+                            "mappings": []
+                        },
+                        "offerMappings": [],
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 0,
+                                "originalPrice": 0,
+                                "voucherDiscount": 0,
+                                "discount": 0,
+                                "currencyCode": "USD",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "0",
+                                    "discountPrice": "0",
+                                    "intermediatePrice": "0"
+                                }
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": []
+                                }
+                            ]
+                        },
+                        "promotions": {
+                            "promotionalOffers": [
+                                {
+                                    "promotionalOffers": [
+                                        {
+                                            "startDate": "2023-05-25T15:00:00.000Z",
+                                            "endDate": "2023-06-01T15:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE",
+                                                "discountPercentage": 0
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            "upcomingPromotionalOffers": []
+                        }
+                    },
+                    {
+                        "title": "Mystery Game",
+                        "id": "9d5d8c66d58e412286a3f98139657ef4",
+                        "namespace": "d5241c76f178492ea1540fce45616757",
+                        "description": "Mystery Game",
+                        "effectiveDate": "2099-01-01T00:00:00.000Z",
+                        "offerType": "OTHERS",
+                        "expiryDate": null,
+                        "viewableDate": "2023-05-25T14:25:00.000Z",
+                        "status": "ACTIVE",
+                        "isCodeRedemptionOnly": true,
+                        "keyImages": [
+                            {
+                                "type": "VaultClosed",
+                                "url": "https://cdn1.epicgames.com/offer/d5241c76f178492ea1540fce45616757/EN-mega-sale-vault-16x9-asset_1920x1080-a27cf3919dde320a72936374a1d47813"
+                            }
+                        ],
+                        "seller": {
+                            "id": "o-ufmrk5furrrxgsp5tdngefzt5rxdcn",
+                            "name": "Epic Dev Test Account"
+                        },
+                        "productSlug": "[]",
+                        "urlSlug": "mystery-game-5",
+                        "url": null,
+                        "items": [
+                            {
+                                "id": "8341d7c7e4534db7848cc428aa4cbe5a",
+                                "namespace": "d5241c76f178492ea1540fce45616757"
+                            }
+                        ],
+                        "customAttributes": [
+                            {
+                                "key": "com.epicgames.app.freegames.vault.close",
+                                "value": "[]"
+                            },
+                            {
+                                "key": "com.epicgames.app.blacklist",
+                                "value": "[]"
+                            },
+                            {
+                                "key": "com.epicgames.app.freegames.vault.slug",
+                                "value": "/sales-and-specials/mega-sale"
+                            },
+                            {
+                                "key": "com.epicgames.app.freegames.vault.open",
+                                "value": "[]"
+                            },
+                            {
+                                "key": "com.epicgames.app.productSlug",
+                                "value": "[]"
+                            }
+                        ],
+                        "categories": [
+                            {
+                                "path": "freegames/vaulted"
+                            },
+                            {
+                                "path": "freegames"
+                            },
+                            {
+                                "path": "games"
+                            },
+                            {
+                                "path": "applications"
+                            }
+                        ],
+                        "tags": [],
+                        "catalogNs": {
+                            "mappings": []
+                        },
+                        "offerMappings": [],
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 0,
+                                "originalPrice": 0,
+                                "voucherDiscount": 0,
+                                "discount": 0,
+                                "currencyCode": "USD",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "0",
+                                    "discountPrice": "0",
+                                    "intermediatePrice": "0"
+                                }
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": []
+                                }
+                            ]
+                        },
+                        "promotions": {
+                            "promotionalOffers": [],
+                            "upcomingPromotionalOffers": [
+                                {
+                                    "promotionalOffers": [
+                                        {
+                                            "startDate": "2023-06-01T15:00:00.000Z",
+                                            "endDate": "2023-06-08T15:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE",
+                                                "discountPercentage": 0
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "paging": {
+                    "count": 1000,
+                    "total": 2
+                }
+            }
+        }
+    },
+    "extensions": {}
+}
