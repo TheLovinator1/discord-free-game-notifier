@@ -5,15 +5,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import pytz
 import requests
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pytz import timezone
 from requests.utils import requote_uri
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
-from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
+from discord_free_game_notifier.webhook import send_embed_webhook
 
 # Epic's backend API URL for the free games promotion
 EPIC_API: str = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
@@ -46,7 +46,7 @@ def promotion_start(game: dict) -> int:
 
     # Convert to int to remove the microseconds
     start_date = int(start_date)
-    logger.debug(f"\tStarted: {start_date}")
+    logger.info(f"\tStarted: {start_date}")
 
     return start_date
 
@@ -71,7 +71,7 @@ def promotion_end(game: dict) -> int:
 
     # Convert to int to remove the microseconds
     end_date = int(end_date)
-    logger.debug(f"\tEnds in: {end_date}")
+    logger.info(f"\tEnds in: {end_date}")
 
     return end_date
 
@@ -91,7 +91,16 @@ def game_image(game: dict) -> str:
     for image in game["keyImages"]:
         if image["type"] in ["DieselStoreFrontWide", "Thumbnail"]:
             image_url = image["url"]
-    logger.debug(f"\tImage URL: {requote_uri(image_url)}")
+            logger.debug(f"\tFound image URL: {image_url} (type: {image['type']})")
+
+    # This fixes https://github.com/TheLovinator1/discord-free-game-notifier/issues/70
+    if not image_url:
+        for image in game["keyImages"]:
+            if image["type"] == "OfferImageWide":
+                image_url = image["url"]
+                logger.debug(f"\tFound image URL: {image_url} (type: {image['type']})")
+
+    logger.info(f"\tImage URL: {requote_uri(image_url)}")
 
     # Epic's image URL has spaces in them, so requote the URL.
     return requote_uri(image_url)
@@ -117,7 +126,7 @@ def game_url(game: dict) -> str:
                 url = f"https://www.epicgames.com/en-US/p/{page_slug}"
                 logger.debug("\tFound page slug")
 
-    logger.debug(f"\tURL: {requote_uri(url)}")
+    logger.info(f"\tURL: {requote_uri(url)}")
 
     # Epic's image URL has spaces in them, could happen here too so requote the URL.
     return requote_uri(url)
@@ -134,12 +143,12 @@ def check_promotion(game: dict) -> bool:
     """
     if not game["promotions"]:
         game_name: str = game["title"]
-        logger.debug(f"\tNo promotions found for {game_name}, skipping")
+        logger.info(f"\tNo promotions found for {game_name}, skipping")
         return False
     return True
 
 
-def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
+def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:  # noqa: C901, PLR0912
     """Uses an API from Epic to parse a list of free games to find this week's free games.
 
     Yields:
@@ -147,7 +156,7 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
     """
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
-    logger.debug(f"Previous games file: {previous_games}")
+    logger.info(f"Previous games file: {previous_games}")
 
     # Create the file if it doesn't exist
     if not Path.exists(previous_games):
@@ -160,11 +169,25 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
     # Find the free games in the response
     for game in response.json()["data"]["Catalog"]["searchStore"]["elements"]:
         game_name: str = game["title"]
+        logger.info(f"Game: {game_name}")
 
+        # This are games that will be free next week, so skip them
+        if game_name == "Mystery Game":
+            logger.info(f"\tSkipping {game_name}")
+            continue
+
+        # What the price was before the discount, in dollar cents
         original_price: int = game["price"]["totalPrice"]["originalPrice"]
+
+        # How much the discount is, this should always be the same as the original price, in dollar cents
         discount: int = game["price"]["totalPrice"]["discount"]
 
+        # What the price is after the discount, if this is 0, then the game will be sent to Discord, in dollar cents
         final_price: int = original_price - discount
+
+        logger.info(f"\tOriginal price: {original_price} ({original_price/1000}$)")
+        logger.info(f"\tDiscount: {discount}({discount/1000}$)")
+        logger.info(f"\tFinal price: {final_price} ({final_price/1000}$)")
 
         for image in game["keyImages"]:
             if image["type"] == "VaultOpened":
@@ -174,21 +197,26 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
                 if already_posted(previous_games, game_name):
                     continue
 
-                send_webhook(f"{game_name} - Could be free game? It is in the 'Epic Vault'", game_service="Epic")
                 yield create_embed(previous_games, game)
+
+            # This fixes https://github.com/TheLovinator1/discord-free-game-notifier/issues/70
+            for cat in game["categories"]:
+                if cat["path"] == "freegames/vaulted" and game["status"] == "ACTIVE":
+                    if check_promotion is False:
+                        continue
+
+                    if already_posted(previous_games, game_name):
+                        continue
+
+                    yield create_embed(previous_games, game)
 
         # If the original_price - discount is 0, then the game is free.
         if final_price == 0 and (original_price != 0 and discount != 0):
-            logger.debug(f"Game: {game_name}")
-
             if check_promotion is False:
                 continue
 
             if already_posted(previous_games, game_name):
                 continue
-
-            logger.debug(f"\tPrice: {original_price / 100}$")
-            logger.debug(f"\tDiscount: {discount / 100}$")
 
             yield create_embed(previous_games, game)
 
@@ -203,41 +231,58 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
     Returns:
         Embed: The embed with the free game we will send to Discord.
     """
+    # Create the embed that we will send to Discord.
+    # Description is the game's description.
     embed = DiscordEmbed(description=game["description"])
 
+    # The URL to the store page.
     url = game_url(game)
+
+    # The name of the game.
     game_name: str = game["title"]
 
-    # Jotun had /home appended to the URL, I have no idea if it
-    # is safe to remove it, so we are removing it here and
-    # sending a message to the user that we modified the URL.
+    # Jotun had /home appended to the URL and that broke the link, so I guess remove it for all the future games?
+    # Broken: https://www.epicgames.com/en-US/p/jotun/home
+    # Fixed: https://www.epicgames.com/en-US/p/jotun
     if url.endswith("/home"):
         url: str = url[:-5]
 
+    # Show the game name, Epic icon and the URL to the game.
     embed.set_author(
         name=game_name,
         url=url,
         icon_url=settings.epic_icon,
     )
 
-    curr_dt: datetime = datetime.now(timezone.utc)
+    # Get the current time so we can check that the game is still free.
+    curr_dt: datetime = datetime.now(tz=pytz.UTC)
     current_time = int(round(curr_dt.timestamp()))
 
+    # When the game stops being free.
     end_time: int = promotion_end(game)
+
+    # Only send the embed if the game is still free.
     if end_time > current_time:
+        # When the game started being free
         embed.add_embed_field(
             name="Start",
             value=f"<t:{promotion_start(game)}:R>",
         )
+
+        # When the games stops being free
         embed.add_embed_field(
             name="End",
             value=f"<t:{end_time}:R>",
         )
 
+        # Get the seller name
         seller: str = game["seller"]["name"] if game["seller"] else "Unknown"
 
-        embed.set_footer(text=f"{seller}")
+        # Some games are sold by Epic Dev Test Account, we don't want to show that.
+        if seller not in ["Epic Dev Test Account", "Unknown"]:
+            embed.set_footer(text=f"{seller}")
 
+        # Get the image URL and add it to the embed
         if image_url := game_image(game):
             embed.set_image(url=image_url)
 
@@ -245,6 +290,7 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
         with Path.open(previous_games, "a+", encoding="utf-8") as file:
             file.write(f"{game_name}\n")
 
+        # Return the embed so we can send it to Discord
         return embed
     return None
 
