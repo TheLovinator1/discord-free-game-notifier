@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 from discord_webhook import DiscordEmbed
 from loguru import logger
+from requests.adapters import HTTPAdapter, Retry
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
@@ -30,9 +31,22 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
         with Path.open(previous_games, "w", encoding="utf-8") as file:
             file.write("")
 
-    request: requests.Response = requests.get(STEAM_URL, headers={"User-Agent": UA}, timeout=10)
+    # Use the same session for all requests to Steam.
+    session = requests.Session()
+
+    # Retry the request if it fails.
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+
+    # Use the same session for all requests.
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+
+    # Get the Steam store page.
+    request: requests.Response = session.get(STEAM_URL, headers={"User-Agent": UA}, timeout=30)
+
+    # Convert the HTML to a BeautifulSoup object.
     soup = BeautifulSoup(request.text, "html.parser")
 
+    # Get the games.
     games: ResultSet[Any] = soup.find_all("a", class_="search_result_row")
     for game in games:
         embed = DiscordEmbed()
@@ -65,7 +79,7 @@ def get_game_image(game: dict) -> str:
     """
     game_id: str = game["data-ds-appid"]
     image_url: str = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
-    logger.debug(f"\tImage: {image_url}")
+    logger.info(f"\tImage: {image_url}")
     return image_url
 
 
@@ -79,7 +93,7 @@ def get_game_url(game: dict) -> str:
         Game URL.
     """
     game_url: str = game["href"]
-    logger.debug(f"\tURL: {game_url}")
+    logger.info(f"\tURL: {game_url}")
     return game_url
 
 
@@ -94,7 +108,7 @@ def get_game_name(game: dict) -> str:
     """
     game_name_class: Tag = game.find("span", class_="title")  # type: ignore  # noqa: PGH003
     game_name: str = game_name_class.text
-    logger.debug(f"Game: {game_name}")
+    logger.info(f"Game: {game_name}")
     return game_name
 
 

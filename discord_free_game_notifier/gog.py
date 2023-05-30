@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
 from discord_webhook import DiscordEmbed
 from loguru import logger
+from requests.adapters import HTTPAdapter, Retry
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
@@ -81,7 +82,18 @@ def get_free_gog_game() -> DiscordEmbed | None:
         with Path.open(previous_games, "w", encoding="utf-8") as file:
             file.write("")
 
-    request: requests.Response = requests.get("https://www.gog.com/", timeout=10, headers={"User-Agent": UA})
+    # Use the same session for all requests to GOG
+    session = requests.Session()
+
+    # Retry the request if it fails.
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+
+    # Use the same session for all requests.
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+
+    # Get the Steam store page.
+    request: requests.Response = session.get("https://www.gog.com/", headers={"User-Agent": UA}, timeout=30)
+
     soup = BeautifulSoup(request.text, "html.parser")
     giveaway: Tag | NavigableString | None = soup.find("a", {"id": "giveaway"})
 
@@ -97,10 +109,14 @@ def get_free_gog_game() -> DiscordEmbed | None:
         logger.error("No banner title found on GOG for {}", giveaway)
         return None
 
+    # Check if the game has already been posted
+    game_name: str = get_game_name(banner_title.text)
+    logger.info(f"Game name: {game_name}")
+
     # Game URL
     ng_href: str = giveaway.attrs["ng-href"]  # type: ignore  # noqa: PGH003
     game_url: str = f"https://www.gog.com{ng_href}"
-    logger.debug(f"\tURL: {game_url}")
+    logger.info(f"\tURL: {game_url}")
 
     # Game image
     image_url_class: Tag | NavigableString | None = giveaway.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003, E501
@@ -117,10 +133,8 @@ def get_free_gog_game() -> DiscordEmbed | None:
 
     images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
     image_url: str = f"https:{images[0]}"
-    logger.debug(f"\tImage URL: {image_url}")
+    logger.info(f"\tImage URL: {image_url}")
 
-    # Check if the game has already been posted
-    game_name: str = get_game_name(banner_title.text)
     if already_posted(previous_games, game_name):
         return None
 

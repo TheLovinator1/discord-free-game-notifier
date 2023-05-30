@@ -9,6 +9,7 @@ import pytz
 import requests
 from discord_webhook import DiscordEmbed
 from loguru import logger
+from requests.adapters import HTTPAdapter, Retry
 from requests.utils import requote_uri
 
 from discord_free_game_notifier import settings
@@ -163,8 +164,17 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:  # noqa:
         with Path.open(previous_games, "w") as f:
             f.write("")
 
+    # Use the same session for all requests to Epic
+    session = requests.Session()
+
+    # Retry the request if it fails.
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+
+    # Use the same session for all requests.
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+
     # Connect to the Epic API and get the free games
-    response: requests.Response = requests.get(EPIC_API, params=PARAMS, timeout=10)
+    response: requests.Response = session.get(EPIC_API, params=PARAMS, timeout=10)
 
     # Find the free games in the response
     for game in response.json()["data"]["Catalog"]["searchStore"]["elements"]:
