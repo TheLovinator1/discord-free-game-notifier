@@ -13,7 +13,10 @@ from loguru import logger
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.epic import get_free_epic_games
-from discord_free_game_notifier.gog import get_free_gog_game
+from discord_free_game_notifier.gog import (
+    get_free_gog_game,
+    get_free_gog_game_from_list,
+)
 from discord_free_game_notifier.steam import get_free_steam_games
 from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
@@ -59,6 +62,9 @@ def check_free_games() -> None:
 
     for game in get_free_steam_games():
         send_games(game, "Steam")
+
+    for game in get_free_gog_game_from_list():
+        send_games(game, "GOG")
 
     if gog_embed := get_free_gog_game():
         send_games(gog_embed, "GOG")

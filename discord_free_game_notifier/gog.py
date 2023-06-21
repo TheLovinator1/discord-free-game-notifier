@@ -1,5 +1,7 @@
 import re
+from collections.abc import Generator
 from pathlib import Path
+from typing import Any
 
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -30,9 +32,10 @@ def get_game_name(banner_title_text: str) -> str:
 
 def create_embed(
     previous_games: Path,
-    game_name: str,
-    game_url: str,
-    image_url: str,
+    game_name: str = "",
+    image_url: str = "",
+    game_url: str = "",
+    no_claim: bool = False,
 ) -> DiscordEmbed:
     """Create the embed that we will send to Discord.
 
@@ -41,22 +44,39 @@ def create_embed(
         game_name: The game name.
         game_url: URL to the game.
         image_url: Game image.
+        no_claim: Don't use https://www.gog.com/giveaway/claim
 
     Returns:
         Embed: The embed we will send to Discord.
     """
-    embed = DiscordEmbed(
-        description=(
-            f"[Click here to claim {game_name}!](https://www.gog.com/giveaway/claim)\n"
+    if not game_name:
+        game_name = "GOG Giveaway"
+
+    if not game_url:
+        game_url = "https://www.gog.com/"
+
+    description: str = (
+        f"[Click here to claim {game_name}!](https://www.gog.com/giveaway/claim)\n"
+        "[Click here to unsubscribe from emails!]("
+        "https://www.gog.com/en/account/settings/subscriptions)"
+    )
+
+    if no_claim:
+        description = (
+            f"[Click here to claim {game_name}!]({game_url})\n"
             "[Click here to unsubscribe from emails!]("
             "https://www.gog.com/en/account/settings/subscriptions)"
-        ),
+        )
+
+    embed = DiscordEmbed(
+        description=description,
     )
     # Set the author and icon
     embed.set_author(name=game_name, url=game_url, icon_url=settings.gog_icon)
 
     # Only add the image if it is not empty
     if image_url:
+        image_url = image_url.removesuffix(",")
         embed.set_image(url=image_url)
 
     # Save the game title to the previous games file, so we don't
@@ -67,12 +87,14 @@ def create_embed(
     return embed
 
 
-def get_free_gog_game() -> DiscordEmbed | None:
-    """Check if free GOG game.
+def get_free_gog_game_from_list() -> Generator[DiscordEmbed, Any, None]:
+    """Check if free GOG game from games list.
 
     Returns:
-        DiscordEmbed: Embed for the free GOG games.
+        Generator[Embed, Any, None]: Embed for the free GOG games.
     """
+    url = "https://www.gog.com/en/games?priceRange=0,0&discounted=true"
+
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "gog.txt"
     logger.debug(f"Previous games file: {previous_games}")
@@ -92,7 +114,76 @@ def get_free_gog_game() -> DiscordEmbed | None:
     session.mount("http://", HTTPAdapter(max_retries=retries))
 
     # Get the Steam store page.
-    request: requests.Response = session.get("https://www.gog.com/", headers={"User-Agent": UA}, timeout=30)
+    request: requests.Response = session.get(url, headers={"User-Agent": UA}, timeout=30)
+    soup = BeautifulSoup(request.text, "html.parser")
+
+    # Get the list of games
+    games: Tag | NavigableString | None = soup.find("div", {"selenium-id": "paginatedProductsGrid"})
+
+    # Print children
+    for child in games.children:  # type: ignore  # noqa: PGH003
+        if not hasattr(child, "attrs"):
+            continue
+
+        # Game name
+        game_class = child.find("div", {"selenium-id": "productTileGameTitle"})  # type: ignore  # noqa: PGH003
+        game_name = game_class["title"]  # type: ignore  # noqa: PGH003
+        logger.info(f"Game name: {game_name}")
+
+        # Game URL
+        game_url = child.find("a", {"class": "product-tile--grid"})["href"]  # type: ignore  # noqa: PGH003
+        logger.info(f"\tGame URL: {game_url}")
+
+        # Game image
+        image_url_class: Tag | NavigableString | None = child.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003, E501
+        if hasattr(image_url_class, "attrs"):
+            images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
+            image_url: str = f"{images[0]}"
+            logger.info(f"\tImage URL: {image_url}")
+        else:
+            image_url = ""
+
+        if already_posted(previous_games, game_name):
+            return None
+
+        # Create the embed and add it to the list of free games.
+        yield create_embed(
+            previous_games=previous_games,
+            game_name=game_name,
+            game_url=game_url,
+            image_url=image_url,
+            no_claim=True,
+        )
+
+
+def get_free_gog_game() -> DiscordEmbed | None:
+    """Check if free GOG game.
+
+    Returns:
+        DiscordEmbed: Embed for the free GOG games.
+    """
+    url = "https://www.gog.com/"
+
+    # Save previous free games to a file, so we don't post the same games again.
+    previous_games: Path = Path(settings.app_dir) / "gog.txt"
+    logger.debug(f"Previous games file: {previous_games}")
+
+    # Create the file if it doesn't exist
+    if not Path.exists(previous_games):
+        with Path.open(previous_games, "w", encoding="utf-8") as file:
+            file.write("")
+
+    # Use the same session for all requests to GOG
+    session = requests.Session()
+
+    # Retry the request if it fails.
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+
+    # Use the same session for all requests.
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+
+    # Get the Steam store page.
+    request: requests.Response = session.get(url, headers={"User-Agent": UA}, timeout=30)
 
     soup = BeautifulSoup(request.text, "html.parser")
     giveaway: Tag | NavigableString | None = soup.find("a", {"id": "giveaway"})
@@ -132,7 +223,7 @@ def get_free_gog_game() -> DiscordEmbed | None:
         return None
 
     images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
-    image_url: str = f"https:{images[0]}"
+    image_url = images[0]
     logger.info(f"\tImage URL: {image_url}")
 
     if already_posted(previous_games, game_name):
@@ -150,6 +241,16 @@ def get_free_gog_game() -> DiscordEmbed | None:
 if __name__ == "__main__":
     if gog_embed := get_free_gog_game():
         response: requests.Response = send_embed_webhook(gog_embed)
+        if not response.ok:
+            logger.error(
+                "Error when checking game for GOG:\n{} - {}: {}",
+                response.status_code,
+                response.reason,
+                response.text,
+            )
+
+    for game in get_free_gog_game_from_list():
+        response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(
                 "Error when checking game for GOG:\n{} - {}: {}",
