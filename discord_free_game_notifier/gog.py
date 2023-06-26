@@ -87,8 +87,8 @@ def create_embed(
     return embed
 
 
-def get_free_gog_game_from_list() -> Generator[DiscordEmbed, Any, None]:
-    """Check if free GOG game from games list.
+def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
+    """Check if free GOG game from games store.
 
     Returns:
         Generator[Embed, Any, None]: Embed for the free GOG games.
@@ -253,7 +253,7 @@ if __name__ == "__main__":
                 response.text,
             )
 
-    for game in get_free_gog_game_from_list():
+    for game in get_free_gog_game_from_store():
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(
