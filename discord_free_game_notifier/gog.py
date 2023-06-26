@@ -120,6 +120,10 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
     # Get the list of games
     games: Tag | NavigableString | None = soup.find("div", {"selenium-id": "paginatedProductsGrid"})
 
+    if games is None:
+        logger.debug("No free games found in the GOG store.")
+        return
+
     if not hasattr(games, "children"):
         logger.debug("No free games found in the GOG store.")
         return
