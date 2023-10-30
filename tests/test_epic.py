@@ -32,11 +32,11 @@ game = {
         },
         {
             "type": "OfferImageTall",
-            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",  # noqa: E501
+            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",
         },
         {
             "type": "Thumbnail",
-            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",  # noqa: E501
+            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",
         },
     ],
     "seller": {"id": "o-4x4bpaww55p5g3f6xpyqe2cneqxd5d", "name": "Asmodee"},

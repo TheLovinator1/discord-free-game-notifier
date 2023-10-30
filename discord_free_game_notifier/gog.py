@@ -143,7 +143,7 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
         logger.info(f"\tGame URL: {game_url}")
 
         # Game image
-        image_url_class: Tag | NavigableString | None = child.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003, E501
+        image_url_class: Tag | NavigableString | None = child.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003
         if hasattr(image_url_class, "attrs"):
             images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
             image_url: str = f"{images[0]}"
@@ -201,7 +201,7 @@ def get_free_gog_game() -> DiscordEmbed | None:
         return None
 
     # Game name
-    banner_title: Tag | NavigableString | None = giveaway.find("span", class_="giveaway-banner__title")  # type: ignore  # noqa: PGH003, E501
+    banner_title: Tag | NavigableString | None = giveaway.find("span", class_="giveaway-banner__title")  # type: ignore  # noqa: PGH003
 
     # If no banner title, return an empty list
     if banner_title is None:
@@ -218,7 +218,7 @@ def get_free_gog_game() -> DiscordEmbed | None:
     logger.info(f"\tURL: {game_url}")
 
     # Game image
-    image_url_class: Tag | NavigableString | None = giveaway.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003, E501
+    image_url_class: Tag | NavigableString | None = giveaway.find("source", attrs={"srcset": True})  # type: ignore  # noqa: PGH003
 
     # If no image URL, return an empty list
     if image_url_class is None:
