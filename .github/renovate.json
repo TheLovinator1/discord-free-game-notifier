@@ -8,9 +8,7 @@
   ],
   "assigneesFromCodeOwners": true,
   "automerge": true,
-  "automergeType": "branch",
   "configMigration": true,
-  "configWarningReuseIssue": false,
   "dependencyDashboard": false,
   "osvVulnerabilityAlerts": true,
   "timezone": "Europe/Stockholm"
