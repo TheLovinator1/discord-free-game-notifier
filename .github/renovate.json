@@ -1,33 +1,17 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
-  "packageRules": [
-    {
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest",
-        "lockFileMaintenance"
-      ],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
-    }
+  "labels": [
+    "dependencies"
   ],
+  "assigneesFromCodeOwners": true,
+  "automerge": true,
+  "automergeType": "branch",
+  "configMigration": true,
+  "configWarningReuseIssue": false,
   "dependencyDashboard": false,
-  "enabledManagers": [
-    "dockerfile",
-    "docker-compose",
-    "poetry",
-    "github-actions"
-  ],
-  "lockFileMaintenance": {
-    "enabled": true,
-    "automerge": true,
-    "automergeType": "pr",
-    "platformAutomerge": true
-  },
+  "osvVulnerabilityAlerts": true,
   "timezone": "Europe/Stockholm"
 }
