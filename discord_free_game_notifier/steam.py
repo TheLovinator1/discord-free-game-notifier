@@ -6,14 +6,10 @@ import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from requests.adapters import HTTPAdapter, Retry
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import send_embed_webhook
-
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
-STEAM_URL = "https://store.steampowered.com/search/?maxprice=free&specials=1"
 
 
 def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
@@ -22,31 +18,21 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
     Returns:
         Embed containing the free Steam games.
     """
-    # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
     logger.debug(f"Previous games file: {previous_games}")
 
-    # Create the file if it doesn't exist-
     if not Path.exists(previous_games):
         with Path.open(previous_games, "w", encoding="utf-8") as file:
             file.write("")
 
-    # Use the same session for all requests to Steam.
-    session = requests.Session()
-
-    # Retry the request if it fails.
-    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
-
-    # Use the same session for all requests.
-    session.mount("http://", HTTPAdapter(max_retries=retries))
-
-    # Get the Steam store page.
-    request: requests.Response = session.get(STEAM_URL, headers={"User-Agent": UA}, timeout=30)
-
-    # Convert the HTML to a BeautifulSoup object.
+    request: requests.Response = requests.get(
+        "https://store.steampowered.com/search/?maxprice=free&specials=1",
+        headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",  # noqa: E501
+        },
+        timeout=30,
+    )
     soup = BeautifulSoup(request.text, "html.parser")
-
-    # Get the games.
     games: ResultSet[Any] = soup.find_all("a", class_="search_result_row")
     for game in games:
         embed = DiscordEmbed()
@@ -60,7 +46,6 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
         embed.set_author(name=game_name, url=game_url, icon_url=settings.steam_icon)
         embed.set_image(url=image_url)
 
-        # Save the game title to the previous games file, so we don't post it again.
         with Path.open(previous_games, "a+", encoding="utf-8") as file:
             file.write(f"{game_name}\n")
 
@@ -78,7 +63,9 @@ def get_game_image(game: dict) -> str:
         Image url for the game.
     """
     game_id: str = game["data-ds-appid"]
-    image_url: str = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
+    image_url: (
+        str
+    ) = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
     logger.info(f"\tImage: {image_url}")
     return image_url
 
@@ -113,12 +100,10 @@ def get_game_name(game: dict) -> str:
 
 
 if __name__ == "__main__":
-    # Remember to delete previous games if you are testing
-    # It can be found in %appdata%\TheLovinator\discord_free_game_notifier
     for free_game in get_free_steam_games():
         if free_game:
             response: requests.Response = send_embed_webhook(free_game)
             if not response.ok:
                 logger.error(
-                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}",
+                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}",  # noqa: E501
                 )
