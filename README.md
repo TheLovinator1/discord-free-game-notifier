@@ -10,8 +10,7 @@ Send webhook to Discord when a game goes from paid from free on Steam, Epic or G
 ## Docker
 
 There is a docker-compose.yml file in the root of the repository.
-You need to add your Discord webhook URL to the `WEBHOOK_URL`
-environment variable.
+Please fill in the values in the .env file and run `docker-compose up -d`.
 
 ## Usage (GNU/Linux)
 
@@ -21,11 +20,5 @@ environment variable.
 - Install the dependencies using `poetry install`.
 - Rename .env.example to .env and fill in the values. You can also set the values as environment variables.
 - Start the bot.
-    - `poetry run bot`
+  - `poetry run bot`
 - The bot will now check for free games every 15 minutes and send a message to the webhook.
-
-## Need help?
-
-- Email: [tlovinator@gmail.com](mailto:tlovinator@gmail.com)
-- Discord: TheLovinator#9276
-- Send an issue: [discord-embed/issues](https://github.com/TheLovinator1/discord-free-game-notifier/issues)
