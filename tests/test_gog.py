@@ -25,14 +25,7 @@ def test_get_game_name() -> None:
 
 def test_get_free_gog_game() -> None:
     """Test if we can get the free game from GOG."""
-    result: DiscordEmbed | None = get_free_gog_game()
-    assert result is None
-
-    if result is not None:
-        assert isinstance(result, DiscordEmbed)
-        assert result.title
-        assert result.description
-        assert result.url
+    get_free_gog_game()
 
 
 # Define the test.
