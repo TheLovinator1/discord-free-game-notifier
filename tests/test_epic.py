@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import calendar
 import time
 from pathlib import Path
@@ -16,8 +18,8 @@ game = {
     "id": "9232fdbc352445cc820a54bdc97ed2bb",
     "namespace": "bc079f73f020432fac896d30c8e2c330",
     "description": (
-        "Whether you are drawn to Gloomhaven by the call of adventure or by an avid desire for gold glimmering in the"
-        " dark, your fate will surely be the same. Gloomhaven, the digital adaptation of the acclaimed board game,"
+        "Whether you are drawn to Gloomhaven by the call of adventure or by an avid desire for gold glimmering in the"  # noqa: E501
+        " dark, your fate will surely be the same. Gloomhaven, the digital adaptation of the acclaimed board game,"  # noqa: E501
         " mixes Tactical-RPG and dungeon-crawling."
     ),
     "effectiveDate": "2022-09-22T15:00:00.000Z",
@@ -32,11 +34,11 @@ game = {
         },
         {
             "type": "OfferImageTall",
-            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",  # noqa: E501
+            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",
         },
         {
             "type": "Thumbnail",
-            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",  # noqa: E501
+            "url": "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg",
         },
     ],
     "seller": {"id": "o-4x4bpaww55p5g3f6xpyqe2cneqxd5d", "name": "Asmodee"},
@@ -71,7 +73,9 @@ game = {
         {"id": "9547"},
         {"id": "9549"},
     ],
-    "catalogNs": {"mappings": [{"pageSlug": "gloomhaven-92f741", "pageType": "productHome"}]},
+    "catalogNs": {
+        "mappings": [{"pageSlug": "gloomhaven-92f741", "pageType": "productHome"}],
+    },
     "offerMappings": [{"pageSlug": "gloomhaven-92f741", "pageType": "productHome"}],
     "price": {
         "totalPrice": {
@@ -125,7 +129,9 @@ def test_promotion_start() -> None:
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-                start_date = calendar.timegm(time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))
+                start_date = calendar.timegm(
+                    time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),
+                )
 
     result: int = promotion_start(game)
     assert result == start_date
@@ -136,7 +142,9 @@ def test_promotion_end() -> None:
     end_date: float | None = None
     for promotion in game["promotions"]["promotionalOffers"]:
         for offer in promotion["promotionalOffers"]:
-            end_date = time.mktime(time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))
+            end_date = time.mktime(
+                time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),
+            )
 
     result: int = promotion_end(game)
     assert result == end_date
@@ -158,12 +166,12 @@ def test_game_url() -> None:
 
 
 def test_check_promotion() -> None:
-    """Test that the check_promotion function returns True when a promotion is active."""
+    """Test that the check_promotion function returns True when a game is free."""
     assert check_promotion(game)
 
 
 def test_already_posted() -> None:
-    """Test that the already_posted function returns True when a game is already in the file."""
+    """Test that the function returns True when a game has already been posted."""
     file_path = Path("tests/games.txt")
     result: bool = already_posted(file_path, "Half Life 3")
     assert result

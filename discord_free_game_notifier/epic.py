@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import calendar
-import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -20,13 +19,6 @@ from discord_free_game_notifier.webhook import send_embed_webhook
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-
-logger_format = (
-    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> {extra[game_name]} {message}"
-)
-logger.configure(extra={"game_name": "Unknown game"})  # Default values
-logger.remove()
-logger.add(sys.stderr, format=logger_format)
 
 
 def promotion_start(game: dict) -> int:
@@ -187,14 +179,13 @@ def if_mystery_game(game: dict) -> bool:
     return False
 
 
-def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:
+def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:  # noqa: C901, PLR0912
     """Get the free games from Epic.
 
     Yields:
         Embed: The embed with the free game we will send to Discord.
     """
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
-    logger.info(f"Previous games file: {previous_games}")
     if not Path.exists(previous_games):
         with Path.open(previous_games, "w") as f:
             f.write("")

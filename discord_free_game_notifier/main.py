@@ -1,14 +1,10 @@
-"""Main file for discord_free_game_notifier.
-
-This file contains the main function for discord_free_game_notifier.
-"""
+from __future__ import annotations
 
 import datetime
 from typing import TYPE_CHECKING
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED, JobExecutionEvent
 from apscheduler.schedulers.blocking import BlockingScheduler
-from discord_webhook import DiscordEmbed
 from loguru import logger
 
 from discord_free_game_notifier import settings
@@ -21,6 +17,7 @@ from discord_free_game_notifier.steam import get_free_steam_games
 from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
 if TYPE_CHECKING:
+    from discord_webhook import DiscordEmbed
     from requests import Response
 
 sched = BlockingScheduler()
@@ -50,7 +47,7 @@ def send_games(game: DiscordEmbed | None, game_service: str = "Unknown") -> None
             logger.error(msg)
             send_webhook(msg)
     else:
-        logger.info("No free games found for {}", game_service)
+        logger.bind(game_name=f"{game_service}").info("No free games found")
 
 
 def check_free_games() -> None:
@@ -73,9 +70,11 @@ def check_free_games() -> None:
 def main() -> None:
     """Main function for discord_free_game_notifier.
 
-    This function will check for free games every 30 minutes.
+    This function will check for free games every 15 minutes.
     """
-    logger.info("Starting discord_free_game_notifier, checking for free games every 15 minutes")
+    logger.info(
+        "Starting discord_free_game_notifier, checking for free games every 15 minutes",
+    )
     sched.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 
     logger.info("Adding job to scheduler")
@@ -92,6 +91,8 @@ def main() -> None:
 
 if __name__ == "__main__":
     if settings.webhook_url == settings.default_webhook_url:
-        logger.error("Webhook URL is the default value. Please modify it in the .env file.")
+        logger.error(
+            "Webhook URL is the default value. Please modify it in the .env file.",
+        )
 
     main()

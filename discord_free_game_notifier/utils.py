@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from pathlib import Path
 
-from discord_free_game_notifier import settings
+from loguru import logger
 
 
 def already_posted(previous_games: Path, game_name: str) -> bool:
@@ -16,6 +18,8 @@ def already_posted(previous_games: Path, game_name: str) -> bool:
     if Path.is_file(Path(previous_games)):
         with Path.open(Path(previous_games), "r", encoding="utf-8") as file:
             if game_name in file.read():
-                settings.logger.debug("\tHas already been posted before. Skipping!")
+                logger.bind(game_name=game_name).debug(
+                    "has already been posted before. Skipping!",
+                )
                 return True
     return False

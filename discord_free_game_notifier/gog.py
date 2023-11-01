@@ -96,7 +96,6 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
         Generator[Embed, Any, None]: Embed for the free GOG games.
     """
     previous_games: Path = Path(settings.app_dir) / "gog.txt"
-    logger.debug(f"Previous games file: {previous_games}")
 
     if not Path.exists(previous_games):
         with Path.open(previous_games, "w", encoding="utf-8") as file:
@@ -116,11 +115,11 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
     )
 
     if games is None:
-        logger.debug("No free games found in the GOG store.")
+        logger.bind(game_name="GOG").debug("No free games found")
         return
 
     if not hasattr(games, "children"):
-        logger.debug("No free games found in the GOG store.")
+        logger.bind(game_name="GOG").debug("No free games found")
         return
 
     # Print children
@@ -131,11 +130,11 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
         # Game name
         game_class = child.find("div", {"selenium-id": "productTileGameTitle"})  # type: ignore  # noqa: PGH003
         game_name = game_class["title"]  # type: ignore  # noqa: PGH003
-        logger.info(f"Game name: {game_name}")
+        logger.bind(game_name=game_name).info(f"Game name: {game_name}")
 
         # Game URL
         game_url = child.find("a", {"class": "product-tile--grid"})["href"]  # type: ignore  # noqa: PGH003
-        logger.info(f"\tGame URL: {game_url}")
+        logger.bind(game_name=game_name).info(f"Game URL: {game_url}")
 
         # Game image
         image_url_class: Tag | NavigableString | None = child.find(  # type: ignore  # noqa: PGH003
@@ -145,7 +144,7 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
         if hasattr(image_url_class, "attrs"):
             images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
             image_url: str = f"{images[0]}"
-            logger.info(f"\tImage URL: {image_url}")
+            logger.bind(game_name=game_name).info(f"Image URL: {image_url}")
         else:
             image_url = ""
 
@@ -170,7 +169,6 @@ def get_free_gog_game() -> DiscordEmbed | None:
     """
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "gog.txt"
-    logger.debug(f"Previous games file: {previous_games}")
 
     # Create the file if it doesn't exist
     if not Path.exists(previous_games):
@@ -204,12 +202,12 @@ def get_free_gog_game() -> DiscordEmbed | None:
 
     # Check if the game has already been posted
     game_name: str = get_game_name(banner_title.text)
-    logger.info(f"Game name: {game_name}")
+    logger.bind(game_name=game_name).info(f"Game name: {game_name}")
 
     # Game URL
     ng_href: str = giveaway.attrs["ng-href"]  # type: ignore  # noqa: PGH003
     game_url: str = f"https://www.gog.com{ng_href}"
-    logger.info(f"\tURL: {game_url}")
+    logger.bind(game_name=game_name).info(f"URL: {game_url}")
 
     # Game image
     image_url_class: Tag | NavigableString | None = giveaway.find(
@@ -219,17 +217,20 @@ def get_free_gog_game() -> DiscordEmbed | None:
 
     # If no image URL, return an empty list
     if image_url_class is None:
-        logger.error("No image URL found on GOG for {}", giveaway)
+        logger.bind(game_name=game_name).error(
+            "No image URL found on GOG for {}",
+            giveaway,
+        )
         return None
 
     # Check if image_url_class has attrs
     if not hasattr(image_url_class, "attrs"):
-        logger.error("No attrs found on GOG for {}", giveaway)
+        logger.bind(game_name=game_name).error("No attrs found on GOG for {}", giveaway)
         return None
 
     images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
     image_url = images[0]
-    logger.info(f"\tImage URL: {image_url}")
+    logger.bind(game_name=game_name).info(f"Image URL: {image_url}")
 
     if already_posted(previous_games, game_name):
         return None

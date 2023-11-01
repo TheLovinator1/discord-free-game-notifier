@@ -13,15 +13,21 @@ def send_webhook(message: str, game_service: str = "") -> Response:
         game_service (str): The name of the game service (Steam/GOG/Epic)
     """
     if get_webhook_url(game_service):
-        webhook = DiscordWebhook(url=get_webhook_url(game_service), content=message, rate_limit_retry=True)
+        webhook = DiscordWebhook(
+            url=get_webhook_url(game_service),
+            content=message,
+            rate_limit_retry=True,
+        )
         return webhook.execute()
 
-    if not settings.webhook_url:
-        logger.error("No webhook URL set!")
-        logger.error(message)
-        return Response()
-
-    webhook = DiscordWebhook(url=settings.webhook_url, content=message, rate_limit_retry=True)
+    webhook = DiscordWebhook(
+        url=settings.webhook_url,
+        content=message,
+        rate_limit_retry=True,
+    )
+    logger.debug(
+        f"Sending webhook: {message} to {settings.webhook_url}\n Message: {message}\n Game service: {game_service}",  # noqa: E501
+    )
 
     return webhook.execute()
 
@@ -36,10 +42,13 @@ def get_webhook_url(game_service: str) -> str:
         str: The webhook URL for the game service.
     """
     if game_service == "Epic" and settings.epic_webhook:
+        logger.info("Using Epic webhook")
         return settings.epic_webhook
     if game_service == "GOG" and settings.gog_webhook:
+        logger.info("Using GOG webhook")
         return settings.gog_webhook
     if game_service == "Steam" and settings.steam_webhook:
+        logger.info("Using Steam webhook")
         return settings.steam_webhook
 
     return ""
@@ -53,17 +62,15 @@ def send_embed_webhook(embed: DiscordEmbed, game_service: str = "") -> Response:
         game_service (str): The name of the game service (Steam/GOG/Epic)
     """
     if get_webhook_url(game_service):
-        webhook = DiscordWebhook(url=get_webhook_url(game_service), rate_limit_retry=True)
+        webhook = DiscordWebhook(
+            url=get_webhook_url(game_service),
+            rate_limit_retry=True,
+        )
         webhook.add_embed(embed)
         return webhook.execute()
 
-    if not settings.webhook_url:
-        logger.error("No webhook URL found")
-        return Response()
-
     webhook = DiscordWebhook(url=settings.webhook_url, rate_limit_retry=True)
 
-    # Add embed object to webhook
     webhook.add_embed(embed)
 
     return webhook.execute()

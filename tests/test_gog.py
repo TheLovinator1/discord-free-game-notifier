@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Generator
 from typing import Any
 
@@ -13,7 +15,7 @@ from discord_free_game_notifier.gog import (
 def test_get_game_name() -> None:
     """Test if we can get the game name from the banner title."""
     game_name: str = get_game_name(
-        banner_title_text="Thanks for being with us! Claim Left 4 Dead 3 as a token of our gratitude!",
+        banner_title_text="Thanks for being with us! Claim Left 4 Dead 3 as a token of our gratitude!",  # noqa: E501
     )
     assert game_name == "Left 4 Dead 3"
 

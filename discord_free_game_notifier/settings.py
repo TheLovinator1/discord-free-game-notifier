@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import configparser
 import os
 import sys
@@ -9,8 +11,19 @@ from platformdirs import user_data_dir
 
 load_dotenv(dotenv_path=find_dotenv(), verbose=True)
 
-app_dir: str = user_data_dir("discord_free_game_notifier", "TheLovinator", roaming=True)
-Path.mkdir(Path(app_dir), exist_ok=True)
+logger_format = (
+    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> {extra[game_name]} - {message}"
+)
+logger.configure(extra={"game_name": ""})  # Default value
+logger.remove()
+logger.add(sys.stderr, format=logger_format)
+
+app_dir: str = user_data_dir(
+    "discord_free_game_notifier",
+    "TheLovinator",
+    roaming=True,
+    ensure_exists=True,
+)
 
 config_location: Path = Path(app_dir) / "config.conf"
 default_webhook_url: str = "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"

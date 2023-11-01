@@ -1,6 +1,7 @@
-from collections.abc import Generator
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
@@ -11,6 +12,9 @@ from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import send_embed_webhook
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
 
 def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
     """Go to the Steam store and check for free games and return them.
@@ -19,8 +23,6 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
         Embed containing the free Steam games.
     """
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
-    logger.debug(f"Previous games file: {previous_games}")
-
     if not Path.exists(previous_games):
         with Path.open(previous_games, "w", encoding="utf-8") as file:
             file.write("")
@@ -66,7 +68,7 @@ def get_game_image(game: dict) -> str:
     image_url: (
         str
     ) = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
-    logger.info(f"\tImage: {image_url}")
+    logger.bind(game_name=get_game_name(game=game)).info(f"Image: {image_url}")
     return image_url
 
 
@@ -80,7 +82,7 @@ def get_game_url(game: dict) -> str:
         Game URL.
     """
     game_url: str = game["href"]
-    logger.info(f"\tURL: {game_url}")
+    logger.bind(game_id=get_game_name(game=game)).info(f"URL: {game_url}")
     return game_url
 
 
@@ -95,7 +97,7 @@ def get_game_name(game: dict) -> str:
     """
     game_name_class: Tag = game.find("span", class_="title")  # type: ignore  # noqa: PGH003
     game_name: str = game_name_class.text
-    logger.info(f"Game: {game_name}")
+    logger.bind(game_name=get_game_name(game=game)).info(f"Game: {game_name}")
     return game_name
 
 
