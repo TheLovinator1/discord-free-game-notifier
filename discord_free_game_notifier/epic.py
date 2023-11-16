@@ -167,6 +167,7 @@ def get_response() -> requests.Response:
         "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions",
         timeout=10,
     )
+    logger.debug(f"Response: {response.status_code} - {response.reason}")
     return response
 
 
@@ -195,6 +196,7 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:  # noqa:
     """
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
     if not Path.exists(previous_games):
+        logger.bind(game_name="Epic").info("Creating file for previous games")
         with Path.open(previous_games, "w") as f:
             f.write("")
 
@@ -236,6 +238,7 @@ def get_free_epic_games() -> Generator[DiscordEmbed | None, Any, None]:  # noqa:
                     yield create_embed(previous_games, game)
 
         if final_price == 0 and (original_price != 0 and discount != 0):
+            logger.bind(game_name=game["title"]).info("Game is free")
             if check_promotion is False:
                 continue
 
@@ -255,7 +258,9 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
     Returns:
         Embed: The embed with the free game we will send to Discord.
     """
-    embed = DiscordEmbed(description=game["description"])
+    description: str = game["description"] or "No description found"
+    logger.bind(game_name=game["title"]).info(f"Description: {description}")
+    embed = DiscordEmbed(description=description)
     url = game_url(game)
     game_name: str = game["title"]
 
@@ -271,10 +276,13 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
     curr_dt: datetime = datetime.now(tz=pytz.UTC)
     current_time = int(round(curr_dt.timestamp()))
     end_time: int = promotion_end(game)
+    start_time: int = promotion_start(game)
 
-    if end_time > current_time:
-        embed.add_embed_field(name="Start", value=f"<t:{promotion_start(game)}:R>")
-        embed.add_embed_field(name="End", value=f"<t:{end_time}:R>")
+    if end_time > current_time or (end_time == 0 and start_time != 0):
+        if start_time != 0:
+            embed.add_embed_field(name="Start", value=f"<t:{start_time}:R>")
+        if end_time != 0:
+            embed.add_embed_field(name="End", value=f"<t:{end_time}:R>")
 
         seller: str = game["seller"]["name"] if game["seller"] else "Unknown"
 
@@ -291,6 +299,10 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
             file.write(f"{game_name}\n")
 
         return embed
+
+    logger.bind(game_name=game["title"]).info(
+        f"Game has ended, skipping. End time: {end_time}. Current time: {current_time}",
+    )
     return None
 
 
