@@ -36,6 +36,10 @@ def promotion_start(game: dict) -> int:
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
+                if not offer["startDate"] or offer["startDate"] == "":
+                    logger.bind(game_name=game["title"]).error("Start date is empty")
+                    return 0
+
                 start_date: int = calendar.timegm(
                     time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),
                 )
@@ -58,6 +62,10 @@ def promotion_end(game: dict) -> int:
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
+                if not offer["endDate"] or offer["endDate"] == "":
+                    logger.bind(game_name=game["title"]).error("End date is empty")
+                    return 0
+
                 end_date: float = time.mktime(
                     time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),
                 )
