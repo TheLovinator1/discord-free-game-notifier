@@ -97,7 +97,7 @@ def get_game_name(game: dict) -> str:
     """
     game_name_class: Tag = game.find("span", class_="title")  # type: ignore  # noqa: PGH003
     game_name: str = game_name_class.text
-    logger.bind(game_name=get_game_name(game=game)).info(f"Game: {game_name}")
+    logger.bind(game_name=game_name).info(f"Game: {game_name}")
     return game_name
 
 
