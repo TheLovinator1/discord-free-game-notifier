@@ -5,7 +5,7 @@
 </p>
 <p align="center"><sup>Theme is https://github.com/KillYoy/DiscordNight<sup></p>
 
-Send webhook to Discord when a game goes from paid from free on Steam, Epic or GOG.
+Send webhook to Discord when a game goes from paid from free on Steam, Epic, GOG and Ubisoft.
 
 ## Docker
 

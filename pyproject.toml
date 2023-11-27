@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "discord-free-game-notifier"
-version = "1.0.0"
-description = "Send webhook to Discord when a new game releases on Epic, Steam or GOG."
+version = "1.1.0"
+description = "Send webhook to Discord when a new game releases on Epic, Steam, GOG and Ubisoft."
 authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
 license = "GPL-3.0-or-later"
 
@@ -29,16 +29,22 @@ requires = [
 ]
 
 [tool.ruff]
+fix = true
+unsafe-fixes = true
+preview = true
+line-length = 120
 select = ["ALL"]
 ignore = [
-    "D100", # pydocstyle - missing docstring in public module
-    "D101", # pydocstyle - missing docstring in public class
-    "D102", # pydocstyle - missing docstring in public method
-    "D103", # pydocstyle - missing docstring in public function
-    "D104", # pydocstyle - missing docstring in public package
-    "D105", # pydocstyle - missing docstring in magic method
-    "D106", # pydocstyle - missing docstring in public nested class
-    "D107", # pydocstyle - missing docstring in __init__
+  "D100",
+  "D104",
+  "CPY001",
+  "ERA001",
+  "TD002",
+  "TD003",
+  "FIX002",
+  "COM812",
+  "ISC001",
+  "DJ001",
 ]
 
 [tool.ruff.pydocstyle]
