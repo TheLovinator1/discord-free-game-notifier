@@ -36,7 +36,7 @@ def promotion_start(game: dict) -> int:
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-                if not offer["startDate"] or offer["startDate"] == "":
+                if not offer["startDate"]:
                     logger.bind(game_name=game["title"]).error("Start date is empty")
                     return 0
 
@@ -62,7 +62,7 @@ def promotion_end(game: dict) -> int:
     if game["promotions"]:
         for promotion in game["promotions"]["promotionalOffers"]:
             for offer in promotion["promotionalOffers"]:
-                if not offer["endDate"] or offer["endDate"] == "":
+                if not offer["endDate"]:
                     logger.bind(game_name=game["title"]).error("End date is empty")
                     return 0
 
@@ -85,7 +85,7 @@ def game_image(game: dict) -> str:
     """
     image_url: str = ""
     for image in game["keyImages"]:
-        if image["type"] in ["DieselStoreFrontWide", "Thumbnail"]:
+        if image["type"] in {"DieselStoreFrontWide", "Thumbnail"}:
             image_url = image["url"]
             logger.bind(game_name=game["title"]).debug(
                 f"Found image URL: {image_url} (type: {image['type']})",
@@ -286,7 +286,7 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
 
         seller: str = game["seller"]["name"] if game["seller"] else "Unknown"
 
-        if seller not in ["Epic Dev Test Account", "Unknown"]:
+        if seller not in {"Epic Dev Test Account", "Unknown"}:
             logger.bind(game_name=game["title"]).info(f"Seller: {seller}")
             embed.set_footer(text=f"{seller}")
 
@@ -313,6 +313,6 @@ if __name__ == "__main__":
             if not webhook_response.ok:
                 msg: str = (
                     "Error when checking game for Epic:\n"
-                    f"{webhook_response.status_code} - {webhook_response.reason}: {webhook_response.text}"  # noqa: E501
+                    f"{webhook_response.status_code} - {webhook_response.reason}: {webhook_response.text}"
                 )
                 logger.error(msg)

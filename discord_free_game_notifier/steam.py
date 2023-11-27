@@ -30,7 +30,7 @@ def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
     request: requests.Response = requests.get(
         "https://store.steampowered.com/search/?maxprice=free&specials=1",
         headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",  # noqa: E501
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
         },
         timeout=30,
     )
@@ -65,9 +65,7 @@ def get_game_image(game: dict) -> str:
         Image url for the game.
     """
     game_id: str = game["data-ds-appid"]
-    image_url: (
-        str
-    ) = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
+    image_url: (str) = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
     logger.bind(game_name=get_game_name(game=game)).info(f"Image: {image_url}")
     return image_url
 
@@ -107,5 +105,5 @@ if __name__ == "__main__":
             response: requests.Response = send_embed_webhook(free_game)
             if not response.ok:
                 logger.error(
-                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}",  # noqa: E501
+                    f"Error when checking game for Steam:\n{response.status_code} - {response.reason}: {response.text}",
                 )
