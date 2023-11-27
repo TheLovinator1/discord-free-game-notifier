@@ -3,10 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "labels": [
-    "dependencies"
-  ],
-  "assigneesFromCodeOwners": true,
   "automerge": true,
   "configMigration": true,
   "dependencyDashboard": false,
