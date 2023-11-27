@@ -26,7 +26,7 @@ def send_webhook(message: str, game_service: str = "") -> Response:
         rate_limit_retry=True,
     )
     logger.debug(
-        f"Sending webhook: {message} to {settings.webhook_url}\n Message: {message}\n Game service: {game_service}",  # noqa: E501
+        f"Sending webhook: {message} to {settings.webhook_url}\n Message: {message}\n Game service: {game_service}",
     )
 
     return webhook.execute()

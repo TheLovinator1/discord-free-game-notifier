@@ -103,7 +103,7 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
     request: requests.Response = requests.get(
         "https://www.gog.com/en/games?priceRange=0,0&discounted=true",
         headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",  # noqa: E501
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
         },
         timeout=30,
     )
@@ -178,7 +178,7 @@ def get_free_gog_game() -> DiscordEmbed | None:
     request: requests.Response = requests.get(
         "https://www.gog.com/",
         headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",  # noqa: E501
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
         },
         timeout=30,
     )

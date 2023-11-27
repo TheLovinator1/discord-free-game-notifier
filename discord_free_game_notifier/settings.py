@@ -11,9 +11,7 @@ from platformdirs import user_data_dir
 
 load_dotenv(dotenv_path=find_dotenv(), verbose=True)
 
-logger_format = (
-    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> {extra[game_name]} - {message}"
-)
+logger_format = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> {extra[game_name]} - {message}"
 logger.configure(extra={"game_name": ""})  # Default value
 logger.remove()
 logger.add(sys.stderr, format=logger_format)
@@ -26,7 +24,9 @@ app_dir: str = user_data_dir(
 )
 
 config_location: Path = Path(app_dir) / "config.conf"
-default_webhook_url: str = "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+default_webhook_url: str = (
+    "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+)
 
 config_webhook_url = ""
 config_log_level = "INFO"
@@ -39,9 +39,22 @@ if config_location.exists():
 
 webhook_url: str = os.getenv("WEBHOOK_URL", config_webhook_url)
 log_level: str = os.getenv("LOG_LEVEL", config_log_level)
-steam_icon: str = os.getenv("STEAM_ICON", "https://lovinator.space/Steam_logo.png")
-gog_icon: str = os.getenv("GOG_ICON", "https://lovinator.space/gog_logo.png")
-epic_icon: str = os.getenv("EPIC_ICON", "https://lovinator.space/Epic_Games_logo.png")
+steam_icon: str = os.getenv(
+    "STEAM_ICON",
+    "https://thelovinator1.github.io/discord-free-game-notifier/images/Steam.png",
+)
+gog_icon: str = os.getenv(
+    "GOG_ICON",
+    "https://thelovinator1.github.io/discord-free-game-notifier/images/GOG.png",
+)
+epic_icon: str = os.getenv(
+    "EPIC_ICON",
+    "https://thelovinator1.github.io/discord-free-game-notifier/images/Epic.png",
+)
+ubisoft_icon: str = os.getenv(
+    "UBISOFT_ICON",
+    "https://thelovinator1.github.io/discord-free-game-notifier/images/Ubisoft.png?1",
+)
 
 gog_webhook: str = os.getenv("GOG_WEBHOOK", "")
 steam_webhook: str = os.getenv("STEAM_WEBHOOK", "")

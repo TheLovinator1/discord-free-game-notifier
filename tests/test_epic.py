@@ -18,8 +18,8 @@ game = {
     "id": "9232fdbc352445cc820a54bdc97ed2bb",
     "namespace": "bc079f73f020432fac896d30c8e2c330",
     "description": (
-        "Whether you are drawn to Gloomhaven by the call of adventure or by an avid desire for gold glimmering in the"  # noqa: E501
-        " dark, your fate will surely be the same. Gloomhaven, the digital adaptation of the acclaimed board game,"  # noqa: E501
+        "Whether you are drawn to Gloomhaven by the call of adventure or by an avid desire for gold glimmering in the"
+        " dark, your fate will surely be the same. Gloomhaven, the digital adaptation of the acclaimed board game,"
         " mixes Tactical-RPG and dungeon-crawling."
     ),
     "effectiveDate": "2022-09-22T15:00:00.000Z",
