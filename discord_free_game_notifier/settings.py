@@ -59,6 +59,7 @@ ubisoft_icon: str = os.getenv(
 gog_webhook: str = os.getenv("GOG_WEBHOOK", "")
 steam_webhook: str = os.getenv("STEAM_WEBHOOK", "")
 epic_webhook: str = os.getenv("EPIC_WEBHOOK", "")
+ubisoft_webhook: str = os.getenv("UBISOFT_WEBHOOK", "")
 
 if not webhook_url:
     if gog_webhook:
@@ -67,6 +68,8 @@ if not webhook_url:
         logger.info("Will be sending Steam games to Discord.")
     if epic_webhook:
         logger.info("Will be sending Epic Games to Discord.")
+    if ubisoft_webhook:
+        logger.info("Will be sending Ubisoft games to Discord.")
     if not gog_webhook and not steam_webhook and not epic_webhook:
         msg: str = "Please set the WEBHOOK_URL environment variable."
         logger.critical(msg)

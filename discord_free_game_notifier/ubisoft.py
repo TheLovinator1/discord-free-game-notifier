@@ -38,7 +38,7 @@ def create_json_file() -> None:
 
     with Path.open(Path("pages/ubisoft.json"), "w", encoding="utf-8") as file:
         json.dump(free_games, file, indent=4)
-        logger.info("Created/updated ubisoft.json")
+        logger.bind(game_name="Ubisoft").info("Created/updated ubisoft.json")
 
 
 def get_json() -> dict:
@@ -53,12 +53,13 @@ def get_json() -> dict:
     try:
         json_file = requests.get(json_location, timeout=30).json()
     except requests.exceptions.ConnectionError:
-        logger.error("Unable to connect to github.com")
+        logger.bind(game_name="Ubisoft").error("Unable to connect to github.com")
 
+    logger.bind(game_name="Ubisoft").debug("Got ubisoft.json\n{}", json_file)
     return json_file
 
 
-def get_games() -> Generator[DiscordEmbed, Any, list[Any] | None]:
+def get_ubisoft_free_games() -> Generator[DiscordEmbed, Any, list[Any] | None]:
     """Get the free games from ubisoft.json.
 
     Yields:
@@ -114,7 +115,7 @@ def get_games() -> Generator[DiscordEmbed, Any, list[Any] | None]:
 
 if __name__ == "__main__":
     create_json_file()
-    for game in get_games():
+    for game in get_ubisoft_free_games():
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(

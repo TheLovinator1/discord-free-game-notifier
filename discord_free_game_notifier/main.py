@@ -14,6 +14,7 @@ from discord_free_game_notifier.gog import (
     get_free_gog_game_from_store,
 )
 from discord_free_game_notifier.steam import get_free_steam_games
+from discord_free_game_notifier.ubisoft import get_ubisoft_free_games
 from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
 if TYPE_CHECKING:
@@ -50,21 +51,44 @@ def send_games(game: DiscordEmbed | None, game_service: str = "Unknown") -> None
         logger.bind(game_name=f"{game_service}").info("No free games found")
 
 
-def check_free_games() -> None:
-    """Check for free games on Epic, Steam and GOG and send them to Discord."""
+def check_free_games() -> None:  # noqa: C901, PLR0912
+    """Check for free games on Epic, Steam, GOG and Ubisoft and send them to Discord."""
     logger.info("Checking for free games")
 
-    for game in get_free_epic_games():
-        send_games(game, "Epic")
+    try:
+        for game in get_free_epic_games():
+            send_games(game, "Epic")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking Epic for free games: {e}"
+        logger.error(msg)
 
-    for game in get_free_steam_games():
-        send_games(game, "Steam")
+    try:
+        for game in get_free_steam_games():
+            send_games(game, "Steam")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking Steam for free games: {e}"
+        logger.error(msg)
 
-    for game in get_free_gog_game_from_store():
-        send_games(game, "GOG")
+    try:
+        for game in get_free_gog_game_from_store():
+            send_games(game, "GOG")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking GOG (search page) for free games: {e}"
+        logger.error(msg)
 
-    if gog_embed := get_free_gog_game():
-        send_games(gog_embed, "GOG")
+    try:
+        if gog_embed := get_free_gog_game():
+            send_games(gog_embed, "GOG")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking GOG (front page) free games: {e}"
+        logger.error(msg)
+
+    try:
+        for game in get_ubisoft_free_games():
+            send_games(game, "Ubisoft")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking Ubisoft for free games: {e}"
+        logger.error(msg)
 
 
 def main() -> None:
