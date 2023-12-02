@@ -9,11 +9,13 @@ from loguru import logger
 
 from discord_free_game_notifier import settings
 from discord_free_game_notifier.epic import get_free_epic_games
+from discord_free_game_notifier.epic_json import scrape_epic_json
 from discord_free_game_notifier.gog import (
     get_free_gog_game,
     get_free_gog_game_from_store,
 )
 from discord_free_game_notifier.steam import get_free_steam_games
+from discord_free_game_notifier.steam_json import scrape_steam_json
 from discord_free_game_notifier.ubisoft import get_ubisoft_free_games
 from discord_free_game_notifier.webhook import send_embed_webhook, send_webhook
 
@@ -88,6 +90,20 @@ def check_free_games() -> None:  # noqa: C901, PLR0912
             send_games(game, "Ubisoft")
     except Exception as e:  # noqa: BLE001
         msg: str = f"Error when checking Ubisoft for free games: {e}"
+        logger.error(msg)
+
+    try:
+        for game in scrape_epic_json():
+            send_games(game, "Epic")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking Epic (JSON) for free games: {e}"
+        logger.error(msg)
+
+    try:
+        for game in scrape_steam_json():
+            send_games(game, "Steam")
+    except Exception as e:  # noqa: BLE001
+        msg: str = f"Error when checking Steam (JSON) for free games: {e}"
         logger.error(msg)
 
 
