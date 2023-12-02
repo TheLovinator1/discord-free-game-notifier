@@ -34,10 +34,22 @@ def create_json_file() -> None:
                 "game_name": "World of Tanks — A Present From Vinnie Pack",
                 "game_url": "https://store.steampowered.com/app/2651870/World_of_Tanks__A_Present_From_Vinnie_Pack/",
                 "start_date": datetime.datetime(
-                    2023, 12, 1, 11, 0, 0, tzinfo=datetime.UTC
+                    2023,
+                    12,
+                    1,
+                    11,
+                    0,
+                    0,
+                    tzinfo=datetime.UTC,
                 ).isoformat(),
                 "end_date": datetime.datetime(
-                    2024, 1, 8, 6, 0, 0, tzinfo=datetime.UTC
+                    2024,
+                    1,
+                    8,
+                    6,
+                    0,
+                    0,
+                    tzinfo=datetime.UTC,
                 ).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_a_present_from_vinnie_pack.jpg",
                 "description": 'Winter fun has arrived in World of Tanks! Grab Holiday Ops resources to upgrade your Festive Village and an eye-catching decal with this exclusive, time-limited Holiday Ops Gift Pack DLC! Add the bundle to your account for free to get 50 of each Holiday Ops resource (Meteoric Iron, Pure Emerald, Rock Crystal, and Warm Amber) and 3 "Present from Vinnie" decals.',  # noqa: E501
@@ -57,9 +69,7 @@ def get_json() -> dict:
     Returns:
         dict: The json file as a dict.
     """
-    json_location: str = (
-        "https://thelovinator1.github.io/discord-free-game-notifier/steam.json"
-    )
+    json_location: str = "https://thelovinator1.github.io/discord-free-game-notifier/steam.json"
     json_file: dict = {}
 
     try:
@@ -104,7 +114,7 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         start_date: str = _game["start_date"]
         developer: str = _game["developer"]
         unix_start_date: int = int(
-            datetime.datetime.fromisoformat(start_date).timestamp()
+            datetime.datetime.fromisoformat(start_date).timestamp(),
         )
         end_date: str = _game["end_date"]
         unix_end_date: int = int(datetime.datetime.fromisoformat(end_date).timestamp())
@@ -116,7 +126,9 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         # Create the embed and add it to the list of free games.
         embed = DiscordEmbed(description=description)
         embed.set_author(
-            name=f"Free game: {game_name}", url=game_url, icon_url=settings.steam_icon
+            name=f"Free game: {game_name}",
+            url=game_url,
+            icon_url=settings.steam_icon,
         )
         embed.set_image(url=image_url)
         embed.set_timestamp()

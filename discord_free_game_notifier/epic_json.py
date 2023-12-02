@@ -34,10 +34,22 @@ def create_json_file() -> None:
                 "game_name": "The Sims™ 4 My First Pet Stuff",
                 "game_url": "https://store.epicgames.com/en-US/p/the-sims-4--my-first-pet-stuff",
                 "start_date": datetime.datetime(
-                    2023, 12, 1, 11, 0, 0, tzinfo=datetime.UTC
+                    2023,
+                    12,
+                    1,
+                    11,
+                    0,
+                    0,
+                    tzinfo=datetime.UTC,
                 ).isoformat(),
                 "end_date": datetime.datetime(
-                    2024, 1, 9, 18, 0, 0, tzinfo=datetime.UTC
+                    2024,
+                    1,
+                    9,
+                    18,
+                    0,
+                    0,
+                    tzinfo=datetime.UTC,
                 ).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/the_sims_4_my_first_pet_stuff.jpg",
                 "description": "Welcome home a new small animal and show love for Cats and Dogs with The Sims™ 4 My First Pet Stuff.\n\n[Instant Checkout](https://store.epicgames.com/purchase?offers=1-2a14cf8a83b149919a2399504e5686a6-7002cdb1eb2543da85ac8a3c4c6d71d5#/)",  # noqa: E501
@@ -57,9 +69,7 @@ def get_json() -> dict:
     Returns:
         dict: The json file as a dict.
     """
-    json_location: str = (
-        "https://thelovinator1.github.io/discord-free-game-notifier/epic.json"
-    )
+    json_location: str = "https://thelovinator1.github.io/discord-free-game-notifier/epic.json"
     json_file: dict = {}
 
     try:
@@ -104,7 +114,7 @@ def scrape_epic_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         start_date: str = _game["start_date"]
         developer: str = _game["developer"]
         unix_start_date: int = int(
-            datetime.datetime.fromisoformat(start_date).timestamp()
+            datetime.datetime.fromisoformat(start_date).timestamp(),
         )
         end_date: str = _game["end_date"]
         unix_end_date: int = int(datetime.datetime.fromisoformat(end_date).timestamp())
@@ -116,7 +126,9 @@ def scrape_epic_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         # Create the embed and add it to the list of free games.
         embed = DiscordEmbed(description=description)
         embed.set_author(
-            name=f"Free game: {game_name}", url=game_url, icon_url=settings.epic_icon
+            name=f"Free game: {game_name}",
+            url=game_url,
+            icon_url=settings.epic_icon,
         )
         embed.set_image(url=image_url)
         embed.set_timestamp()
