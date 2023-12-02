@@ -67,7 +67,7 @@ def get_json() -> dict:
     except requests.exceptions.ConnectionError:
         logger.bind(game_name="Epic").error("Unable to connect to github.com")
 
-    logger.bind(game_name="Epic").debug("Got Epic.json\n{}", json_file)
+    logger.bind(game_name="Epic").debug("Got epic.json\n{}", json_file)
     return json_file
 
 

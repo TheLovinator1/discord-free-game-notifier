@@ -78,7 +78,7 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         Generator[DiscordEmbed, Any, list[Any] | None]: A list of embeds containing the free games.
     """
     # Save previous free games to a file, so we don't post the same games again.
-    previous_games: Path = Path(settings.app_dir) / "Steam.txt"
+    previous_games: Path = Path(settings.app_dir) / "steam.txt"
 
     # Create the file if it doesn't exist
     if not Path.exists(previous_games):
