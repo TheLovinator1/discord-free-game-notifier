@@ -1,0 +1,14 @@
+{
+    "free_games": [
+        {
+            "id": "world_of_tanks_a_present_from_vinnie_pack",
+            "game_name": "World of Tanks \u2014 A Present From Vinnie Pack",
+            "game_url": "https://store.steampowered.com/app/2651870/World_of_Tanks__A_Present_From_Vinnie_Pack/",
+            "start_date": "2023-12-01T11:00:00+00:00",
+            "end_date": "2024-01-08T06:00:00+00:00",
+            "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_a_present_from_vinnie_pack.jpg",
+            "description": "Winter fun has arrived in World of Tanks! Grab Holiday Ops resources to upgrade your Festive Village and an eye-catching decal with this exclusive, time-limited Holiday Ops Gift Pack DLC! Add the bundle to your account for free to get 50 of each Holiday Ops resource (Meteoric Iron, Pure Emerald, Rock Crystal, and Warm Amber) and 3 \"Present from Vinnie\" decals.",
+            "developer": "Wargaming Group Limited"
+        }
+    ]
+}
