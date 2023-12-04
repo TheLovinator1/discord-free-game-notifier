@@ -123,10 +123,16 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         if already_posted(previous_games, game_id):
             continue
 
+        # Check if the game is still free
+        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        if unix_end_date < current_time:
+            logger.info(f"{game_name} is no longer free")
+            continue
+
         # Create the embed and add it to the list of free games.
         embed = DiscordEmbed(description=description)
         embed.set_author(
-            name=f"Free game: {game_name}",
+            name=f"{game_name}",
             url=game_url,
             icon_url=settings.steam_icon,
         )
