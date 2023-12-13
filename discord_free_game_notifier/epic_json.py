@@ -62,7 +62,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -88,7 +88,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -114,7 +114,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -140,7 +140,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -166,7 +166,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -192,7 +192,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -218,7 +218,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
@@ -244,7 +244,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(
                     year=2023,
                     month=12,
-                    day=23,
+                    day=13,
                     hour=16,
                     minute=0,
                     second=0,
