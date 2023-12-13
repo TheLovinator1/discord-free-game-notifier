@@ -34,26 +34,126 @@ def create_json_file() -> None:
                 "game_name": "The Sims™ 4 My First Pet Stuff",
                 "game_url": "https://store.epicgames.com/en-US/p/the-sims-4--my-first-pet-stuff",
                 "start_date": datetime.datetime(
-                    2023,
-                    12,
-                    1,
-                    11,
-                    0,
-                    0,
-                    tzinfo=datetime.UTC,
+                    year=2023, month=12, day=1, hour=11, minute=0, second=0, tzinfo=datetime.UTC
                 ).isoformat(),
                 "end_date": datetime.datetime(
-                    2024,
-                    1,
-                    9,
-                    18,
-                    0,
-                    0,
-                    tzinfo=datetime.UTC,
+                    year=2024, month=1, day=9, hour=18, minute=0, second=0, tzinfo=datetime.UTC
                 ).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/the_sims_4_my_first_pet_stuff.jpg",
                 "description": "Welcome home a new small animal and show love for Cats and Dogs with The Sims™ 4 My First Pet Stuff.\n\n[Instant Checkout](https://store.epicgames.com/purchase?offers=1-2a14cf8a83b149919a2399504e5686a6-7002cdb1eb2543da85ac8a3c4c6d71d5#/)",  # noqa: E501
                 "developer": "Maxis",
+            },
+            {
+                "id": "fall_guys_giddy_gift",
+                "game_name": "Fall Guys - Giddy Gift",
+                "game_url": "https://store.epicgames.com/en-US/p/fall-guys--giddy-gift",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/fall_guys_giddy_gift.jpg",
+                "description": "May we 'present' the free Giddy Gift costume! Wrap up this Winter & earn a crown or two in Fall Guys\n\nIncludes: Giddy Gift (Whole Costume)",  # noqa: E501
+                "developer": "Mediatonic",
+            },
+            {
+                "id": "disney_speedstorm_monochromatic_pack",
+                "game_name": "Disney Speedstorm - Monochromatic Pack",
+                "game_url": "https://store.epicgames.com/en-US/p/disney-speedstorm--monochromatic-pack",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/disney_speedstorm_monochromatic_pack.jpg",
+                "description": "This pack includes:\n• Racing Suit for Goofy: Monochromatic Classic\n• Kart livery for Goofy: Monochromatic Classic\n• Chip n' Dale Rare Crew Shards\n• 5 Universal Box Credits",  # noqa: E501
+                "developer": "Gameloft",
+            },
+            {
+                "id": "dark_justiciar_shadowheart_party_pack",
+                "game_name": "Dark Justiciar Shadowheart Party Pack",
+                "game_url": "https://store.epicgames.com/en-US/p/idle-champions-of-the-forgotten-realms--dark-justiciar-shadow-heart-party-pack",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/dark_justiciar_shadowheart_party_pack.jpg",
+                "description": "This pack unlocks the first 3 Baldur's Gate 3 Champions: Lae'zel, Shadowheart, and Astarion. Also included are 7 Gold Champion Chests for each and an exclusive Skin & Feat Shadowheart!",  # noqa: E501
+                "developer": "Codename Entertainment",
+            },
+            {
+                "id": "warframe_holiday_sale_2023",
+                "game_name": "Warframe - Holiday Sale 2023",
+                "game_url": "https://store.epicgames.com/en-US/p/warframe",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/warframe_holiday_sale_2023.jpg",
+                "description": "Come celebrate the Epic Games Holiday Sale with us and claim the Atterax Weapon, a 7-Day Credit Booster and 7-Day Affinity Booster for free!\nPlayers who launch and log in to WARFRAME on Epic Games Store during the promotional period will receive an inbox message with free content upon login into the game. ",  # noqa: E501
+                "developer": "Digital Extremes",
+            },
+            {
+                "id": "honkai_impact_holiday_sale_2023",
+                "game_name": "Honkai Impact - Holiday Sale 2023",
+                "game_url": "https://store.epicgames.com/en-US/p/honkai-impact-3rd",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/honkai_impact_holiday_sale_2023.jpg",
+                "description": "Celebrate the Epic Games Holiday Sale and get 500 Asterites and 100,000 Coins for free!\nPlayers who log in to Honkai Impact 3rd on Epic Games Store during the event period will receive the bundle via an in-game mail within one week.",  # noqa: E501
+                "developer": "miHoYo Limited",
+            },
+            {
+                "id": "synced_holiday_sale_2023",
+                "game_name": "SYNCED: Winterfest Bundle",
+                "game_url": "https://store.epicgames.com/en-US/p/synced--winterfest-bundle",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/synced_holiday_sale_2023.jpg",
+                "description": "Unlock this Bundle of SYNCED to obtain new Runner and weapon skins, and embrace fresh challenges in the new season - Lambent Dawn.",  # noqa: E501
+                "developer": "NExT Studios",
+            },
+            {
+                "id": "world_of_warships_holiday_sale_2023",
+                "game_name": "World of Warships — Frosty Celebration Pack",
+                "game_url": "https://store.epicgames.com/en-US/p/world-of-warships--frosty-celebration-pack",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_holiday_sale_2023.jpg",
+                "description": "Embrace the magic of the winter holidays with this free DLC featuring cruiser Ning Hai and the enchanting allure of even more Premium ships that could drop from five festive Santa's Gift containers.",  # noqa: E501
+                "developer": "Wargaming",
+            },
+            {
+                "id": "eve_online_superluminal_pack",
+                "game_name": "EVE Online - Superluminal Pack",
+                "game_url": "https://store.epicgames.com/en-US/p/eve-online--superluminal-pack",
+                "start_date": datetime.datetime(
+                    year=2023, month=12, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "end_date": datetime.datetime(
+                    year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC
+                ).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/eve_online_superluminal_pack.jpg",
+                "description": "The Superluminal Pack is a limited-time-only FREE giveaway exclusive to Epic! It contains Semiotique Superluminal SKINs for the Heron, Magnate, Imicus, and Probe as well as unique Superluminal clothing!",  # noqa: E501
+                "developer": "CCP Games",
             },
         ],
     }
