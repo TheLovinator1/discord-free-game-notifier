@@ -9,6 +9,16 @@
             "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_a_present_from_vinnie_pack.jpg",
             "description": "Winter fun has arrived in World of Tanks! Grab Holiday Ops resources to upgrade your Festive Village and an eye-catching decal with this exclusive, time-limited Holiday Ops Gift Pack DLC! Add the bundle to your account for free to get 50 of each Holiday Ops resource (Meteoric Iron, Pure Emerald, Rock Crystal, and Warm Amber) and 3 \"Present from Vinnie\" decals.",
             "developer": "Wargaming Group Limited"
+        },
+        {
+            "id": "warframe_cumulus_collection",
+            "game_name": "Warframe: Cumulus Collection",
+            "game_url": "https://store.steampowered.com/app/2716340/Warframe_Cumulus_Collection/",
+            "start_date": "2023-12-18T21:00:00+00:00",
+            "end_date": "2024-01-14T21:00:00+00:00",
+            "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/warframe_cumulus_collection.jpg",
+            "description": "Cirrus Armor Bundle, Cumulus Syandana, Stratus Pistol Skin, Spektaka Color Palette, and 3-day Resource Booster.",
+            "developer": "Digital Extremes"
         }
     ]
 }
