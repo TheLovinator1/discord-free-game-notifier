@@ -65,7 +65,7 @@ def get_game_image(game: dict) -> str:
         Image url for the game.
     """
     game_id: str = game["data-ds-appid"]
-    image_url: (str) = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
+    image_url: str = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{game_id}/header.jpg"
     logger.bind(game_name=get_game_name(game=game)).info(f"Image: {image_url}")
     return image_url
 
