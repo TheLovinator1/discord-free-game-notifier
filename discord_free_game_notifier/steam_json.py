@@ -29,6 +29,7 @@ def create_json_file() -> None:
     """
     free_games: dict[str, list[dict[str, str]]] = {
         "free_games": [
+            # World of Tanks — A Present From Vinnie Pack
             {
                 "id": "world_of_tanks_a_present_from_vinnie_pack",
                 "game_name": "World of Tanks — A Present From Vinnie Pack",
@@ -39,6 +40,7 @@ def create_json_file() -> None:
                 "description": 'Winter fun has arrived in World of Tanks! Grab Holiday Ops resources to upgrade your Festive Village and an eye-catching decal with this exclusive, time-limited Holiday Ops Gift Pack DLC! Add the bundle to your account for free to get 50 of each Holiday Ops resource (Meteoric Iron, Pure Emerald, Rock Crystal, and Warm Amber) and 3 "Present from Vinnie" decals.',  # noqa: E501
                 "developer": "Wargaming Group Limited",
             },
+            # Warframe: Cumulus Collection
             {
                 "id": "warframe_cumulus_collection",
                 "game_name": "Warframe: Cumulus Collection",
@@ -48,6 +50,16 @@ def create_json_file() -> None:
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/warframe_cumulus_collection.jpg",
                 "description": "Cirrus Armor Bundle, Cumulus Syandana, Stratus Pistol Skin, Spektaka Color Palette, and 3-day Resource Booster.",  # noqa: E501
                 "developer": "Digital Extremes",
+            },
+            # World of Tanks — Snatch Gift Pack
+            {
+                "id": "world_of_tanks_snatch_gift_pack",
+                "game_name": "World of Tanks — Snatch Gift Pack",
+                "game_url": "https://store.steampowered.com/app/2749320/World_of_Tanks__Snatch_Gift_Pack/",
+                "start_date": datetime.datetime(2024, 1, 11, 15, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "end_date": datetime.datetime(2024, 1, 24, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_snatch_gift_pack.jpg",
+                "description": "The Snatch Gift Pack DLC includes:\n- 3 projection decals: Good Luck Charm\n- 3 Large Repair Kits\n- 3 Large First Aid Kits\n- 3 Automatic Fire Extinguishers",  # noqa: E501
             },
         ],
     }
