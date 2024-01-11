@@ -60,9 +60,27 @@ def create_json_file() -> None:
                 "end_date": datetime.datetime(2024, 1, 24, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_snatch_gift_pack.jpg",
                 "description": "The Snatch Gift Pack DLC includes:\n- 3 projection decals: Good Luck Charm\n- 3 Large Repair Kits\n- 3 Large First Aid Kits\n- 3 Automatic Fire Extinguishers",  # noqa: E501
+                "developer": "Wargaming Group Limited",
             },
         ],
     }
+
+    # Check that each game has the required keys
+    for game in free_games["free_games"]:
+        required_keys: list[str] = [
+            "id",
+            "game_name",
+            "game_url",
+            "start_date",
+            "end_date",
+            "image_link",
+            "description",
+            "developer",
+        ]
+        for key in required_keys:
+            if key not in game:
+                logger.bind(game_name="Steam").error(f"Missing key: {key} in {game['game_name']}")
+                return
 
     with Path.open(Path("pages/steam.json"), "w", encoding="utf-8") as file:
         json.dump(free_games, file, indent=4)
@@ -102,7 +120,7 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
             file.write("")
 
     # Check steam.json if free games
-    steam_json = get_json()
+    steam_json: dict = get_json()
 
     # If steam.json is empty, return an empty list
     if not steam_json:
@@ -117,21 +135,24 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         description: str = _game["description"]
         game_url: str = _game["game_url"]
         image_url: str = _game["image_link"]
-        start_date: str = _game["start_date"]
         developer: str = _game["developer"]
-        unix_start_date: int = int(
-            datetime.datetime.fromisoformat(start_date).timestamp(),
-        )
-        end_date: str = _game["end_date"]
-        unix_end_date: int = int(datetime.datetime.fromisoformat(end_date).timestamp())
+
+        # When the giveaway starts
+        start_date: str = _game["start_date"] or datetime.datetime.now(tz=datetime.UTC).isoformat()
+        start_date_unix: int = int(datetime.datetime.fromisoformat(start_date).timestamp())
+
+        # When the giveaway ends
+        end_date: str = _game["end_date"] or datetime.datetime.now(tz=datetime.UTC).isoformat()
+        end_date_unix: int = int(datetime.datetime.fromisoformat(end_date).timestamp())
 
         # Check if the game has already been posted
         if already_posted(previous_games, game_id):
             continue
 
         # Check if the game is still free
+
         current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
-        if unix_end_date < current_time:
+        if end_date_unix < current_time:
             logger.info(f"{game_name} is no longer free")
             continue
 
@@ -142,10 +163,11 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
             url=game_url,
             icon_url=settings.steam_icon,
         )
-        embed.set_image(url=image_url)
+        if image_url:
+            embed.set_image(url=image_url)
         embed.set_timestamp()
-        embed.add_embed_field(name="Start", value=f"<t:{unix_start_date}:R>")
-        embed.add_embed_field(name="End", value=f"<t:{unix_end_date}:R>")
+        embed.add_embed_field(name="Start", value=f"<t:{start_date_unix}:R>")
+        embed.add_embed_field(name="End", value=f"<t:{end_date_unix}:R>")
         embed.set_footer(text=developer)
 
         with Path.open(previous_games, "a+", encoding="utf-8") as file:
