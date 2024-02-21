@@ -70,7 +70,7 @@ def create_json_file() -> None:
                 "start_date": datetime.datetime(2024, 2, 21, 19, 0, 0, tzinfo=datetime.UTC).isoformat(),
                 "end_date": datetime.datetime(2024, 3, 7, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_blitz_bene_gesserit_pack.jpg",
-                "description": "The Bene Gesserit Pack includes:\n- Lady Jessica Profile Background\n- Bene Gesserit Epic avatar\n- Garage slot\n- 3 days of Premium Account\n- 5 certificates for x5 XP\n-5 Epic Combat XP boosters",  # noqa: E501
+                "description": "The Bene Gesserit Pack includes:\n- Lady Jessica Profile Background\n- Bene Gesserit Epic avatar\n- Garage slot\n- 3 days of Premium Account\n- 5 certificates for x5 XP\n- 5 Epic Combat XP boosters",  # noqa: E501
                 "developer": "Wargaming Group Limited",
             },
         ],
