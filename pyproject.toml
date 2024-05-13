@@ -1,8 +1,16 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core>=1",
+]
+
 [tool.poetry]
 name = "discord-free-game-notifier"
 version = "1.1.0"
 description = "Send webhook to Discord when a new game releases on Epic, Steam, GOG and Ubisoft."
-authors = ["Joakim Hellsén <tlovinator@gmail.com>"]
+authors = [
+  "Joakim Hellsén <tlovinator@gmail.com>",
+]
 license = "GPL-3.0-or-later"
 
 [tool.poetry.scripts]
@@ -22,18 +30,14 @@ loguru = "^0.7.2"
 pytest = "^8.0.0"
 pre-commit = "^3.5.0"
 
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = [
-  "poetry-core>=1",
-]
-
 [tool.ruff]
 fix = true
 unsafe-fixes = true
 preview = true
 line-length = 120
-select = ["ALL"]
+select = [
+  "ALL",
+]
 ignore = [
   "D100",
   "D104",
@@ -51,4 +55,7 @@ ignore = [
 convention = "google"
 
 [tool.ruff.per-file-ignores]
-"tests/*" = ["S101", "SIM114"]
+"tests/*" = [
+  "S101",
+  "SIM114",
+]
