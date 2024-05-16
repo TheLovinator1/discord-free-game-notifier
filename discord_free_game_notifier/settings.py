@@ -24,9 +24,7 @@ app_dir: str = user_data_dir(
 )
 
 config_location: Path = Path(app_dir) / "config.conf"
-default_webhook_url: str = (
-    "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
-)
+default_webhook_url: str = "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
 
 config_webhook_url = ""
 config_log_level = "INFO"

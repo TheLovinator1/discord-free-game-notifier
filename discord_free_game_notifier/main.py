@@ -43,10 +43,7 @@ def send_games(game: DiscordEmbed | None, game_service: str = "Unknown") -> None
         response: Response = send_embed_webhook(game, game_service)
 
         if not response.ok:
-            msg: str = (
-                f"Error when checking game for {game_service}:\n"
-                f"{response.status_code} - {response.reason}: {response.text}"
-            )
+            msg: str = f"Error when checking game for {game_service}:\n{response.status_code} - {response.reason}: {response.text}"
             logger.error(msg)
             send_webhook(msg)
     else:

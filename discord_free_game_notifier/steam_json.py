@@ -215,5 +215,5 @@ if __name__ == "__main__":
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(
-                f"Error when checking game for Steam (JSON):\n{response.status_code} - {response.reason}: {response.text}",  # noqa: E501
+                f"Error when checking game for Steam (JSON):\n{response.status_code} - {response.reason}: {response.text}",
             )

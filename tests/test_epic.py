@@ -154,10 +154,7 @@ def test_promotion_end() -> None:
 def test_game_image() -> None:
     """Test that the game image is returned correctly."""
     result: str = game_image(game)
-    assert (
-        result
-        == "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg"
-    )
+    assert result == "https://cdn1.epicgames.com/spt-assets/ef2777467a3c49059a076e42fd9b41f0/download-gloomhaven-offer-1ho2x.jpg"
 
 
 def test_game_url() -> None:
