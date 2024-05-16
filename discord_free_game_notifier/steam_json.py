@@ -14,7 +14,7 @@ import requests
 from discord_webhook import DiscordEmbed
 from loguru import logger
 
-from discord_free_game_notifier import settings
+from discord_free_game_notifier.settings import app_dir, steam_icon
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import send_embed_webhook
 
@@ -73,6 +73,28 @@ def create_json_file() -> None:
                 "description": "The Bene Gesserit Pack includes:\n- Lady Jessica Profile Background\n- Bene Gesserit Epic avatar\n- Garage slot\n- 3 days of Premium Account\n- 5 certificates for x5 XP\n- 5 Epic Combat XP boosters",  # noqa: E501
                 "developer": "Wargaming Group Limited",
             },
+            # World of Warships x Azur Lane: Free Intro Pack
+            {
+                "id": "world_of_warships_azur_lane_free_intro_pack",
+                "game_name": "World of Warships x Azur Lane: Free Intro Pack",
+                "game_url": "https://store.steampowered.com/app/2985620/World_of_Warships__Azur_Lane_Free_Intro_Pack/",
+                "start_date": datetime.datetime(2025, 5, 16, 14, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "end_date": datetime.datetime(2025, 6, 26, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_free_intro_pack.jpg",
+                "description": "The Azur Lane: Free Intro Pack includes:\n- 1x Azur Lane container\n- 5x “Azur Lane — Siren” expendable camouflages\n- Access to the Azur Lane Dorm Port",  # noqa: E501
+                "developer": "Wargaming Group Limited",
+            },
+            # World of Warships x Azur Lane — AL Avrora Free Unlock
+            {
+                "id": "world_of_warships_azur_lane_al_avrora_free_unlock",
+                "game_name": "World of Warships x Azur Lane — AL Avrora Free Unlock",
+                "game_url": "https://store.steampowered.com/app/2985560/World_of_Warships__Azur_Lane__AL_Avrora_Free_Unlock/",
+                "start_date": datetime.datetime(2025, 5, 16, 14, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "end_date": datetime.datetime(2025, 6, 26, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_al_avrora_free_unlock.jpg",
+                "description": "Play 5 battles to obtain:\n- AL Avrora - Tier III Premium Soviet cruiser\n- A Port slot\n- A Commander with 3 skill points trained for AL Avrora",  # noqa: E501
+                "developer": "Wargaming Group Limited",
+            },
         ],
     }
 
@@ -123,7 +145,7 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         Generator[DiscordEmbed, Any, list[Any] | None]: A list of embeds containing the free games.
     """
     # Save previous free games to a file, so we don't post the same games again.
-    previous_games: Path = Path(settings.app_dir) / "steam.txt"
+    previous_games: Path = Path(app_dir) / "steam.txt"
 
     # Create the file if it doesn't exist
     if not Path.exists(previous_games):
@@ -172,7 +194,7 @@ def scrape_steam_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
         embed.set_author(
             name=f"{game_name}",
             url=game_url,
-            icon_url=settings.steam_icon,
+            icon_url=steam_icon,
         )
         if image_url:
             embed.set_image(url=image_url)

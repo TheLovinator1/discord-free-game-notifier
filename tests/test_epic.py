@@ -11,6 +11,7 @@ from discord_free_game_notifier.epic import (
     promotion_end,
     promotion_start,
 )
+from discord_free_game_notifier.epic_json import get_json
 from discord_free_game_notifier.utils import already_posted
 
 game = {
@@ -181,3 +182,18 @@ def test_already_posted() -> None:
 
     result3: bool = already_posted("Not_a_file", "Sharks")  # type: ignore  # noqa: PGH003
     assert not result3
+
+
+def test_get_json() -> None:
+    """Test that the get_json function returns a dict."""
+    json = get_json()
+    assert isinstance(json, dict)
+    assert json["free_games"]
+
+    assert json["free_games"][0]["id"]
+    assert json["free_games"][0]["game_name"]
+    assert json["free_games"][0]["game_url"]
+    assert json["free_games"][0]["start_date"]
+    assert json["free_games"][0]["end_date"]
+    assert json["free_games"][0]["description"]
+    assert json["free_games"][0]["image_link"]
