@@ -78,8 +78,8 @@ def create_json_file() -> None:
                 "id": "world_of_warships_azur_lane_free_intro_pack",
                 "game_name": "World of Warships x Azur Lane: Free Intro Pack",
                 "game_url": "https://store.steampowered.com/app/2985620/World_of_Warships__Azur_Lane_Free_Intro_Pack/",
-                "start_date": datetime.datetime(2025, 5, 16, 14, 0, 0, tzinfo=datetime.UTC).isoformat(),
-                "end_date": datetime.datetime(2025, 6, 26, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "start_date": datetime.datetime(2024, 5, 16, 14, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "end_date": datetime.datetime(2024, 6, 26, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_free_intro_pack.jpg",
                 "description": "The Azur Lane: Free Intro Pack includes:\n- 1x Azur Lane container\n- 5x “Azur Lane — Siren” expendable camouflages\n- Access to the Azur Lane Dorm Port",  # noqa: E501
                 "developer": "Wargaming Group Limited",
@@ -89,8 +89,8 @@ def create_json_file() -> None:
                 "id": "world_of_warships_azur_lane_al_avrora_free_unlock",
                 "game_name": "World of Warships x Azur Lane — AL Avrora Free Unlock",
                 "game_url": "https://store.steampowered.com/app/2985560/World_of_Warships__Azur_Lane__AL_Avrora_Free_Unlock/",
-                "start_date": datetime.datetime(2025, 5, 16, 14, 0, 0, tzinfo=datetime.UTC).isoformat(),
-                "end_date": datetime.datetime(2025, 6, 26, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "start_date": datetime.datetime(2024, 5, 16, 14, 0, 0, tzinfo=datetime.UTC).isoformat(),
+                "end_date": datetime.datetime(2024, 6, 26, 0, 0, 0, tzinfo=datetime.UTC).isoformat(),
                 "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_al_avrora_free_unlock.jpg",
                 "description": "Play 5 battles to obtain:\n- AL Avrora - Tier III Premium Soviet cruiser\n- A Port slot\n- A Commander with 3 skill points trained for AL Avrora",  # noqa: E501
                 "developer": "Wargaming Group Limited",
