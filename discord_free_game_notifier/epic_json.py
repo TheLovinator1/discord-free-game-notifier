@@ -129,6 +129,16 @@ def create_json_file() -> None:
                 "description": "Free Epic stuff:\n- [Disney Speedstorm Monochromatic Pack - Racer Stitch](https://store.epicgames.com/en-US/p/disney-speedstorm--racer-stitch)\n- [Genshin Impact MEGA Sale Bundle](https://store.epicgames.com/en-US/p/genshin-impact--mega-sale-bundle)\n- [Honkai: Star Rail MEGA Sale Bundle](https://store.epicgames.com/en-US/p/honkai-star-rail--epic-mega-sale-event-bundle)\n- [Fortnite Overclocked Combo Pack](https://store.epicgames.com/en-US/p/fortnite--overclocked-combo-pack)\n- [Fall Guys - Soda Crown](https://store.epicgames.com/en-US/p/fall-guys--soda-crown)\n- [1 Month of Discord Nitro](https://store.epicgames.com/en-US/p/discord--discord-nitro)\n- [Dauntless Golden Drake's Eye Bundle](https://store.epicgames.com/en-US/p/dauntless--golden-drakes-eye-bundle)\n- [Warframe Pyra Syandana and Fire Color Picker](https://store.epicgames.com/en-US/p/warframe)\n- [Honkai Impact 3rd Bundle](https://store.epicgames.com/en-US/p/honkai-impact-3rd)",  # noqa: E501
                 "developer": "Epic Games et al.",
             },
+            {
+                "id": "wuthering_waves_echo_starter_pack",
+                "game_name": "Wuthering Waves - Echo Starter Pack",
+                "game_url": "https://store.epicgames.com/en-US/p/wuthering-waves-echo-starter-pack-eae1db",
+                "start_date": datetime.datetime(year=2024, month=5, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC).isoformat(),
+                "end_date": datetime.datetime(year=2024, month=6, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC).isoformat(),
+                "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/wuthering_waves_echo_starter_pack.jpg",
+                "description": "The Echo Starter Pack includes:\n- 1 Incomplete Echo\n- 10 Premium Tuner\n- 5 Advanced Sealed Tube",
+                "developer": "KURO GAMES",
+            },
         ],
     }
 

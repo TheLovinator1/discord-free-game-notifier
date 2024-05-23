@@ -99,6 +99,16 @@
             "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/epic_mega_sale_2024.jpg",
             "description": "Free Epic stuff:\n- [Disney Speedstorm Monochromatic Pack - Racer Stitch](https://store.epicgames.com/en-US/p/disney-speedstorm--racer-stitch)\n- [Genshin Impact MEGA Sale Bundle](https://store.epicgames.com/en-US/p/genshin-impact--mega-sale-bundle)\n- [Honkai: Star Rail MEGA Sale Bundle](https://store.epicgames.com/en-US/p/honkai-star-rail--epic-mega-sale-event-bundle)\n- [Fortnite Overclocked Combo Pack](https://store.epicgames.com/en-US/p/fortnite--overclocked-combo-pack)\n- [Fall Guys - Soda Crown](https://store.epicgames.com/en-US/p/fall-guys--soda-crown)\n- [1 Month of Discord Nitro](https://store.epicgames.com/en-US/p/discord--discord-nitro)\n- [Dauntless Golden Drake's Eye Bundle](https://store.epicgames.com/en-US/p/dauntless--golden-drakes-eye-bundle)\n- [Warframe Pyra Syandana and Fire Color Picker](https://store.epicgames.com/en-US/p/warframe)\n- [Honkai Impact 3rd Bundle](https://store.epicgames.com/en-US/p/honkai-impact-3rd)",
             "developer": "Epic Games et al."
+        },
+        {
+            "id": "wuthering_waves_echo_starter_pack",
+            "game_name": "Wuthering Waves - Echo Starter Pack",
+            "game_url": "https://store.epicgames.com/en-US/p/wuthering-waves-echo-starter-pack-eae1db",
+            "start_date": "2024-05-23T16:00:00+00:00",
+            "end_date": "2024-06-23T16:00:00+00:00",
+            "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/wuthering_waves_echo_starter_pack.jpg",
+            "description": "The Echo Starter Pack includes:\n- 1 Incomplete Echo\n- 10 Premium Tuner\n- 5 Advanced Sealed Tube",
+            "developer": "KURO GAMES"
         }
     ]
 }
