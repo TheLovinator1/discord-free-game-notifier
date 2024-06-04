@@ -1,6 +1,9 @@
 name: Ruff
 on:
     push:
+      paths:
+        - '**.py'
+        - '.github/workflows/ruff.yml'
     pull_request:
     schedule:
       - cron: '0 0 * * *' # Run every day

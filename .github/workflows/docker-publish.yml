@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "27 6 * * *"
   push:
+    paths:
+      - "**.py"
+      - "Dockerfile"
+      - ".github/workflows/docker-publish.yml"
+      - "requirements.txt"
+      - "requirements-dev.txt"
   pull_request:
   workflow_dispatch:
 env:
@@ -16,9 +22,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pipx install poetry
-      - run: poetry install
-      - run: poetry run pytest
+          cache: "pip"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest
   build:
     runs-on: ubuntu-latest
     permissions:
