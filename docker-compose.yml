@@ -12,12 +12,6 @@ services:
       # STEAM_WEBHOOK=https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz1
       # EPIC_WEBHOOK=https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz1
       # UBISOFT_WEBHOOK=https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz1
-      - LOG_LEVEL=INFO
-      # Uncomment these if you want to host the images yourself:
-      # STEAM_ICON=https://thelovinator1.github.io/discord-free-game-notifier/images/Steam.png
-      # GOG_ICON=https://thelovinator1.github.io/discord-free-game-notifier/images/GOG.png
-      # EPIC_ICON=https://thelovinator1.github.io/discord-free-game-notifier/images/Epic.png
-      # UBISOFT_ICON=https://thelovinator1.github.io/discord-free-game-notifier/images/Ubisoft.png
     volumes:
       - discord-free-game-notifier:/home/botuser/.local/share/discord_free_game_notifier/
     restart: unless-stopped

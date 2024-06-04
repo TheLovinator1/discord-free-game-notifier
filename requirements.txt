@@ -1,0 +1,7 @@
+apscheduler
+beautifulsoup4
+discord-webhook
+loguru
+platformdirs
+python-dotenv
+requests
