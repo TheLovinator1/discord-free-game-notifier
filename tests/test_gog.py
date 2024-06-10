@@ -31,7 +31,7 @@ def test_get_free_gog_game() -> None:
 # Define the test.
 def test_get_free_gog_game_from_list() -> None:
     """Test if we can get the free game from GOG."""
-    free_game: Generator[DiscordEmbed, Any, None] = get_free_gog_game_from_store()
+    free_game: Generator[DiscordEmbed | None, Any, None] = get_free_gog_game_from_store()
 
     # Make sure we get a generator.
     assert free_game is not None

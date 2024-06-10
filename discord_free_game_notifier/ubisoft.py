@@ -59,7 +59,7 @@ def get_json() -> dict:
     return json_file
 
 
-def get_ubisoft_free_games() -> Generator[DiscordEmbed, Any, list[Any] | None]:
+def get_ubisoft_free_games() -> Generator[DiscordEmbed | None, Any, None]:
     """Get the free games from ubisoft.json.
 
     Yields:
@@ -78,7 +78,7 @@ def get_ubisoft_free_games() -> Generator[DiscordEmbed, Any, list[Any] | None]:
 
     # If ubisoft.json is empty, return an empty list
     if not ubisoft_json:
-        return []
+        yield None
 
     # Get the free games from ubisoft.json
     free_games = ubisoft_json["free_games"]
@@ -122,6 +122,9 @@ def get_ubisoft_free_games() -> Generator[DiscordEmbed, Any, list[Any] | None]:
 if __name__ == "__main__":
     create_json_file()
     for game in get_ubisoft_free_games():
+        if game is None:
+            continue
+
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(

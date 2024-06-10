@@ -89,7 +89,7 @@ def create_embed(
     return embed
 
 
-def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
+def get_free_gog_game_from_store() -> Generator[DiscordEmbed | None, Any, None]:
     """Check if free GOG game from games store.
 
     Returns:
@@ -149,7 +149,7 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed, Any, None]:
             image_url = ""
 
         if already_posted(previous_games, game_name):
-            return None
+            yield None
 
         # Create the embed and add it to the list of free games.
         yield create_embed(
@@ -256,6 +256,9 @@ if __name__ == "__main__":
             )
 
     for game in get_free_gog_game_from_store():
+        if game is None:
+            continue
+
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(

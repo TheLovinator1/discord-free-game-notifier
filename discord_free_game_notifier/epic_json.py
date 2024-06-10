@@ -165,7 +165,7 @@ def get_json() -> dict:
     return json_file
 
 
-def scrape_epic_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
+def scrape_epic_json() -> Generator[DiscordEmbed | None, Any, list[Any] | None]:
     """Get the free games from Epic.json.
 
     Yields:
@@ -181,10 +181,8 @@ def scrape_epic_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
 
     # Check Epic.json if free games
     epic_json = get_json()
-
-    # If Epic.json is empty, return an empty list
     if not epic_json:
-        return []
+        yield None
 
     # Get the free games from Epic.json
     free_games = epic_json["free_games"]
@@ -235,6 +233,9 @@ def scrape_epic_json() -> Generator[DiscordEmbed, Any, list[Any] | None]:
 if __name__ == "__main__":
     create_json_file()
     for game in scrape_epic_json():
+        if game is None:
+            continue
+
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(
