@@ -8,19 +8,7 @@ from discord_webhook import DiscordEmbed
 from discord_free_game_notifier.gog import (
     get_free_gog_game,
     get_free_gog_game_from_store,
-    get_game_name,
 )
-
-
-def test_get_game_name() -> None:
-    """Test if we can get the game name from the banner title."""
-    game_name: str = get_game_name(
-        banner_title_text="Thanks for being with us! Claim Left 4 Dead 3 as a token of our gratitude!",
-    )
-    assert game_name == "Left 4 Dead 3"
-
-    broken_game_name: str = get_game_name(banner_title_text="yo")
-    assert broken_game_name == "GOG Giveaway"
 
 
 def test_get_free_gog_game() -> None:
@@ -30,7 +18,11 @@ def test_get_free_gog_game() -> None:
 
 # Define the test.
 def test_get_free_gog_game_from_list() -> None:
-    """Test if we can get the free game from GOG."""
+    """Test if we can get the free game from GOG.
+
+    Raises:
+        AssertionError: If the game has no author, image, or description.
+    """
     free_game: Generator[DiscordEmbed | None, Any, None] = get_free_gog_game_from_store()
 
     # Make sure we get a generator.
