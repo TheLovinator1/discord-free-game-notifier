@@ -1,5 +1,7 @@
 apscheduler
 beautifulsoup4
+express
+axios
 discord-webhook
 loguru
 platformdirs
