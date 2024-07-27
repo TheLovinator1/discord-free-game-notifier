@@ -33,7 +33,7 @@ Please fill in the values in the .env file and run `docker-compose up -d`.
   - `Rename-Item .env.example .env`
   - `notepad .env`
 - Start the bot.
-  - `python .\discord_free_game_notifier\main.py`
+  - `python -m discord_free_game_notifier.main`
 - The bot will now check for free games every 15 minutes and send a message to the webhook.
 - Data is stored in `%appdata%\TheLovinator\discord_free_game_notifier`.
 - To stop the bot, press `Ctrl + C` in the PowerShell window.
@@ -59,7 +59,7 @@ Please fill in the values in the .env file and run `docker-compose up -d`.
   - `mv .env.example .env`
   - `nano .env`
 - Start the bot.
-  - `python ./discord_free_game_notifier/main.py`
+  - `python -m discord_free_game_notifier.main`
   - Or `poetry run bot` if you used Poetry.
 - The bot will now check for free games every 15 minutes and send a message to the webhook.
 - Data is stored in `~/.local/share/discord_free_game_notifier/`.
