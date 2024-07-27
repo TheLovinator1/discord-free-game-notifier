@@ -1,5 +1,18 @@
 from __future__ import annotations
 
+# app.py
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api', methods=['GET'])
+def api():
+    # İşlemlerinizi burada yapın
+    return jsonify({'mesaj': 'Merhaba, Dünya!'})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 import datetime
 from typing import TYPE_CHECKING
 
