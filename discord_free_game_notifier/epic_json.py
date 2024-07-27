@@ -159,9 +159,7 @@ def get_json() -> dict:
     try:
         json_file = requests.get(json_location, timeout=30).json()
     except requests.exceptions.ConnectionError:
-        logger.bind(game_name="Epic").error("Unable to connect to github.com")
-
-    logger.bind(game_name="Epic").debug("Got epic.json\n{}", json_file)
+        logger.bind(game_name="Epic").error("Unable to connect to https://thelovinator1.github.io/discord-free-game-notifier/epic.json")
     return json_file
 
 

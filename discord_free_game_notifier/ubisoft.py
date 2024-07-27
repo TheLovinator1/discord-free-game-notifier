@@ -53,9 +53,9 @@ def get_json() -> dict:
     try:
         json_file = requests.get(json_location, timeout=30).json()
     except requests.exceptions.ConnectionError:
-        logger.bind(game_name="Ubisoft").error("Unable to connect to github.com")
-
-    logger.bind(game_name="Ubisoft").debug("Got ubisoft.json\n{}", json_file)
+        logger.bind(game_name="Ubisoft").error(
+            "Unable to connect to https://thelovinator1.github.io/discord-free-game-notifier/ubisoft.json",
+        )
     return json_file
 
 
