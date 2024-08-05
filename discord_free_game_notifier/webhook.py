@@ -11,6 +11,9 @@ def send_webhook(message: str, game_service: str = "") -> Response:
     Args:
         message (str): Message to send to Discord.
         game_service (str): The name of the game service (Steam/GOG/Epic)
+
+    Returns:
+        Response: The response from the webhook request.
     """
     if get_webhook_url(game_service):
         webhook = DiscordWebhook(
@@ -60,6 +63,9 @@ def send_embed_webhook(embed: DiscordEmbed, game_service: str = "") -> Response:
     Args:
         embed (DiscordEmbed): Embed to send to Discord.
         game_service (str): The name of the game service (Steam/GOG/Epic)
+
+    Returns:
+        Response: The response from the
     """
     if get_webhook_url(game_service):
         webhook = DiscordWebhook(

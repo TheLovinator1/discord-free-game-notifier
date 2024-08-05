@@ -19,8 +19,8 @@ if TYPE_CHECKING:
 def get_free_steam_games() -> Generator[DiscordEmbed, Any, None]:
     """Go to the Steam store and check for free games and return them.
 
-    Returns:
-        Embed containing the free Steam games.
+    Yields:
+        Generator[DiscordEmbed, Any, None]: A generator with Discord
     """
     previous_games: Path = Path(settings.app_dir) / "steam.txt"
     if not Path.exists(previous_games):

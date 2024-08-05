@@ -74,8 +74,8 @@ def create_embed(
 def get_free_gog_game_from_store() -> Generator[DiscordEmbed | None, Any, None]:
     """Check if free GOG game from games store.
 
-    Returns:
-        Generator[Embed, Any, None]: Embed for the free GOG games.
+    Yields:
+        DiscordEmbed: Embed for the free GOG games.
     """
     previous_games: Path = Path(settings.app_dir) / "gog.txt"
 
