@@ -112,35 +112,32 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed | None, Any, None]:
         # Game name
         game_class = child.find("div", {"selenium-id": "productTileGameTitle"})  # type: ignore  # noqa: PGH003
         game_name = game_class["title"]  # type: ignore  # noqa: PGH003
-        logger.bind(game_name=game_name).info(f"Game name: {game_name}")
+        if not already_posted(previous_games, game_name):
+            logger.bind(game_name=game_name).info(f"Game name: {game_name}")
 
-        # Game URL
-        game_url = child.find("a", {"class": "product-tile--grid"})["href"]  # type: ignore  # noqa: PGH003
-        logger.bind(game_name=game_name).info(f"Game URL: {game_url}")
+            # Game URL
+            game_url = child.find("a", {"class": "product-tile--grid"})["href"]  # type: ignore  # noqa: PGH003
+            logger.bind(game_name=game_name).info(f"Game URL: {game_url}")
 
-        # Game image
-        image_url_class: Tag | NavigableString | None = child.find(  # type: ignore  # noqa: PGH003
-            "source",
-            attrs={"srcset": True},
-        )
-        if hasattr(image_url_class, "attrs"):
-            images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
-            image_url: str = f"{images[0]}"
-            logger.bind(game_name=game_name).info(f"Image URL: {image_url}")
-        else:
-            image_url = ""
+            # Game image
+            image_url_class: Tag | NavigableString | None = child.find(  # type: ignore  # noqa: PGH003
+                "source",
+                attrs={"srcset": True},
+            )
+            if hasattr(image_url_class, "attrs"):
+                images: list[str] = image_url_class.attrs["srcset"].strip().split()  # type: ignore  # noqa: PGH003
+                image_url: str = f"{images[0]}"
+                logger.bind(game_name=game_name).info(f"Image URL: {image_url}")
+            else:
+                image_url = ""
 
-        if already_posted(previous_games, game_name):
-            yield None
-
-        # Create the embed and add it to the list of free games.
-        yield create_embed(
-            previous_games=previous_games,
-            game_name=game_name,
-            game_url=game_url,
-            image_url=image_url,
-            no_claim=True,
-        )
+            yield create_embed(
+                previous_games=previous_games,
+                game_name=game_name,
+                game_url=game_url,
+                image_url=image_url,
+                no_claim=True,
+            )
 
 
 def get_giveaway_link(giveaway: Tag | NavigableString | None, game_name: str) -> str:
