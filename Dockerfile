@@ -1,4 +1,4 @@
-FROM python:3.12-slim as builder
+FROM python:3.13-slim as builder
 
 # Create user so we don't run as root.
 RUN useradd --create-home botuser
