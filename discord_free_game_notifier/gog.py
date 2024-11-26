@@ -150,7 +150,7 @@ def get_giveaway_link(giveaway: Tag | NavigableString | None, game_name: str) ->
     Returns:
         The giveaway link. Defaults to https://www.gog.com/ if not found.
     """
-    gog_giveaway_link: Tag | NavigableString | None | int = giveaway.find("a", {"selenium-id": "giveawayOverlayLink"})  # type: ignore  # noqa: PGH003
+    gog_giveaway_link: Tag | NavigableString | int | None = giveaway.find("a", {"selenium-id": "giveawayOverlayLink"})  # type: ignore  # noqa: PGH003
     if not hasattr(gog_giveaway_link, "attrs"):
         logger.bind(game_name=game_name).error("No giveaway link found on GOG for {} because it's doesn't have 'attrs'", giveaway)
         return "https://www.gog.com/"
