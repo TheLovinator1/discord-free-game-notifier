@@ -1,4 +1,4 @@
-FROM python:3.13-slim as builder
+FROM python:3.13-slim
 
 # Create user so we don't run as root.
 RUN useradd --create-home botuser
@@ -22,5 +22,5 @@ RUN mkdir -p /home/botuser/.local/share/discord_free_game_notifier/
 
 VOLUME ["/home/botuser/.local/share/discord_free_game_notifier/"]
 
-ENV PYTHONPATH "${PYTHONPATH}:/app/discord_free_game_notifier"
+ENV PYTHONPATH="${PYTHONPATH}:/app/discord_free_game_notifier"
 CMD ["python", "discord_free_game_notifier/main.py"]
