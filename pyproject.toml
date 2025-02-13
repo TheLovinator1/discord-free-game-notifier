@@ -1,3 +1,23 @@
+[project]
+name = "discord-free-game-notifier"
+version = "1.1.0"
+description = "Send webhook to Discord when a new game releases on Epic, Steam, GOG and Ubisoft."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "apscheduler",
+  "beautifulsoup4",
+  "discord-webhook",
+  "loguru",
+  "platformdirs",
+  "python-dotenv",
+  "pytz",
+  "requests",
+]
+
+[dependency-groups]
+dev = ["pytest"]
+
 [tool.poetry]
 name = "discord-free-game-notifier"
 version = "1.1.0"
