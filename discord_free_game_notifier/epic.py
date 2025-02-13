@@ -274,7 +274,7 @@ def create_embed(previous_games: Path, game: dict) -> DiscordEmbed | None:
     embed.set_author(name=game_name, url=url, icon_url=settings.epic_icon)
 
     curr_dt: datetime = datetime.now(tz=pytz.UTC)
-    current_time = int(round(curr_dt.timestamp()))
+    current_time = round(curr_dt.timestamp())
     end_time: int = promotion_end(game)
     start_time: int = promotion_start(game)
 
