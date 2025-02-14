@@ -127,12 +127,11 @@ game = {
 def test_promotion_start() -> None:
     """Test that the promotion start date is returned correctly."""
     start_date: int | None = None
-    if game["promotions"]:
-        for promotion in game["promotions"]["promotionalOffers"]:
-            for offer in promotion["promotionalOffers"]:
-                start_date = calendar.timegm(
-                    time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),
-                )
+    promotions = game.get("promotions", {})
+    if promotions:
+        for promotion in promotions.get("promotionalOffers", []):  # pyright: ignore[reportAttributeAccessIssue]
+            for offer in promotion.get("promotionalOffers", []):  # pyright: ignore[reportAttributeAccessIssue]
+                start_date = calendar.timegm(time.strptime(offer["startDate"], "%Y-%m-%dT%H:%M:%S.%fZ"))  # pyright: ignore[reportArgumentType]
 
     result: int = promotion_start(game)
     assert result == start_date
@@ -141,10 +140,11 @@ def test_promotion_start() -> None:
 def test_promotion_end() -> None:
     """Test that the promotion end date is returned correctly."""
     end_date: float | None = None
-    for promotion in game["promotions"]["promotionalOffers"]:
-        for offer in promotion["promotionalOffers"]:
+    promotions = game.get("promotions", {})
+    for promotion in promotions.get("promotionalOffers", []):  # pyright: ignore[reportAttributeAccessIssue, reportOptionalMemberAccess]
+        for offer in promotion["promotionalOffers"]:  # pyright: ignore[reportArgumentType]
             end_date = time.mktime(
-                time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),
+                time.strptime(offer["endDate"], "%Y-%m-%dT%H:%M:%S.%fZ"),  # pyright: ignore[reportArgumentType]
             )
 
     result: int = promotion_end(game)
