@@ -35,5 +35,6 @@
         "Wargaming",
         "Winterfest",
         "Wuthering",
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "basic"
 }

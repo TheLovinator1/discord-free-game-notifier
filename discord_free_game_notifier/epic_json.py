@@ -8,7 +8,7 @@ from __future__ import annotations
 import datetime
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TypedDict
 
 import requests
 from discord_webhook import DiscordEmbed
@@ -18,8 +18,24 @@ from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import send_embed_webhook
 
-if TYPE_CHECKING:
-    from collections.abc import Generator
+
+class FreeGame(TypedDict):
+    """A free game from Epic.json."""
+
+    id: str
+    game_name: str
+    game_url: str
+    start_date: str  # or datetime if you parse it
+    end_date: str  # or datetime if you parse it
+    image_link: str
+    description: str
+    developer: str
+
+
+class FreeGamesResponse(TypedDict):
+    """The response from Epic.json."""
+
+    free_games: list[FreeGame]
 
 
 def create_json_file() -> None:
@@ -147,28 +163,33 @@ def create_json_file() -> None:
         logger.bind(game_name="Epic").info("Created/updated epic.json")
 
 
-def get_json() -> dict:
+def get_json() -> FreeGamesResponse | None:
     """Gets a json file from the json folder.
 
     Returns:
-        dict: The json file as a dict.
+        dict: The json file as a dict. If the connection fails, return None.
     """
     json_location: str = "https://thelovinator1.github.io/discord-free-game-notifier/epic.json"
-    json_file: dict = {}
 
     try:
-        json_file = requests.get(json_location, timeout=30).json()
+        json_file: FreeGamesResponse = requests.get(json_location, timeout=30).json()
     except requests.exceptions.ConnectionError:
         logger.bind(game_name="Epic").error("Unable to connect to https://thelovinator1.github.io/discord-free-game-notifier/epic.json")
-    return json_file
+        return None
+    else:
+        logger.bind(game_name="Epic").info("Successfully retrieved epic.json")
+        return json_file
 
 
-def scrape_epic_json() -> Generator[DiscordEmbed | None, Any, list[Any] | None]:
+def scrape_epic_json() -> list[DiscordEmbed]:  # noqa: PLR0914
     """Get the free games from Epic.json.
 
-    Yields:
-        Generator[DiscordEmbed, Any, list[Any] | None]: A list of embeds containing the free games.
+    Returns:
+        list[DiscordEmbed]: A list of embeds containing the free games.
     """
+    # List of embeds to return
+    list_of_embeds: list[DiscordEmbed] = []
+
     # Save previous free games to a file, so we don't post the same games again.
     previous_games: Path = Path(settings.app_dir) / "epic.txt"
 
@@ -178,12 +199,12 @@ def scrape_epic_json() -> Generator[DiscordEmbed | None, Any, list[Any] | None]:
             file.write("")
 
     # Check Epic.json if free games
-    epic_json = get_json()
+    epic_json: FreeGamesResponse | None = get_json()
     if not epic_json:
-        yield None
+        return list_of_embeds
 
     # Get the free games from Epic.json
-    free_games = epic_json["free_games"]
+    free_games: list[FreeGame] = epic_json["free_games"]
 
     for _game in free_games:
         game_id: str = _game["id"]
@@ -220,20 +241,19 @@ def scrape_epic_json() -> Generator[DiscordEmbed | None, Any, list[Any] | None]:
         embed.set_timestamp()
         embed.add_embed_field(name="Start", value=f"<t:{unix_start_date}:R>")
         embed.add_embed_field(name="End", value=f"<t:{unix_end_date}:R>")
-        embed.set_footer(text=developer)
+        embed.set_footer(text=developer)  # pyright: ignore[reportUnknownMemberType]
 
         with Path.open(previous_games, "a+", encoding="utf-8") as file:
             file.write(f"{game_id}\n")
 
-        yield embed
+        list_of_embeds.append(embed)
+
+    return list_of_embeds
 
 
 if __name__ == "__main__":
     create_json_file()
     for game in scrape_epic_json():
-        if game is None:
-            continue
-
         response: requests.Response = send_embed_webhook(game)
         if not response.ok:
             logger.error(

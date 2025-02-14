@@ -4,7 +4,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Tag
+from bs4.element import NavigableString, PageElement
 from discord_webhook import DiscordEmbed
 from loguru import logger
 
@@ -14,6 +15,8 @@ from discord_free_game_notifier.webhook import send_embed_webhook
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+
+    from bs4.element import NavigableString, PageElement
 
 
 def create_embed(
@@ -91,10 +94,7 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed | None, Any, None]:
     )
     soup = BeautifulSoup(request.text, "html.parser")
 
-    games: Tag | NavigableString | None = soup.find(
-        "div",
-        {"selenium-id": "paginatedProductsGrid"},
-    )
+    games: PageElement | Tag | NavigableString | None = soup.find("div", {"selenium-id": "paginatedProductsGrid"})
 
     if games is None:
         logger.bind(game_name="GOG").debug("No free games found")
@@ -140,7 +140,7 @@ def get_free_gog_game_from_store() -> Generator[DiscordEmbed | None, Any, None]:
             )
 
 
-def get_giveaway_link(giveaway: Tag | NavigableString | None, game_name: str) -> str:
+def get_giveaway_link(giveaway: PageElement | Tag | NavigableString | None, game_name: str) -> str:
     """Get the giveaway link from the GOG giveaway.
 
     Args:
@@ -160,7 +160,7 @@ def get_giveaway_link(giveaway: Tag | NavigableString | None, game_name: str) ->
         logger.bind(game_name=game_name).error("No giveaway link found on GOG for {} because it's not a 'Tag'", giveaway)
         return "https://www.gog.com/"
 
-    giveaway_link: str = gog_giveaway_link.attrs["href"]
+    giveaway_link = str(gog_giveaway_link.attrs["href"])
     logger.bind(game_name=game_name).info(f"Giveaway link: {giveaway_link}")
     return giveaway_link
 
@@ -208,7 +208,7 @@ def get_game_image(giveaway: BeautifulSoup, game_name: str) -> str:
     return image_url
 
 
-def get_game_name(giveaway_soup: BeautifulSoup, giveaway: Tag | NavigableString | None) -> str:
+def get_game_name(giveaway_soup: BeautifulSoup, giveaway: PageElement | Tag | NavigableString | None) -> str:
     """Get the game name from the GOG giveaway.
 
     Args:
@@ -218,7 +218,7 @@ def get_game_name(giveaway_soup: BeautifulSoup, giveaway: Tag | NavigableString 
     Returns:
         The game name. Defaults to "GOG Giveaway" if not found.
     """
-    img_tag: Tag | NavigableString | None = giveaway_soup.find("img", alt=True)
+    img_tag: PageElement | Tag | NavigableString | None = giveaway_soup.find("img", alt=True)
     if not hasattr(img_tag, "attrs"):
         logger.bind(game_name="GOG").error("No img tag found on GOG for {}", giveaway)
         return "GOG Giveaway"
@@ -261,7 +261,7 @@ def get_free_gog_game() -> DiscordEmbed | None:
     )
 
     soup = BeautifulSoup(request.text, "html.parser")
-    giveaway: Tag | NavigableString | None = soup.find("giveaway")
+    giveaway: PageElement | Tag | NavigableString | None = soup.find("giveaway")
     giveaway_soup: BeautifulSoup = BeautifulSoup(str(giveaway), "html.parser")
 
     if giveaway is None:

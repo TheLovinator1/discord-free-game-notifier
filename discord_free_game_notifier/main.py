@@ -128,8 +128,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     if settings.webhook_url == settings.default_webhook_url:
-        logger.error(
-            "Webhook URL is the default value. Please modify it in the .env file.",
-        )
-
+        logger.error("Webhook URL is the default value. Please modify it in the .env file.")
     main()
