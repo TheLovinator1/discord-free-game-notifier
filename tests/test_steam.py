@@ -75,7 +75,7 @@ def fake_get(
     """
     if url.startswith(STEAM_URL.split("?")[0]):
         # steam.html has 2 games, steam_empty.html has 0 games
-        html_filename: Literal["steam_empty.html", "steam.html"] = "steam_empty.html" if empty_mode else "steam.html"
+        html_filename: Literal["Steam_empty.html", "Steam.html"] = "Steam_empty.html" if empty_mode else "Steam.html"
         html_path: Path = Path(__file__).parent / html_filename
         html_text: str = html_path.read_text(encoding="utf-8")
         return FakeResponse(html_text, 200)
@@ -105,7 +105,7 @@ def fake_get(
 
 @pytest.fixture
 def patch_requests_get_with_mode(monkeypatch: pytest.MonkeyPatch) -> Callable[..., None]:
-    """Patch requests.get dynamically to return either steam.html or steam_empty.html.
+    """Patch requests.get dynamically to return either Steam.html or Steam_empty.html.
 
     Args:
         monkeypatch (pytest.MonkeyPatch): The pytest monkeypatch object.
@@ -133,12 +133,12 @@ def use_temp_app_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.parametrize("empty_mode", [False, True])
 def test_get_free_steam_games(tmp_path: Path, patch_requests_get_with_mode: Callable[..., None], *, empty_mode: bool) -> None:
-    """Test get_free_steam_games with both steam.html and steam_empty.html.
+    """Test get_free_steam_games with both Steam.html and Steam_empty.html.
 
     Args:
         tmp_path (Path): The temporary path provided by pytest.
         patch_requests_get_with_mode: The fixture to patch requests.get.
-        empty_mode (bool): Whether to use steam_empty.html (True) or steam.html (False).
+        empty_mode (bool): Whether to use Steam_empty.html (True) or Steam.html (False).
     """
     patch_requests_get_with_mode(empty_mode=empty_mode)
 
