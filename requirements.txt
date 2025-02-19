@@ -6,3 +6,4 @@ platformdirs
 python-dotenv
 pytz
 requests
+selectolax

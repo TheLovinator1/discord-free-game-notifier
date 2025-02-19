@@ -1,9 +1,12 @@
 {
     "cSpell.words": [
+        "appdetails",
+        "appids",
         "Asmodee",
         "Astarion",
         "Asterites",
         "Atterax",
+        "autouse",
         "Avrora",
         "Azur",
         "Baldur's",
@@ -23,18 +26,20 @@
         "o-4x4bpaww55p5g3f6xpyqe2cneqxd5d",
         "Pyra",
         "requote",
+        "selectolax",
         "Semiotique",
         "Shadowheart",
         "Speedstorm",
         "Spektaka",
         "Superluminal",
         "Syandana",
+        "Tibba",
         "ubisoft",
         "Vinnie",
         "Warframe",
         "Wargaming",
         "Winterfest",
-        "Wuthering",
+        "Wuthering"
     ],
     "python.analysis.typeCheckingMode": "basic"
 }

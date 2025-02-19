@@ -177,7 +177,7 @@ def test_already_posted() -> None:
     result2: bool = already_posted(file_path, "Half Life 4")
     assert not result2
 
-    result3: bool = already_posted("Not_a_file", "Sharks")  # type: ignore  # noqa: PGH003
+    result3: bool = already_posted("Not_a_file", "Sharks")  # pyright: ignore[reportArgumentType]
     assert not result3
 
 
