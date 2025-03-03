@@ -42,6 +42,7 @@ class FakeResponse:
         self.text: str = text
         self.status_code: int = status_code
         self.json_data: dict[str, dict[str, Any]] = {}
+        self.reason: str = {200: "OK", 404: "Not Found"}.get(status_code, "Unknown")
 
     @property
     def ok(self) -> bool:
@@ -64,14 +65,14 @@ def fake_get(
     """A fake requests.get function that returns local HTML for the Steam search page and fake JSON data for API calls.
 
     Args:
-        url (str): The URL to fetch.
+        url (str): The URL to check.
         headers (dict[str, str] | None): The headers to use for the request.
         timeout (int | None): The timeout for the request.
-        empty_mode (bool): Flag to determine which HTML file to return.
-        **kwargs (dict[str, Any]): Additional keyword arguments.
+        empty_mode (bool): Whether to return an empty response or not.
+        kwargs (dict[str, Any]): Additional keyword arguments.
 
     Returns:
-        FakeResponse: A fake Response object with the appropriate data for the given URL.
+        FakeResponse: A fake response object with the appropriate data.
     """
     if url.startswith(STEAM_URL.split("?")[0]):
         # steam.html has 2 games, steam_empty.html has 0 games
@@ -86,8 +87,9 @@ def fake_get(
         appids: list[str] = query.get("appids", ["753"])
         appid: str = appids[0]
 
-        data: dict[str, dict[str, dict[str, str | list[str]]]] = {
+        data: dict[str, dict[str, Any]] = {
             appid: {
+                "success": True,
                 "data": {
                     "header_image": "http://example.com/header.jpg",
                     "short_description": "A free game description",
@@ -115,7 +117,7 @@ def patch_requests_get_with_mode(monkeypatch: pytest.MonkeyPatch) -> Callable[..
     """
 
     def _patch(*, empty_mode: bool = False) -> None:
-        monkeypatch.setattr(requests, "get", lambda url, **kwargs: fake_get(url, empty_mode=empty_mode, **kwargs))  # pyright: ignore[ reportCallIssue ]
+        monkeypatch.setattr(requests, "get", lambda url, **kwargs: fake_get(url, empty_mode=empty_mode, **kwargs))  # pyright: ignore[reportCallIssue]
 
     return _patch
 
@@ -166,7 +168,7 @@ def test_get_free_steam_games(tmp_path: Path, patch_requests_get_with_mode: Call
         image: dict[str, str | int | None] | None = first_embed.image
         assert image, "Embed image is missing"
         assert "url" in image, "Embed image URL is missing"
-        assert str(image.get("url", "")).startswith("http://example.com/header.jpg"), "Embed image URL not as expected"
+        assert str(image.get("url", "")).startswith("http://example.com/header.jpg"), f"Embed image URL is incorrect: {image.get('url')}"
 
         # If a description was set (via the short_description), verify it contains the expected text.
         if first_embed.description:
