@@ -43,10 +43,11 @@ class MoreData:
     # "11 Feb, 2022"
     release_date: str = ""
 
+    # "Mixed"
     reviews: str = ""
 
 
-def get_more_data(game_id: str) -> MoreData:  # noqa: C901, PLR0912
+def get_more_data(game_id: str) -> MoreData:  # noqa: C901, PLR0912, PLR0915
     """Get more data about the game.
 
     Args:
@@ -102,6 +103,11 @@ def get_more_data(game_id: str) -> MoreData:  # noqa: C901, PLR0912
                 if release_date:
                     more_data.release_date = release_date.get("date", "")
 
+        else:
+            logger.error(f"Failed to get more data for {game_id=}: {game_data_from_api=}")
+    else:
+        logger.error(f"Failed to get more data for {game_id=}: {appdetails_response.status_code} - {appdetails_response.reason}")
+
     logger.debug(f"Getting reviews for {game_id=}")
 
     # {"success":1,"query_summary":{"num_reviews":0,"review_score":5,"review_score_desc":"Mixed","total_positive":125,"total_negative":74,"total_reviews":199},"reviews":[],"cursor":"*"} # noqa: E501
@@ -119,6 +125,10 @@ def get_more_data(game_id: str) -> MoreData:  # noqa: C901, PLR0912
             if reviews:
                 logger.debug(f"{reviews=} for {game_id=}")
                 more_data.reviews = reviews
+        else:
+            logger.error(f"Failed to get reviews for {game_id=}: {game_data=}")
+    else:
+        logger.error(f"Failed to get reviews for {game_id=}: {reviews_response.status_code} - {reviews_response.reason}")
 
     return more_data
 
