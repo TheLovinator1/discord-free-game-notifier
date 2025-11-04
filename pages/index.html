@@ -3,30 +3,68 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Discord Free Game Notifier</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="discord-free-game-notifier">
+    <title>Discord Free Game Notifier</title>
+    <meta name="description"
+        content="Get Discord notifications for free games on Steam, Epic Games Store, Ubisoft Connect, and GOG. Open source bot with webhook support.">
     <meta name="author" content="TheLovinator">
     <meta name="keywords"
-        content="free games, discord, notifier, free game notifier, discord free game notifier, discord free game">
+        content="free games, discord, notifier, free game notifier, discord free game notifier, discord free game, steam, epic games, gog, ubisoft">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thelovinator1.github.io/discord-free-game-notifier/">
+    <meta property="og:title" content="Discord Free Game Notifier">
+    <meta property="og:description"
+        content="Get Discord notifications for free games on Steam, Epic Games Store, Ubisoft Connect, and GOG.">
+    <meta property="og:image" content="https://thelovinator1.github.io/discord-free-game-notifier/images/Bot.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Discord Free Game Notifier">
+    <meta name="twitter:description"
+        content="Get Discord notifications for free games on Steam, Epic Games Store, Ubisoft Connect, and GOG.">
+    <meta name="twitter:image" content="https://thelovinator1.github.io/discord-free-game-notifier/images/Bot.jpg">
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background-color: #141414;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         h1 {
             color: #fff;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 30px;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-top: 40px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
         }
 
         p {
-            color: #fff;
+            color: #ccc;
             text-align: center;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         a {
@@ -36,46 +74,196 @@
 
         a:hover {
             text-decoration: underline;
+            color: #0056b3;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .feature {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        .feature h3 {
+            color: #007bff;
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .feature p {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .json-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .json-links a {
+            background-color: #1e1e1e;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 1px solid #007bff;
+            transition: background-color 0.3s;
+        }
+
+        .json-links a:hover {
+            background-color: #007bff;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .screenshot {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        .cta {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta a {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .cta a:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            border-top: 1px solid #333;
+        }
+
+        footer p {
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        nav {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        nav a {
+            margin: 0 10px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>Discord Free Game Notifier</h1>
-    <br>
-    <p>
-        This site is used for hosting the JSON files for the <a
-            href="https://github.com/TheLovinator1/discord-free-game-notifier">discord-free-game-notifier</a> bot.
-    </p>
-    <br>
-    <p>
-        Send webhook to Discord when a new game releases on Steam, Epic Games Store, Ubisoft Connect or GOG.
-    </p>
-    <p>
-        JSON files:
-        <a href="/discord-free-game-notifier/ubisoft.json">ubisoft.json</a> |
-        <a href="/discord-free-game-notifier/epic.json">epic.json</a> |
-        <a href="/discord-free-game-notifier/steam.json">steam.json</a>
-    </p>
-    <br>
-    <p>
-        <a href="https://github.com/TheLovinator1/discord-free-game-notifier">GitHub repo</a>
-    </p>
-    <p>
-        <a href="/discord-free-game-notifier/sitemap.xml">Sitemap</a>
-    </p>
-    <p>
-        <a href="/discord-free-game-notifier/robots.txt">Robots.txt</a>
-    </p>
+    <main>
+        <h1>Discord Free Game Notifier</h1>
 
-    <p>
-        Made by <a href="https://github.com/TheLovinator1">TheLovinator</a> with ❤️
-    </p>
-    <p>
-        <small>
-            <a href="https://creativecommons.org/public-domain/cc0/">CC0: This work has been marked as dedicated to the public domain. </a>
-        </small>
-    </p>
+        <p>
+            Get instant Discord notifications when free games become available on major gaming platforms.
+        </p>
+
+        <div class="cta">
+            <a href="https://github.com/TheLovinator1/discord-free-game-notifier">View on GitHub</a>
+        </div>
+
+        <h2>Supported Platforms</h2>
+        <div class="features">
+            <div class="feature">
+                <h3>Steam</h3>
+                <p>Free-to-keep promotions</p>
+            </div>
+            <div class="feature">
+                <h3>Epic Games</h3>
+                <p>Weekly free games</p>
+            </div>
+            <div class="feature">
+                <h3>GOG</h3>
+                <p>DRM-free giveaways</p>
+            </div>
+            <div class="feature">
+                <h3>Ubisoft Connect</h3>
+                <p>Limited-time offers</p>
+            </div>
+        </div>
+
+        <div class="screenshot">
+            <img src="/discord-free-game-notifier/images/Bot.jpg"
+                alt="Example Discord notification showing Rise of the Tomb Raider as a free game">
+            <p><small>Example notification in Discord</small></p>
+        </div>
+
+        <h2>JSON Data Files</h2>
+        <p>
+            This site hosts JSON files used by the bot to track free games:
+        </p>
+        <div class="json-links">
+            <a href="/discord-free-game-notifier/steam.json">steam.json</a>
+            <a href="/discord-free-game-notifier/epic.json">epic.json</a>
+            <a href="/discord-free-game-notifier/ubisoft.json">ubisoft.json</a>
+        </div>
+
+        <h2>Setup Instructions</h2>
+        <p>
+            Visit the <a href="https://github.com/TheLovinator1/discord-free-game-notifier#setup">GitHub repository</a>
+            for detailed setup instructions, including Docker and direct installation methods.
+        </p>
+
+        <nav>
+            <a href="/discord-free-game-notifier/sitemap.xml">Sitemap</a>
+            <a href="/discord-free-game-notifier/robots.txt">Robots.txt</a>
+        </nav>
+    </main>
+
+    <footer>
+        <p>
+            Made by <a href="https://github.com/TheLovinator1">TheLovinator</a> with ❤️
+        </p>
+        <p>
+            <small>
+                <a href="https://creativecommons.org/public-domain/cc0/">CC0: This work has been marked as dedicated to
+                    the public domain.</a>
+            </small>
+        </p>
+    </footer>
 </body>
 
 </html>

@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
+        <loc>https://thelovinator1.github.io/discord-free-game-notifier/index.html</loc>
+        <lastmod>2025-11-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
         <loc>https://thelovinator1.github.io/discord-free-game-notifier/steam.json</loc>
-        <lastmod>2024-01-11</lastmod>
+        <lastmod>2025-11-04</lastmod>
         <changefreq>daily</changefreq>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://thelovinator1.github.io/discord-free-game-notifier/epic.json</loc>
-        <lastmod>2023-12-13</lastmod>
+        <lastmod>2025-11-04</lastmod>
         <changefreq>daily</changefreq>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://thelovinator1.github.io/discord-free-game-notifier/ubisoft.json</loc>
-        <lastmod>2023-11-27</lastmod>
+        <lastmod>2025-11-04</lastmod>
         <changefreq>daily</changefreq>
-    </url>
-    <url>
-        <loc>https://thelovinator1.github.io/discord-free-game-notifier/index.html</loc>
-        <lastmod>2024-01-11</lastmod>
-        <changefreq>never</changefreq>
+        <priority>0.8</priority>
     </url>
 </urlset>
