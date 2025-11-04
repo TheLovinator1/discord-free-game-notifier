@@ -12,7 +12,12 @@ from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from pydantic_settings import SettingsConfigDict
 
-load_dotenv(dotenv_path=find_dotenv(), verbose=True)
+dotenv_path = find_dotenv()
+if dotenv_path:
+    logger.info(f"Loading .env file from: {dotenv_path}")
+    load_dotenv(dotenv_path=dotenv_path, verbose=True)
+else:
+    logger.warning("No .env file found. Using environment variables or defaults only.")
 
 logger_format = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> {extra[game_name]} - {message}"
 logger.configure(extra={"game_name": ""})  # Default value
