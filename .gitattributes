@@ -1,0 +1,8 @@
+# Exclude test files from GitHub language statistics
+tests/** linguist-documentation
+tests/*.html linguist-documentation
+tests/*.json linguist-documentation
+tests/*.txt linguist-documentation
+
+# Exclude pages directory from GitHub language statistics
+pages/** linguist-documentation
