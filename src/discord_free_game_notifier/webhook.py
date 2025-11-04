@@ -1,4 +1,5 @@
 import enum
+import html
 import pathlib
 import textwrap
 from typing import TYPE_CHECKING
@@ -92,8 +93,10 @@ def send_embed_webhook(embed: DiscordEmbed, game_id: str, game_service: GameServ
 
         if response.ok:
             logger.info(f"Sent embed for {game_id=} to {game_service=}")
+            # Persist a trimmed, unescaped identifier to avoid duplicates caused by formatting
+            normalized_id: str = html.unescape(str(game_id)).strip()
             with pathlib.Path(f"{settings.app_dir}/{game_service.lower()}.txt").open(mode="a+", encoding="utf-8") as file:
-                file.write(f"{game_id}\n")
+                file.write(f"{normalized_id}\n")
         else:
             logger.error(f"Failed to send embed for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
             logger.error(f"Response content: {response.content}")
@@ -131,8 +134,10 @@ def send_text_webhook(message: str, game_id: str, game_service: GameService) -> 
 
         if response.ok:
             logger.info(f"Sent text message for {game_id=} to {game_service=}")
+            # Persist a trimmed, unescaped identifier to avoid duplicates caused by formatting
+            normalized_id: str = html.unescape(str(game_id)).strip()
             with pathlib.Path(f"{settings.app_dir}/{game_service.lower()}_upcoming.txt").open(mode="a+", encoding="utf-8") as file:
-                file.write(f"{game_id}\n")
+                file.write(f"{normalized_id}\n")
         else:
             logger.error(f"Failed to send text message for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
             logger.error(f"Response content: {response.content}")
