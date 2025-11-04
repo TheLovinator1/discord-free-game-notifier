@@ -153,6 +153,19 @@ def create_json_file() -> None:
             description="Play 5 battles to obtain:\n- AL Avrora - Tier III Premium Soviet cruiser\n- A Port slot\n- A Commander with 3 skill points trained for AL Avrora",  # noqa: E501
             developer="Wargaming Group Limited",
         ),
+        # World of Warships — "8 Years on Steam" Gift Bundle
+        SteamGame(
+            id="world_of_warships_8_years_on_steam_gift_bundle",
+            game_name='World of Warships — "8 Years on Steam" Gift Bundle',
+            game_url=HttpUrl("https://store.steampowered.com/app/4126610/World_of_Warships__8_Years_on_Steam_Gift_Bundle/"),
+            start_date=datetime.datetime(2025, 11, 3, 0, 0, 0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(2025, 11, 26, 23, 59, 59, tzinfo=datetime.UTC),
+            image_link=HttpUrl(
+                "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_8_years_on_steam_gift_bundle.jpg",
+            ),
+            description="8th anniversary of World of Warships on Steam! This package includes:\n- 1x Steam container\n- Steam patch symbol and background\n- Steam permanent camouflage\n- Piece of Cake flag\n- 3 days of Warships Premium Account\n- Access to a two-part combat mission chain (available from 14 November). Complete to receive: Steam Cat permanent camouflage for German Tier V cruiser Königsberg, Steam container, Steam permanent camouflage.",  # noqa: E501
+            developer="Wargaming Group Limited",
+        ),
     ]
 
     free_games = SteamFreeGames(free_games=games)
