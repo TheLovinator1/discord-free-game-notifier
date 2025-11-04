@@ -1,0 +1,24 @@
+# Exclude everything by default to minimize build context
+**
+
+# Allow only what the Dockerfile copies
+!pyproject.toml
+!README.md
+!src/**
+
+# Explicitly ignore VCS, tests, local caches and tooling
+.git
+.gitignore
+.github
+.vscode
+.env
+*.pyc
+__pycache__/
+.venv/
+.dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+coverage.xml
+htmlcov/
+.DS_Store
