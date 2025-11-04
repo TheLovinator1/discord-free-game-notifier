@@ -1,0 +1,101 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "[Test] All tests",
+			"type": "shell",
+			"command": "uv run pytest -q",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "[Check] Epic",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.epic",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Check] Epic (JSON)",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.epic_json_check",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Check] Steam",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.steam",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Check] Steam (JSON)",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.steam_json_check",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Generate] Steam JSON",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.steam_json",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Check] GOG",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.gog",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Check] Ubisoft",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.ubisoft",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Generate] Epic JSON",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.epic_json",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Check] All notifiers",
+			"type": "shell",
+			"command": "uv run bot",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
