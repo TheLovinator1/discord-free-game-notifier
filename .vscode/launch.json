@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "[Debug] Current File",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
@@ -10,12 +10,129 @@
             "justMyCode": true
         },
         {
-            "name": "Python: Run main.py",
+            "name": "[Check] All notifiers (Bot)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/discord_free_game_notifier/main.py",
+            "module": "discord_free_game_notifier.main",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
             "console": "integratedTerminal",
             "justMyCode": true
-        }
+        },
+        // Run Steam notifier as a module
+        {
+            "name": "[Check] Steam",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.steam",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Run Steam JSON as a module
+        {
+            "name": "[Generate] Steam JSON",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.steam_json",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Check Steam JSON as a module
+        {
+            "name": "[Check] Steam (JSON)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.steam_json_check",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Run Epic notifier as a module
+        {
+            "name": "[Check] Epic",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.epic",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Run Epic JSON as a module
+        {
+            "name": "[Generate] Epic JSON",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.epic_json",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Check Epic JSON as a module
+        {
+            "name": "[Check] Epic (JSON)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.epic_json_check",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Run GOG notifier as a module
+        {
+            "name": "[Check] GOG",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.gog",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // Run Ubisoft notifier as a module
+        {
+            "name": "[Check] Ubisoft",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "discord_free_game_notifier.ubisoft",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
     ]
 }
