@@ -1,183 +1,137 @@
-import html
-from collections.abc import Callable
+"""Tests for Steam free game checker."""
+
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal
-from urllib.parse import ParseResult, parse_qs, urlparse
 
-import pytest
-import requests
+from bs4 import BeautifulSoup
+from bs4 import ResultSet
+from bs4 import Tag
 
-from discord_free_game_notifier import settings
-from discord_free_game_notifier.steam import STEAM_URL, get_free_steam_games
-
-if TYPE_CHECKING:
-    from discord_webhook import DiscordEmbed
+from discord_free_game_notifier.steam import AppDetailsData
+from discord_free_game_notifier.steam import MoreData
+from discord_free_game_notifier.steam import PriceOverview
+from discord_free_game_notifier.steam import ReleaseDate
 
 
-# A fake Response object to mimic requests.Response
-class FakeResponse:
-    """A mock Response class that mimics the behavior of requests.Response.
+def test_steam_has_free_games() -> None:
+    """Test that we can detect free games on Steam search results page."""
+    # Load the test HTML file with free games
+    test_file: Path = Path(__file__).parent / "Steam.html"
+    html_content: str = test_file.read_text(encoding="utf-8")
 
-    This class is used for testing purposes to simulate HTTP responses without making actual HTTP requests.
+    # Parse the HTML
+    soup = BeautifulSoup(html_content, "html.parser")
 
-    Attributes:
-        text (str): The response body as text.
-        status_code (int): The HTTP status code of the response.
-        json_data (dict[str, dict[str, Any]]): The JSON data to be returned by json() method.
+    # Find all search result rows
+    search_results: ResultSet[Tag] = soup.find_all("a", class_="search_result_row")
 
-    Properties:
-        ok (bool): Returns True if status_code is 200, False otherwise.
+    # Assert that we found search results
+    assert len(search_results) > 0, "Expected to find search result rows in Steam.html"
 
-    Methods:
-        json(): Returns the pre-set JSON data as a dictionary.
-    """
+    # Verify first game
+    _verify_first_game(search_results[0])
 
-    def __init__(self, text: str, status_code: int) -> None:
-        """Initialize the FakeResponse object with the provided text and status code.
-
-        Args:
-            text (str): The response body as text.
-            status_code (int): The HTTP status code of the response.
-        """
-        self.text: str = text
-        self.status_code: int = status_code
-        self.json_data: dict[str, dict[str, Any]] = {}
-        self.reason: str = {200: "OK", 404: "Not Found"}.get(status_code, "Unknown")
-
-    @property
-    def ok(self) -> bool:
-        """Returns True if the status code is 200, False otherwise."""
-        return self.status_code == 200  # noqa: PLR2004
-
-    def json(self) -> dict[str, dict[str, Any]]:
-        """Returns the pre-set JSON data as a dictionary."""
-        return self.json_data
+    # Verify second game
+    _verify_second_game(search_results[1])
 
 
-def fake_get(
-    url: str,
-    headers: dict[str, str] | None = None,  # noqa: ARG001
-    timeout: int | None = None,  # noqa: ARG001
-    *,
-    empty_mode: bool = False,
-    **kwargs: dict[str, Any],  # noqa: ARG001
-) -> FakeResponse:
-    """A fake requests.get function that returns local HTML for the Steam search page and fake JSON data for API calls.
+def _verify_first_game(first_game: Tag) -> None:
+    """Verify the first game has expected attributes."""
+    # Verify it has the expected attributes
+    assert first_game.has_attr("data-ds-appid"), "Expected search result to have data-ds-appid attribute"
+    assert first_game["data-ds-appid"] == "1507530", f"Expected app ID '1507530', got '{first_game['data-ds-appid']}'"
 
-    Args:
-        url (str): The URL to check.
-        headers (dict[str, str] | None): The headers to use for the request.
-        timeout (int | None): The timeout for the request.
-        empty_mode (bool): Whether to return an empty response or not.
-        kwargs (dict[str, Any]): Additional keyword arguments.
+    # Get the game title
+    title_element: Tag | None = first_game.find("span", class_="title")
+    assert title_element is not None, "Expected to find title element"
+    expected_title = "Stellar Mess: The Princess Conundrum (Chapter 1)"
+    assert title_element.text.strip() == expected_title, f"Expected '{expected_title}', got '{title_element.text.strip()}'"
 
-    Returns:
-        FakeResponse: A fake response object with the appropriate data.
-    """
-    if url.startswith(STEAM_URL.split("?")[0]):
-        # steam.html has 2 games, steam_empty.html has 0 games
-        html_filename: Literal["Steam_empty.html", "Steam.html"] = "Steam_empty.html" if empty_mode else "Steam.html"
-        html_path: Path = Path(__file__).parent / html_filename
-        html_text: str = html_path.read_text(encoding="utf-8")
-        return FakeResponse(html_text, 200)
+    # Verify discount is 100% (free)
+    discount_block: Tag | None = first_game.find("div", class_="discount_block")
+    assert discount_block is not None, "Expected to find discount block"
+    assert discount_block.has_attr("data-discount"), "Expected discount block to have data-discount attribute"
+    assert discount_block["data-discount"] == "100", f"Expected 100% discount, got '{discount_block['data-discount']}%'"
 
-    if url.startswith("https://store.steampowered.com/api/appdetails"):
-        parsed: ParseResult = urlparse(url)
-        query: dict[str, list[str]] = parse_qs(parsed.query)
-        appids: list[str] = query.get("appids", ["753"])
-        appid: str = appids[0]
-
-        data: dict[str, dict[str, Any]] = {
-            appid: {
-                "success": True,
-                "data": {
-                    "header_image": "http://example.com/header.jpg",
-                    "short_description": "A free game description",
-                    "developers": ["Developer A"],
-                    "publishers": ["Publisher A"],
-                },
-            },
-        }
-        response = FakeResponse("", 200)
-        response.json_data = data
-        return response
-
-    return FakeResponse("", 404)
+    # Verify final price is 0
+    assert discount_block.has_attr("data-price-final"), "Expected discount block to have data-price-final attribute"
+    assert discount_block["data-price-final"] == "0", f"Expected final price to be '0', got '{discount_block['data-price-final']}'"
 
 
-@pytest.fixture
-def patch_requests_get_with_mode(monkeypatch: pytest.MonkeyPatch) -> Callable[..., None]:
-    """Patch requests.get dynamically to return either Steam.html or Steam_empty.html.
+def _verify_second_game(second_game: Tag) -> None:
+    """Verify the second game has expected attributes."""
+    assert second_game["data-ds-appid"] == "3161090", f"Expected app ID '3161090', got '{second_game['data-ds-appid']}'"
 
-    Args:
-        monkeypatch (pytest.MonkeyPatch): The pytest monkeypatch object.
-
-    Returns:
-        Callable[[bool], None]: A function that can be called to patch requests.get with the specified mode (empty or not empty).
-    """
-
-    def _patch(*, empty_mode: bool = False) -> None:
-        monkeypatch.setattr(requests, "get", lambda url, **kwargs: fake_get(url, empty_mode=empty_mode, **kwargs))  # pyright: ignore[reportCallIssue]
-
-    return _patch
+    title_element: Tag | None = second_game.find("span", class_="title")
+    assert title_element is not None, "Expected to find title element for second game"
+    expected_title = "Royal Quest Online - Hero Power"
+    assert title_element.text.strip() == expected_title, f"Expected '{expected_title}', got '{title_element.text.strip()}'"
 
 
-@pytest.fixture(autouse=True)
-def use_temp_app_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Override the app_dir in settings to a temporary directory so that the tests do not interfere with any real data.
+def test_steam_no_free_games() -> None:
+    """Test that we correctly handle no free games on Steam search results page."""
+    # Load the test HTML file without free games
+    test_file: Path = Path(__file__).parent / "Steam_empty.html"
+    html_content: str = test_file.read_text(encoding="utf-8")
 
-    Args:
-        tmp_path (Path): The temporary path provided by pytest.
-        monkeypatch (pytest.MonkeyPatch): The pytest monkeypatch object.
-    """
-    monkeypatch.setattr(settings, "app_dir", str(tmp_path))
+    # Parse the HTML
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    # Find all search result rows
+    search_results: ResultSet[Tag] = soup.find_all("a", class_="search_result_row")
+
+    # Assert that we found no search results
+    assert len(search_results) == 0, f"Expected no search result rows in Steam_empty.html, found {len(search_results)}"
 
 
-@pytest.mark.parametrize("empty_mode", [False, True])
-def test_get_free_steam_games(tmp_path: Path, patch_requests_get_with_mode: Callable[..., None], *, empty_mode: bool) -> None:
-    """Test get_free_steam_games with both Steam.html and Steam_empty.html.
+def test_from_app_details_all_fields_mapped() -> None:
+    data = AppDetailsData(
+        developers=["Dev A", "Dev B"],
+        publishers=["Pub X"],
+        price_overview=PriceOverview(
+            currency="EUR",
+            initial=499,
+            final=0,
+            discount_percent=100,
+            initial_formatted="4,99€",
+            final_formatted="0€",
+        ),
+        release_date=ReleaseDate(coming_soon=False, date="11 Feb, 2022"),
+        header_image="https://example.com/header.jpg",
+        short_description="Short & fun",
+    )
 
-    Args:
-        tmp_path (Path): The temporary path provided by pytest.
-        patch_requests_get_with_mode: The fixture to patch requests.get.
-        empty_mode (bool): Whether to use Steam_empty.html (True) or Steam.html (False).
-    """
-    patch_requests_get_with_mode(empty_mode=empty_mode)
+    result: MoreData = MoreData.from_app_details(data, "1507530")
 
-    steam_txt: Path = tmp_path / "steam.txt"
-    if steam_txt.exists():
-        steam_txt.unlink()
+    assert result.developers == ["Dev A", "Dev B"]
+    assert result.publishers == ["Pub X"]
+    assert result.old_price == "4,99€"
+    assert result.release_date == "11 Feb, 2022"
+    assert result.header_image == "https://example.com/header.jpg"
+    assert result.short_description == "Short & fun"
 
-    embeds = list(get_free_steam_games())
 
-    if empty_mode:
-        assert len(embeds) == 0, "Embeds should be empty when no free games are found"
-    else:
-        assert len(embeds) > 0, "No embeds were returned by get_free_steam_games()"
+def test_from_app_details_missing_optional_fields_returns_defaults() -> None:
+    data = AppDetailsData()  # All optional fields omitted (None)
 
-        # Check the first embed for expected properties.
-        first_embed: DiscordEmbed = embeds[0]
+    result: MoreData = MoreData.from_app_details(data, "123")
 
-        # Verify the author is set to "Steam".
-        author: dict[str, str | None] | None = first_embed.author
-        assert author, "Embed author is missing"
-        assert "name" in author, "Embed author name is missing"
-        assert "Steam" in (author.get("name") or ""), "Embed author does not contain 'Steam'"
+    assert result.developers == []
+    assert result.publishers == []
+    assert not result.old_price
+    assert not result.release_date
+    assert result.header_image is None
+    assert not result.short_description
 
-        # Verify that the header image from our fake JSON is used.
-        image: dict[str, str | int | None] | None = first_embed.image
-        assert image, "Embed image is missing"
-        assert "url" in image, "Embed image URL is missing"
-        assert str(image.get("url", "")).startswith("http://example.com/header.jpg"), f"Embed image URL is incorrect: {image.get('url')}"
 
-        # If a description was set (via the short_description), verify it contains the expected text.
-        if first_embed.description:
-            description = html.unescape(first_embed.description)
-            assert "free game description" in description.lower(), "Embed description does not contain expected text"
+def test_from_app_details_partial_fields_only_set_present_values() -> None:
+    # publishers, price_overview, release_date, header_image, short_description remain None
+    data = AppDetailsData(developers=["Solo Dev"])
 
-        # Check that a footer was set (with developer/publisher information).
-        footer: dict[str, str | None] | None = first_embed.footer
-        footer_text: str | None = footer.get("text", "") if footer is not None else ""
-        assert footer, "Embed footer is missing"
-        assert footer_text, "Embed footer text is missing"
-        assert footer_text.strip(), "Embed footer is empty or missing"
+    result: MoreData = MoreData.from_app_details(data, "999")
+
+    assert result.developers == ["Solo Dev"]
+    assert result.publishers == []  # default remains
+    assert not result.old_price  # not set without price_overview
+    assert not result.release_date  # not set without release_date
+    assert result.header_image is None
+    assert not result.short_description

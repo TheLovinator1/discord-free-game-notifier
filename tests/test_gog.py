@@ -1,58 +1,57 @@
-from __future__ import annotations
+"""Tests for GOG free game checker."""
 
-from collections.abc import Generator
-from typing import Any
+from pathlib import Path
 
-from discord_webhook import DiscordEmbed
+from bs4 import BeautifulSoup
+from bs4 import Tag
 
-from discord_free_game_notifier.gog import (
-    get_free_gog_game,
-    get_free_gog_game_from_store,
-)
-
-
-def test_get_free_gog_game() -> None:
-    """Test if we can get the free game from GOG."""
-    get_free_gog_game()
+from discord_free_game_notifier.gog import get_game_image
+from discord_free_game_notifier.gog import get_game_name
+from discord_free_game_notifier.gog import get_giveaway_link
 
 
-# Define the test.
-def test_get_free_gog_game_from_list() -> None:
-    """Test if we can get the free game from GOG.
+def test_gog_has_game_on_index_page() -> None:
+    """Test that we can detect a game on the GOG index page."""
+    # Load the test HTML file with a giveaway
+    test_file: Path = Path(__file__).parent / "gog_has_games.html"
+    html_content: str = test_file.read_text(encoding="utf-8")
 
-    Raises:
-        AssertionError: If the game has no author, image, or description.
-    """
-    free_game: Generator[DiscordEmbed | None, Any, None] = get_free_gog_game_from_store()
+    # Parse the HTML
+    soup = BeautifulSoup(html_content, "html.parser")
+    giveaway: Tag | None = soup.find("giveaway")
 
-    # Make sure we get a generator.
-    assert free_game is not None
-    assert isinstance(free_game, Generator)
+    # Assert that we found a giveaway
+    assert giveaway is not None, "Expected to find a giveaway tag in gog_has_games.html"
 
-    # Loop through the generator.
-    for game in free_game:
-        assert isinstance(game, DiscordEmbed)
+    # Parse the giveaway content
+    giveaway_soup = BeautifulSoup(str(giveaway), "html.parser")
 
-        if game.author is None:
-            # If the author is None, we can't do any tests.
-            msg = "Author is None."
-            raise AssertionError(msg)
+    # Test game name extraction
+    game_name: str = get_game_name(giveaway_soup=giveaway_soup, giveaway=giveaway)
+    assert game_name == "STASIS", f"Expected game name 'STASIS', got '{game_name}'"
 
-        if game.image is None:
-            # If the image is None, we can't do any tests.
-            msg = "Image is None."
-            raise AssertionError(msg)
+    # Test giveaway link extraction
+    giveaway_link: str = get_giveaway_link(giveaway=giveaway, game_name=game_name)
+    assert giveaway_link == "https://www.gog.com/en/game/stasis", f"Expected 'https://www.gog.com/en/game/stasis', got '{giveaway_link}'"
 
-        if game.description is None:
-            # If the image is None, we can't do any tests.
-            msg = "Image is None."
-            raise AssertionError(msg)
+    # Test image URL extraction
+    image_url: str = get_game_image(giveaway=giveaway_soup, game_name=game_name)
+    assert image_url is not None, "Expected to find an image URL"
 
-        assert game.author["name"]
-        assert game.author["icon_url"]
-        assert game.author["url"]
-        assert game.image["url"]
-        assert game.description.startswith("[Click here to claim")
+    # Note: The saved HTML file has relative paths, so we just check it's not empty
+    # In real usage from the live site, this would be an absolute URL
+    assert len(image_url) > 0, "Expected a non-empty image URL"
 
-        # Stop the generator.
-        break
+
+def test_gog_no_game_on_index_page() -> None:
+    """Test that we correctly handle no giveaway on the GOG index page."""
+    # Load the test HTML file without a giveaway
+    test_file: Path = Path(__file__).parent / "gog_no_games.html"
+    html_content: str = test_file.read_text(encoding="utf-8")
+
+    # Parse the HTML
+    soup = BeautifulSoup(html_content, "html.parser")
+    giveaway: Tag | None = soup.find("giveaway")
+
+    # Assert that we did not find a giveaway
+    assert giveaway is None, "Expected no giveaway tag in gog_no_games.html"

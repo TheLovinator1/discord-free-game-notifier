@@ -1,31 +1,233 @@
-from pathlib import Path
+import datetime
+from typing import Any
+from typing import LiteralString
 
-from discord_free_game_notifier.ubisoft import create_json_file, get_json
+import pytest
+from pydantic import HttpUrl
+from pydantic import ValidationError
 
-
-def test_create_json_file() -> None:
-    """Test that the create_json_file function creates a file."""
-    # Remove old file
-    if Path("pages/ubisoft.json").exists():
-        Path("pages/ubisoft.json").unlink()
-
-    # Create the file
-    create_json_file()
-
-    # Check if the file exists
-    assert Path("pages/ubisoft.json").exists()
+from discord_free_game_notifier.ubisoft import UbisoftFreeGames
+from discord_free_game_notifier.ubisoft import UbisoftGame
 
 
-def test_get_json() -> None:
-    """Test that the get_json function returns a dict."""
-    json = get_json()
-    assert isinstance(json, dict)
-    assert json["free_games"]
+def _make_game() -> UbisoftGame:
+    """Helper to create a valid UbisoftGame instance for testing the serializer.
 
-    assert json["free_games"][0]["id"]
-    assert json["free_games"][0]["game_name"]
-    assert json["free_games"][0]["game_url"]
-    assert json["free_games"][0]["start_date"]
-    assert json["free_games"][0]["end_date"]
-    assert json["free_games"][0]["description"]
-    assert json["free_games"][0]["image_link"]
+    Returns:
+        UbisoftGame: A valid UbisoftGame instance.
+    """
+    return UbisoftGame(
+        id="test_game",
+        game_name="Test Game",
+        game_url=HttpUrl("https://example.com/game"),
+        start_date=datetime.datetime.now(tz=datetime.UTC),
+        end_date=(datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1)),
+        image_link=HttpUrl("https://example.com/image.png"),
+        description="Test description",
+    )
+
+
+def test_serialize_datetime_returns_plus_zero_for_utc() -> None:
+    game: UbisoftGame = _make_game()
+    dt = datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=datetime.UTC)
+    result: str = game.serialize_datetime(dt)
+    assert result == dt.isoformat()
+    assert result.endswith("+00:00")
+
+
+def test_serialize_datetime_returns_iso_for_naive_datetime() -> None:
+    game: UbisoftGame = _make_game()
+    dt = datetime.datetime(2023, 1, 1, 12, 0, 0)  # naive datetime  # noqa: DTZ001
+    result: str = game.serialize_datetime(dt)
+    assert result == dt.isoformat()
+    assert "+" not in result
+    assert "Z" not in result
+
+
+def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
+    start = datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC)
+    end = datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC)
+    game = UbisoftGame(
+        id="aware_ok",
+        game_name="Aware OK",
+        game_url=HttpUrl("https://example.com/game"),
+        start_date=start,
+        end_date=end,
+        image_link=HttpUrl("https://example.com/image.png"),
+        description="desc",
+    )
+    assert game.start_date == start
+    assert game.end_date == end
+
+
+def test_validate_timezone_aware_rejects_naive_start_date() -> None:
+    start = datetime.datetime(2024, 1, 1, 10, 0, 0)  # noqa: DTZ001
+    end = datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC)
+    with pytest.raises(ValidationError) as exc:
+        UbisoftGame(
+            id="naive_start",
+            game_name="Naive Start",
+            game_url=HttpUrl("https://example.com/game"),
+            start_date=start,
+            end_date=end,
+            image_link=HttpUrl("https://example.com/image.png"),
+            description="desc",
+        )
+    assert "Input should have timezone info" in str(exc.value)
+    assert any("start_date" in err.get("loc", ()) for err in exc.value.errors())
+
+
+def test_validate_timezone_aware_rejects_naive_end_date() -> None:
+    start = datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC)
+    end = datetime.datetime(2024, 1, 2, 10, 0, 0)  # noqa: DTZ001
+    with pytest.raises(ValidationError) as exc:
+        UbisoftGame(
+            id="naive_end",
+            game_name="Naive End",
+            game_url=HttpUrl("https://example.com/game"),
+            start_date=start,
+            end_date=end,
+            image_link=HttpUrl("https://example.com/image.png"),
+            description="desc",
+        )
+    assert "Input should have timezone info" in str(exc.value)
+    assert any("end_date" in err.get("loc", ()) for err in exc.value.errors())
+
+
+def test_validate_timezone_aware_accepts_non_utc_timezone() -> None:
+    ist = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+    start = datetime.datetime(2024, 1, 1, 15, 30, tzinfo=ist)
+    end = datetime.datetime(2024, 1, 2, 15, 30, tzinfo=ist)
+    game = UbisoftGame(
+        id="non_utc_ok",
+        game_name="Non-UTC OK",
+        game_url=HttpUrl("https://example.com/game"),
+        start_date=start,
+        end_date=end,
+        image_link=HttpUrl("https://example.com/image.png"),
+        description="desc",
+    )
+    assert game.start_date.tzinfo is not None
+    assert game.end_date.tzinfo is not None
+
+
+def test_game_name_max_length() -> None:
+    """Test that game_name enforces max_length of 200."""
+    long_name: LiteralString = "A" * 201
+    with pytest.raises(ValidationError) as exc:
+        UbisoftGame(
+            id="long_name",
+            game_name=long_name,
+            game_url=HttpUrl("https://example.com/game"),
+            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            image_link=HttpUrl("https://example.com/image.png"),
+            description="desc",
+        )
+    assert "String should have at most 200 characters" in str(exc.value)
+
+
+def test_description_max_length() -> None:
+    """Test that description enforces max_length of 4000."""
+    long_desc: LiteralString = "A" * 4001
+    with pytest.raises(ValidationError) as exc:
+        UbisoftGame(
+            id="long_desc",
+            game_name="Game",
+            game_url=HttpUrl("https://example.com/game"),
+            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            image_link=HttpUrl("https://example.com/image.png"),
+            description=long_desc,
+        )
+    assert "String should have at most 4000 characters" in str(exc.value)
+
+
+def test_invalid_game_url() -> None:
+    """Test that invalid URLs for game_url raise ValidationError."""
+    with pytest.raises(ValidationError) as exc:
+        UbisoftGame(
+            id="invalid_url",
+            game_name="Game",
+            game_url="not-a-url",  # pyright: ignore[reportArgumentType]
+            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            image_link=HttpUrl("https://example.com/image.png"),
+            description="desc",
+        )
+    assert "url" in str(exc.value).lower()
+
+
+def test_invalid_image_link() -> None:
+    """Test that invalid URLs for image_link raise ValidationError."""
+    with pytest.raises(ValidationError) as exc:
+        UbisoftGame(
+            id="invalid_img",
+            game_name="Game",
+            game_url=HttpUrl("https://example.com/game"),
+            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            image_link="not-a-url",  # pyright: ignore[reportArgumentType]
+            description="desc",
+        )
+    assert "url" in str(exc.value).lower()
+
+
+def test_ubisoft_free_games_unique_ids() -> None:
+    """Test that UbisoftFreeGames accepts unique game IDs."""
+    game1: UbisoftGame = _make_game()
+    game2 = UbisoftGame(
+        id="test_game2",
+        game_name="Test Game 2",
+        game_url=HttpUrl("https://example.com/game2"),
+        start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image2.png"),
+        description="Test description 2",
+    )
+    free_games = UbisoftFreeGames(free_games=[game1, game2])
+    assert len(free_games.free_games) == 2
+
+
+def test_ubisoft_free_games_duplicate_ids() -> None:
+    """Test that UbisoftFreeGames rejects duplicate game IDs."""
+    game1: UbisoftGame = _make_game()
+    game2 = UbisoftGame(
+        id="test_game",  # Duplicate ID
+        game_name="Test Game 2",
+        game_url=HttpUrl("https://example.com/game2"),
+        start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image2.png"),
+        description="Test description 2",
+    )
+    with pytest.raises(ValidationError) as exc:
+        UbisoftFreeGames(free_games=[game1, game2])
+    assert "Duplicate game IDs found" in str(exc.value)
+
+
+def test_serialize_datetime_with_non_utc_timezone() -> None:
+    """Test serialize_datetime with a non-UTC timezone."""
+    game: UbisoftGame = _make_game()
+    est = datetime.timezone(datetime.timedelta(hours=-5))
+    dt = datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=est)
+    result = game.serialize_datetime(dt)
+    assert result == dt.isoformat()
+    assert result.endswith("-05:00")
+
+
+def test_model_dump_json_mode() -> None:
+    """Test that model_dump with mode='json' works correctly."""
+    game: UbisoftGame = _make_game()
+    dumped: dict[str, Any] = game.model_dump(mode="json")
+    assert "start_date" in dumped
+    assert "end_date" in dumped
+    assert isinstance(dumped["start_date"], str)
+    assert isinstance(dumped["end_date"], str)
+    assert dumped["start_date"].endswith("+00:00")
+
+
+def test_ubisoft_free_games_empty_list() -> None:
+    """Test UbisoftFreeGames with an empty list of games."""
+    free_games = UbisoftFreeGames(free_games=[])
+    assert free_games.free_games == []
