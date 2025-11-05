@@ -396,9 +396,9 @@ def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None: 
 
     for game in response.data.Catalog.searchStore.elements:
         logger.info(f"Checking game: {game.title}")
-        game_id: str = game.id
+        game_title: str = game.title
 
-        if game_id in unique_game_ids:
+        if game_title in unique_game_ids:
             logger.debug(f"{game.title}: Already processed in this run, skipping.")
             continue
 
@@ -440,15 +440,15 @@ def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None: 
 
         if is_currently_free:
             # Check if already posted as free game
-            if already_posted(game_service=GameService.EPIC, game_name=game_id):
+            if already_posted(game_service=GameService.EPIC, game_name=game_title):
                 continue
 
             if embed := create_embed(game):
-                notified_games.append((embed, game_id, False))
-                unique_game_ids.add(game_id)
+                notified_games.append((embed, game_title, False))
+                unique_game_ids.add(game_title)
         elif is_upcoming:
             # Check if already posted as upcoming
-            if already_posted_upcoming(game_service=GameService.EPIC, game_name=game_id):
+            if already_posted_upcoming(game_service=GameService.EPIC, game_name=game_title):
                 continue
 
             # Create plain text message for upcoming game
@@ -458,8 +458,8 @@ def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None: 
             message: str = (
                 f"🎮 **Upcoming Free Game on Epic Games**\n[{game.title}](<{url}>) will be free <t:{start_time}:R> (on <t:{start_time}:F>)"
             )
-            notified_games.append((message, game_id, True))
-            unique_game_ids.add(game_id)
+            notified_games.append((message, game_title, True))
+            unique_game_ids.add(game_title)
         else:
             logger.info(f"{game.title}: Not a free or upcoming promotion, skipping.")
 
@@ -521,16 +521,16 @@ def main() -> None:
     """Main function to get free Epic games and send embeds or text messages."""
     free_games: list[tuple[DiscordEmbed | str, str, bool]] | None = get_free_epic_games()
     if free_games:
-        for content, game_id, is_upcoming in free_games:
+        for content, game_name, is_upcoming in free_games:
             if is_upcoming:
                 if isinstance(content, str):
                     # Send plain text message for upcoming games
-                    send_text_webhook(message=content, game_id=game_id, game_service=GameService.EPIC)
+                    send_text_webhook(message=content, game_id=game_name, game_service=GameService.EPIC)
             elif isinstance(content, DiscordEmbed):
                 # Send embed for currently free games
-                send_embed_webhook(embed=content, game_id=game_id, game_service=GameService.EPIC)
+                send_embed_webhook(embed=content, game_id=game_name, game_service=GameService.EPIC)
             else:
-                logger.error(f"Unexpected content type for game ID {game_id}, skipping.")
+                logger.error(f"Unexpected content type for game name {game_name}, skipping.")
 
 
 if __name__ == "__main__":
