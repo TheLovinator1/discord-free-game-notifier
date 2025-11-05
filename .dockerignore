@@ -3,6 +3,7 @@
 
 # Allow only what the Dockerfile copies
 !pyproject.toml
+!uv.lock
 !README.md
 !src/**
 
