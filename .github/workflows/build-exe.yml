@@ -86,7 +86,7 @@ jobs:
           subject-path: "dist/discord-free-game-notifier.exe"
 
       - name: Upload Windows executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: discord-free-game-notifier-windows
           path: |
@@ -153,7 +153,7 @@ jobs:
           subject-path: "dist/discord-free-game-notifier"
 
       - name: Upload Linux executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: discord-free-game-notifier-linux
           path: |
@@ -220,7 +220,7 @@ jobs:
           subject-path: "dist/discord-free-game-notifier"
 
       - name: Upload macOS executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: discord-free-game-notifier-macos
           path: |
@@ -291,7 +291,7 @@ jobs:
           subject-path: "dist/discord-free-game-notifier"
 
       - name: Upload macOS ARM64 executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: discord-free-game-notifier-macos-arm64
           path: |
@@ -367,7 +367,7 @@ jobs:
           subject-path: "dist/discord-free-game-notifier"
 
       - name: Upload Linux ARM64 executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: discord-free-game-notifier-linux-arm64
           path: |
