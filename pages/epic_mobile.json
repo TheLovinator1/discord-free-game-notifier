@@ -1,0 +1,29 @@
+{
+    "free_games": [
+        {
+            "id": "idle_champions_nixies_champions_of_renown_pack",
+            "game_name": "Idle Champions - Nixie's Champions of Renown Pack",
+            "game_url": "https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-c9f2ce27f1c44ba9ad0cf4260f9e709e&offers=1-7e508f543b05465abe3a935960eb70ac-dd07843b88f64ee898a4ea415c6dcb17",
+            "start_date": "2025-11-06T16:00:00+00:00",
+            "end_date": "2025-11-13T16:00:00+00:00",
+            "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/idle_champions_nixie.jpg",
+            "description": "**Nixie's Champions of Renown Bundle Pack (Epic Exclusive)** \u2014 free by logging into Idle Champions via the Epic Games Store before <t:1763049600:R>.",
+            "developer": "Codename Entertainment",
+            "platform": "Android & iOS",
+            "includes": [
+                "Unlocks: Nixie (Seat 1), Mehen (Seat 3), Shadowheart (Seat 6), Freely (Seat 7), Tess (Seat 8)",
+                "Exclusive Familiar: Sting the Scorpion",
+                "Platinum Chests: 32 each for Nixie, Mehen, Shadowheart, Freely, Tess (2 guaranteed Shiny equipment cards per Champion)",
+                "1x Potion of the Gem Hunter, 1x Potion of the Gold Hunter (2-week buff)"
+            ],
+            "quick_links": {
+                "Buy Both": "https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-c9f2ce27f1c44ba9ad0cf4260f9e709e&offers=1-7e508f543b05465abe3a935960eb70ac-dd07843b88f64ee898a4ea415c6dcb17",
+                "Buy Android": "https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-c9f2ce27f1c44ba9ad0cf4260f9e709e",
+                "Buy iOS": "https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-dd07843b88f64ee898a4ea415c6dcb17",
+                "Store Android": "https://store.epicgames.com/p/idle-champions-of-the-forgotten-realms-android-6df748",
+                "Store iOS": "https://store.epicgames.com/p/idle-champions-of-the-forgotten-realms-ios-77e761",
+                "Transactions": "https://www.epicgames.com/account/transactions?productName=egs"
+            }
+        }
+    ]
+}
