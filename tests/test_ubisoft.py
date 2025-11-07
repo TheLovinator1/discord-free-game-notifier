@@ -31,17 +31,17 @@ def test_serialize_datetime_returns_plus_zero_for_utc() -> None:
     game: UbisoftGame = _make_game()
     dt = datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=datetime.UTC)
     result: str = game.serialize_datetime(dt)
-    assert result == dt.isoformat()
-    assert result.endswith("+00:00")
+    assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
+    assert result.endswith("+00:00"), f"Expected timezone '+00:00' but got {result}"
 
 
 def test_serialize_datetime_returns_iso_for_naive_datetime() -> None:
     game: UbisoftGame = _make_game()
     dt = datetime.datetime(2023, 1, 1, 12, 0, 0)  # naive datetime  # noqa: DTZ001
     result: str = game.serialize_datetime(dt)
-    assert result == dt.isoformat()
-    assert "+" not in result
-    assert "Z" not in result
+    assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
+    assert "+" not in result, f"Expected no timezone offset but got {result}"
+    assert "Z" not in result, f"Expected no 'Z' timezone but got {result}"
 
 
 def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
@@ -56,8 +56,8 @@ def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
         image_link=HttpUrl("https://example.com/image.png"),
         description="desc",
     )
-    assert game.start_date == start
-    assert game.end_date == end
+    assert game.start_date == start, f"Expected start_date to be {start} but got {game.start_date}"
+    assert game.end_date == end, f"Expected end_date to be {end} but got {game.end_date}"
 
 
 def test_validate_timezone_aware_rejects_naive_start_date() -> None:
@@ -73,8 +73,10 @@ def test_validate_timezone_aware_rejects_naive_start_date() -> None:
             image_link=HttpUrl("https://example.com/image.png"),
             description="desc",
         )
-    assert "Input should have timezone info" in str(exc.value)
-    assert any("start_date" in err.get("loc", ()) for err in exc.value.errors())
+    assert "Input should have timezone info" in str(exc.value), f"Unexpected error message: {exc.value}"
+
+    assert_msg: str = f"Expected 'start_date' in error locations: {exc.value.errors()}"
+    assert any("start_date" in err.get("loc", ()) for err in exc.value.errors()), assert_msg
 
 
 def test_validate_timezone_aware_rejects_naive_end_date() -> None:
@@ -90,8 +92,8 @@ def test_validate_timezone_aware_rejects_naive_end_date() -> None:
             image_link=HttpUrl("https://example.com/image.png"),
             description="desc",
         )
-    assert "Input should have timezone info" in str(exc.value)
-    assert any("end_date" in err.get("loc", ()) for err in exc.value.errors())
+    assert "Input should have timezone info" in str(exc.value), f"Unexpected error message: {exc.value}"
+    assert any("end_date" in err.get("loc", ()) for err in exc.value.errors()), f"Expected 'end_date' in error locations: {exc.value}"
 
 
 def test_validate_timezone_aware_accepts_non_utc_timezone() -> None:
@@ -107,8 +109,8 @@ def test_validate_timezone_aware_accepts_non_utc_timezone() -> None:
         image_link=HttpUrl("https://example.com/image.png"),
         description="desc",
     )
-    assert game.start_date.tzinfo is not None
-    assert game.end_date.tzinfo is not None
+    assert game.start_date.tzinfo is not None, "Expected start_date to be timezone-aware"
+    assert game.end_date.tzinfo is not None, "Expected end_date to be timezone-aware"
 
 
 def test_game_name_max_length() -> None:
@@ -124,7 +126,7 @@ def test_game_name_max_length() -> None:
             image_link=HttpUrl("https://example.com/image.png"),
             description="desc",
         )
-    assert "String should have at most 200 characters" in str(exc.value)
+    assert "String should have at most 200 characters" in str(exc.value), f"Unexpected error message: {exc.value}"
 
 
 def test_description_max_length() -> None:
@@ -140,7 +142,7 @@ def test_description_max_length() -> None:
             image_link=HttpUrl("https://example.com/image.png"),
             description=long_desc,
         )
-    assert "String should have at most 4000 characters" in str(exc.value)
+    assert "String should have at most 4000 characters" in str(exc.value), f"Unexpected error message: {exc.value}"
 
 
 def test_invalid_game_url() -> None:
@@ -155,7 +157,7 @@ def test_invalid_game_url() -> None:
             image_link=HttpUrl("https://example.com/image.png"),
             description="desc",
         )
-    assert "url" in str(exc.value).lower()
+    assert "url" in str(exc.value).lower(), f"Unexpected error message: {exc.value}"
 
 
 def test_invalid_image_link() -> None:
@@ -170,7 +172,7 @@ def test_invalid_image_link() -> None:
             image_link="not-a-url",  # pyright: ignore[reportArgumentType]
             description="desc",
         )
-    assert "url" in str(exc.value).lower()
+    assert "url" in str(exc.value).lower(), f"Unexpected error message: {exc.value}"
 
 
 def test_ubisoft_free_games_unique_ids() -> None:
@@ -186,7 +188,7 @@ def test_ubisoft_free_games_unique_ids() -> None:
         description="Test description 2",
     )
     free_games = UbisoftFreeGames(free_games=[game1, game2])
-    assert len(free_games.free_games) == 2
+    assert len(free_games.free_games) == 2, f"Expected 2 unique games but got {len(free_games.free_games)}"
 
 
 def test_ubisoft_free_games_duplicate_ids() -> None:
@@ -203,7 +205,8 @@ def test_ubisoft_free_games_duplicate_ids() -> None:
     )
     with pytest.raises(ValidationError) as exc:
         UbisoftFreeGames(free_games=[game1, game2])
-    assert "Duplicate game IDs found" in str(exc.value)
+
+    assert "Duplicate game IDs found" in str(exc.value), f"Unexpected error message: {exc.value}"
 
 
 def test_serialize_datetime_with_non_utc_timezone() -> None:
@@ -211,23 +214,23 @@ def test_serialize_datetime_with_non_utc_timezone() -> None:
     game: UbisoftGame = _make_game()
     est = datetime.timezone(datetime.timedelta(hours=-5))
     dt = datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=est)
-    result = game.serialize_datetime(dt)
-    assert result == dt.isoformat()
-    assert result.endswith("-05:00")
+    result: str = game.serialize_datetime(dt)
+    assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
+    assert result.endswith("-05:00"), f"Expected timezone '-05:00' but got {result}"
 
 
 def test_model_dump_json_mode() -> None:
     """Test that model_dump with mode='json' works correctly."""
     game: UbisoftGame = _make_game()
     dumped: dict[str, Any] = game.model_dump(mode="json")
-    assert "start_date" in dumped
-    assert "end_date" in dumped
-    assert isinstance(dumped["start_date"], str)
-    assert isinstance(dumped["end_date"], str)
-    assert dumped["start_date"].endswith("+00:00")
+    assert "start_date" in dumped, f"Expected 'start_date' in dumped keys but got {dumped.keys()}"
+    assert "end_date" in dumped, f"Expected 'end_date' in dumped keys but got {dumped.keys()}"
+    assert isinstance(dumped["start_date"], str), f"Expected 'start_date' to be str but got {type(dumped['start_date'])}"
+    assert isinstance(dumped["end_date"], str), f"Expected 'end_date' to be str but got {type(dumped['end_date'])}"
+    assert dumped["start_date"].endswith("+00:00"), f"Expected timezone '+00:00' but got {dumped['start_date']}"
 
 
 def test_ubisoft_free_games_empty_list() -> None:
     """Test UbisoftFreeGames with an empty list of games."""
     free_games = UbisoftFreeGames(free_games=[])
-    assert free_games.free_games == []
+    assert free_games.free_games == [], f"Expected empty list but got {free_games.free_games}"

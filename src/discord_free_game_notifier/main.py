@@ -10,11 +10,12 @@ from discord_webhook import DiscordEmbed
 from loguru import logger
 
 from discord_free_game_notifier.epic import get_free_epic_games
-from discord_free_game_notifier.epic_json import get_epic_free_games as get_epic_json_games
+from discord_free_game_notifier.epic_json import get_epic_json_games
+from discord_free_game_notifier.epic_mobile import get_epic_mobile_json_games
 from discord_free_game_notifier.gog import get_free_gog_game
 from discord_free_game_notifier.gog import get_free_gog_game_from_store
 from discord_free_game_notifier.steam import get_free_steam_games
-from discord_free_game_notifier.steam_json import get_steam_free_games as get_steam_json_games
+from discord_free_game_notifier.steam_json import get_steam_json_games
 from discord_free_game_notifier.ubisoft import get_ubisoft_free_games
 from discord_free_game_notifier.webhook import GameService
 from discord_free_game_notifier.webhook import send_embed_webhook
@@ -67,6 +68,14 @@ def _check_epic_json_games() -> None:
             send_embed_webhook(embed=embed, game_id=game_id, game_service=GameService.EPIC)
 
 
+def _check_epic_mobile_json_games() -> None:
+    """Check Epic Games Mobile (JSON) for free games."""
+    epic_mobile_json_games: list[tuple[DiscordEmbed, str]] | None = get_epic_mobile_json_games()
+    if epic_mobile_json_games:
+        for embed, game_id in epic_mobile_json_games:
+            send_embed_webhook(embed=embed, game_id=game_id, game_service=GameService.EPIC)
+
+
 def _check_steam_games() -> None:
     """Check Steam for free games."""
     steam_games: list[tuple[DiscordEmbed, str]] | None = get_free_steam_games()
@@ -113,6 +122,7 @@ def check_free_games() -> None:
 
     _safe_check_service("Epic (API)", _check_epic_games)
     _safe_check_service("Epic (JSON)", _check_epic_json_games)
+    _safe_check_service("Epic (Mobile JSON)", _check_epic_mobile_json_games)
     _safe_check_service("Steam", _check_steam_games)
     _safe_check_service("Steam (JSON)", _check_steam_json_games)
     _safe_check_service("GOG (store search)", _check_gog_store_games)

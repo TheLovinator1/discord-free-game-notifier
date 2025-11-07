@@ -223,7 +223,7 @@ def create_json_file() -> None:
         logger.info("Created/updated epic.json")
 
 
-def get_epic_free_games() -> list[tuple[DiscordEmbed, str]] | None:
+def get_epic_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     """Get the free games from epic.json.
 
     Returns:

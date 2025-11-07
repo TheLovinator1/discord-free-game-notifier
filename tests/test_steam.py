@@ -25,7 +25,7 @@ def test_steam_has_free_games() -> None:
     search_results: ResultSet[Tag] = soup.find_all("a", class_="search_result_row")
 
     # Assert that we found search results
-    assert len(search_results) > 0, "Expected to find search result rows in Steam.html"
+    assert len(search_results) > 0, f"Expected to find search result rows in Steam.html, found {len(search_results)}"
 
     # Verify first game
     _verify_first_game(search_results[0])
@@ -115,12 +115,12 @@ def test_from_app_details_missing_optional_fields_returns_defaults() -> None:
 
     result: MoreData = MoreData.from_app_details(data, "123")
 
-    assert result.developers == []
-    assert result.publishers == []
-    assert not result.old_price
-    assert not result.release_date
-    assert result.header_image is None
-    assert not result.short_description
+    assert result.developers == [], f"Expected empty developers but got {result.developers}"
+    assert result.publishers == [], f"Expected empty publishers but got {result.publishers}"
+    assert not result.old_price, f"Expected no old_price but got {result.old_price}"
+    assert not result.release_date, f"Expected no release_date but got {result.release_date}"
+    assert result.header_image is None, f"Expected no header_image but got {result.header_image}"
+    assert not result.short_description, f"Expected no short_description but got {result.short_description}"
 
 
 def test_from_app_details_partial_fields_only_set_present_values() -> None:
@@ -130,8 +130,8 @@ def test_from_app_details_partial_fields_only_set_present_values() -> None:
     result: MoreData = MoreData.from_app_details(data, "999")
 
     assert result.developers == ["Solo Dev"]
-    assert result.publishers == []  # default remains
-    assert not result.old_price  # not set without price_overview
-    assert not result.release_date  # not set without release_date
-    assert result.header_image is None
-    assert not result.short_description
+    assert result.publishers == [], f"Expected empty publishers but got {result.publishers}"  # default remains
+    assert not result.old_price, f"Expected no old_price but got {result.old_price}"  # not set without price_overview
+    assert not result.release_date, f"Expected no release_date but got {result.release_date}"  # not set without release_date
+    assert result.header_image is None, f"Expected no header_image but got {result.header_image}"
+    assert not result.short_description, f"Expected no short_description but got {result.short_description}"

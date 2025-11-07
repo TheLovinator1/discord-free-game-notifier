@@ -47,7 +47,7 @@ def tmp_app_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 def test_already_posted_trims_and_handles_html_entities(tmp_app_dir: Path) -> None:
     service = GameService.STEAM
-    posted_file = tmp_app_dir / f"{service.value.lower()}.txt"
+    posted_file: Path = tmp_app_dir / f"{service.value.lower()}.txt"
     posted_file.write_text(" Half\nTom &amp; Jerry\n", encoding="utf-8")
 
     assert already_posted(service, "Half") is True
@@ -57,7 +57,7 @@ def test_already_posted_trims_and_handles_html_entities(tmp_app_dir: Path) -> No
 
 def test_already_posted_upcoming_trims_and_handles_html_entities(tmp_app_dir: Path) -> None:
     service = GameService.STEAM
-    upcoming_file = tmp_app_dir / f"{service.value.lower()}_upcoming.txt"
+    upcoming_file: Path = tmp_app_dir / f"{service.value.lower()}_upcoming.txt"
     upcoming_file.write_text("  Soon ™  \nFish &amp; Chips\n", encoding="utf-8")
 
     assert already_posted_upcoming(service, "Soon ™") is True

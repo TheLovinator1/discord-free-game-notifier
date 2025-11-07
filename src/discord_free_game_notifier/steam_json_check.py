@@ -9,7 +9,7 @@ def main() -> None:
     `discord_free_game_notifier.steam_json`, which now only generates
     the JSON file.
     """
-    free_games = steam_json.get_steam_free_games()
+    free_games = steam_json.get_steam_json_games()
     if free_games:
         for embed, game_id in free_games:
             webhook.send_embed_webhook(embed=embed, game_id=game_id, game_service=webhook.GameService.STEAM)

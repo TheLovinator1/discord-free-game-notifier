@@ -9,7 +9,7 @@ def main() -> None:
     `discord_free_game_notifier.epic_json`, which now only generates
     the JSON file.
     """
-    free_games = epic_json.get_epic_free_games()
+    free_games = epic_json.get_epic_json_games()
     if free_games:
         for embed, game_id in free_games:
             webhook.send_embed_webhook(embed=embed, game_id=game_id, game_service=webhook.GameService.EPIC)

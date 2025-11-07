@@ -13,7 +13,7 @@ from discord_free_game_notifier import epic_json as epic_mod
 from discord_free_game_notifier.epic_json import EpicFreeGames
 from discord_free_game_notifier.epic_json import EpicGame
 from discord_free_game_notifier.epic_json import create_json_file
-from discord_free_game_notifier.epic_json import get_epic_free_games
+from discord_free_game_notifier.epic_json import get_epic_json_games
 from discord_free_game_notifier.webhook import embed_to_dict
 
 if TYPE_CHECKING:
@@ -317,7 +317,7 @@ class TestGetEpicFreeGames:
 
         monkeypatch.setattr(epic_mod, "already_posted", already_posted_stub)
 
-        results: list[tuple[DiscordEmbed, str]] | None = get_epic_free_games()
+        results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
         assert isinstance(results, list)
         # Only the future unposted game should be included
         assert len(results) == 1
@@ -351,7 +351,7 @@ class TestGetEpicFreeGames:
         # Even if already_posted is called, it shouldn't matter because we return early
         monkeypatch.setattr(epic_mod, "already_posted", lambda **kwargs: False)  # noqa: ARG005
 
-        results: list[tuple[DiscordEmbed, str]] | None = get_epic_free_games()
+        results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
         assert results is None
 
     def test_returns_empty_list_when_all_games_posted_or_expired(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -390,6 +390,6 @@ class TestGetEpicFreeGames:
 
         monkeypatch.setattr(epic_mod, "already_posted", already_posted_stub)
 
-        results: list[tuple[DiscordEmbed, str]] | None = get_epic_free_games()
+        results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
         assert isinstance(results, list)
         assert results == []

@@ -17,7 +17,7 @@ from discord_free_game_notifier.epic import promotion_end
 from discord_free_game_notifier.epic import promotion_start
 
 
-def test_game_url_prefers_product_slug():
+def test_game_url_prefers_product_slug() -> None:
     game = EpicGameElement(
         title="Test Game",
         id="test-id",
@@ -32,7 +32,7 @@ def test_game_url_prefers_product_slug():
     assert game_url(game).endswith("/p/nice-slug")
 
 
-def test_game_url_falls_back_to_offer_mappings():
+def test_game_url_falls_back_to_offer_mappings() -> None:
     game = EpicGameElement(
         title="Test Game",
         id="test-id",
@@ -47,7 +47,7 @@ def test_game_url_falls_back_to_offer_mappings():
     assert game_url(game).endswith("/p/offer-slug")
 
 
-def test_game_url_falls_back_to_url_slug():
+def test_game_url_falls_back_to_url_slug() -> None:
     game = EpicGameElement(
         title="Test Game",
         id="test-id",
@@ -62,7 +62,7 @@ def test_game_url_falls_back_to_url_slug():
     assert game_url(game).endswith("/p/url-slug")
 
 
-def test_game_url_falls_back_to_catalogns_mappings():
+def test_game_url_falls_back_to_catalog_ns_mappings() -> None:
     game = EpicGameElement(
         title="Test Game",
         id="test-id",
@@ -77,7 +77,7 @@ def test_game_url_falls_back_to_catalogns_mappings():
     assert game_url(game).endswith("/p/cat-mapping")
 
 
-def test_promotion_times_from_upcoming_only():
+def test_promotion_times_from_upcoming_only() -> None:
     start = "2025-12-11T16:00:00.000Z"
     end = "2026-01-08T16:00:00.000Z"
     promos = Promotions(
@@ -105,8 +105,8 @@ def test_promotion_times_from_upcoming_only():
         price=Price(totalPrice=TotalPrice(discountPrice=0, originalPrice=0, voucherDiscount=0, discount=0, currencyCode="USD")),
         promotions=promos,
     )
-    s = promotion_start(game)
-    e = promotion_end(game)
+    s: int = promotion_start(game)
+    e: int = promotion_end(game)
     # Ensure they parse to non-zero and in correct order
     assert s > 0
     assert e > 0

@@ -37,7 +37,7 @@ class TestEmbedToDict:
             "video": {"url": "https://example.com/video.mp4"},
             "fields": [{"name": "Field1", "value": "Value1"}],
         }
-        assert result == expected
+        assert result == expected, f"Expected {expected} but got {result}"
 
     def test_embed_to_dict_with_none_attributes(self) -> None:
         """Test embed_to_dict with some attributes None."""
@@ -57,7 +57,7 @@ class TestEmbedToDict:
             "video": None,
             "fields": [],
         }
-        assert result == expected
+        assert result == expected, f"Expected {expected} but got {result}"
 
     def test_embed_to_dict_empty_embed(self) -> None:
         """Test embed_to_dict with an empty embed."""
@@ -77,4 +77,4 @@ class TestEmbedToDict:
             "video": None,
             "fields": [],
         }
-        assert result == expected
+        assert result == expected, f"Expected {expected} but got {result}"

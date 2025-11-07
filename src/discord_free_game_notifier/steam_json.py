@@ -175,7 +175,7 @@ def create_json_file() -> None:
         logger.bind(game_name="Steam").info("Created/updated steam.json")
 
 
-def get_steam_free_games() -> list[tuple[DiscordEmbed, str]] | None:
+def get_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     """Get the free games from steam.json.
 
     Returns:

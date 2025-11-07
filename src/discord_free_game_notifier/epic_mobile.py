@@ -255,7 +255,7 @@ def _build_embed_for_game(game: EpicMobileGame) -> DiscordEmbed:
     return embed
 
 
-def get_epic_mobile_free_games() -> list[tuple[DiscordEmbed, str]] | None:
+def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     """Get the free mobile games from epic_mobile.json.
 
     Returns:

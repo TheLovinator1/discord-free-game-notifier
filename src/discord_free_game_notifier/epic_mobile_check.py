@@ -14,7 +14,7 @@ def main() -> None:
     `discord_free_game_notifier.epic_mobile`, which now only generates
     the JSON file.
     """
-    free_games: list[tuple[DiscordEmbed, str]] | None = epic_mobile.get_epic_mobile_free_games()
+    free_games: list[tuple[DiscordEmbed, str]] | None = epic_mobile.get_epic_mobile_json_games()
     if free_games:
         for embed, game_id in free_games:
             webhook.send_embed_webhook(embed=embed, game_id=game_id, game_service=webhook.GameService.EPIC)

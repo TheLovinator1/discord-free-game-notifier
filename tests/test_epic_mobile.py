@@ -3,16 +3,18 @@
 from __future__ import annotations
 
 import datetime
+from http import HTTPStatus
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
+import httpx
 import pytest
 from discord_webhook import DiscordEmbed
 from pydantic import HttpUrl
 from pydantic import ValidationError
 
 from discord_free_game_notifier.epic_mobile import EpicMobileGame
-from discord_free_game_notifier.epic_mobile import get_epic_mobile_free_games
+from discord_free_game_notifier.epic_mobile import get_epic_mobile_json_games
 
 
 def test_epic_mobile_game_model() -> None:
@@ -29,9 +31,9 @@ def test_epic_mobile_game_model() -> None:
         platform="Android & iOS",
     )
 
-    assert game.id == "test_game"
-    assert game.game_name == "Test Mobile Game"
-    assert game.platform == "Android & iOS"
+    assert game.id == "test_game", f"Expected id to be 'test_game' but got '{game.id}'"
+    assert game.game_name == "Test Mobile Game", f"Expected game_name to be 'Test Mobile Game' but got '{game.game_name}'"
+    assert game.platform == "Android & iOS", f"Expected platform to be 'Android & iOS' but got '{game.platform}'"
 
 
 def test_epic_mobile_game_platform_validation() -> None:
@@ -50,11 +52,11 @@ def test_epic_mobile_game_platform_validation() -> None:
         )
 
 
-@patch("discord_free_game_notifier.epic_mobile.httpx.Client")
+@patch("discord_free_game_notifier.epic_mobile.httpx.Client", spec_set=True)
 def test_get_epic_mobile_free_games_success(mock_client: MagicMock) -> None:
     """Test successfully fetching mobile games from JSON."""
     # Mock response
-    mock_response = MagicMock()
+    mock_response = MagicMock(spec=httpx.Response)
     mock_response.is_error = False
     mock_response.json.return_value = {
         "free_games": [
@@ -77,19 +79,19 @@ def test_get_epic_mobile_free_games_success(mock_client: MagicMock) -> None:
     mock_client.return_value.__enter__.return_value = mock_client_instance
 
     with patch("discord_free_game_notifier.epic_mobile.already_posted", return_value=False):
-        result = get_epic_mobile_free_games()
+        result: list[tuple[DiscordEmbed, str]] | None = get_epic_mobile_json_games()
 
-    assert result is not None
-    assert len(result) == 1
+    assert result is not None, "Expected result to be not None"
+    assert len(result) == 1, f"Expected 1 game but got {len(result)}"
     embed, game_id = result[0]
-    assert isinstance(embed, DiscordEmbed)
-    assert game_id == "test_mobile_game"
+    assert isinstance(embed, DiscordEmbed), f"Expected embed to be DiscordEmbed but got {type(embed)}"
+    assert game_id == "test_mobile_game", f"Expected game_id to be 'test_mobile_game' but got '{game_id}'"
 
 
-@patch("discord_free_game_notifier.epic_mobile.httpx.Client")
+@patch("discord_free_game_notifier.epic_mobile.httpx.Client", spec_set=True)
 def test_get_epic_mobile_free_games_already_posted(mock_client: MagicMock) -> None:
     """Test that already posted games are skipped."""
-    mock_response = MagicMock()
+    mock_response = MagicMock(spec_set=httpx.Response)
     mock_response.is_error = False
     mock_response.json.return_value = {
         "free_games": [
@@ -112,16 +114,17 @@ def test_get_epic_mobile_free_games_already_posted(mock_client: MagicMock) -> No
     mock_client.return_value.__enter__.return_value = mock_client_instance
 
     with patch("discord_free_game_notifier.epic_mobile.already_posted", return_value=True):
-        result = get_epic_mobile_free_games()
+        result: list[tuple[DiscordEmbed, str]] | None = get_epic_mobile_json_games()
 
-    assert result is not None
-    assert len(result) == 0
+    assert result is not None, "Expected result to be not None"
+    assert len(result) == 0, f"Expected 0 games but got {len(result)}"
 
 
-@patch("discord_free_game_notifier.epic_mobile.httpx.Client")
+@patch("discord_free_game_notifier.epic_mobile.httpx.Client", spec_set=True)
 def test_get_epic_mobile_free_games_expired(mock_client: MagicMock) -> None:
     """Test that expired games are skipped."""
-    mock_response = MagicMock()
+    # Mock response
+    mock_response = MagicMock(spec=httpx.Response)
     mock_response.is_error = False
     mock_response.json.return_value = {
         "free_games": [
@@ -144,24 +147,21 @@ def test_get_epic_mobile_free_games_expired(mock_client: MagicMock) -> None:
     mock_client.return_value.__enter__.return_value = mock_client_instance
 
     with patch("discord_free_game_notifier.epic_mobile.already_posted", return_value=False):
-        result = get_epic_mobile_free_games()
+        result: list[tuple[DiscordEmbed, str]] | None = get_epic_mobile_json_games()
 
-    assert result is not None
-    assert len(result) == 0
+    assert result is not None, "Expected result to be not None"
+    assert len(result) == 0, f"Expected 0 games but got {len(result)}"
 
 
-@patch("discord_free_game_notifier.epic_mobile.httpx.Client")
-def test_get_epic_mobile_free_games_http_error(mock_client: MagicMock) -> None:
-    """Test handling of HTTP errors."""
-    mock_response = MagicMock()
-    mock_response.is_error = True
-    mock_response.status_code = 404
-    mock_response.reason_phrase = "Not Found"
+def test_get_epic_mobile_free_games_http_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test handling of HTTP errors using real MockTransport."""
 
-    mock_client_instance = MagicMock()
-    mock_client_instance.get.return_value = mock_response
-    mock_client.return_value.__enter__.return_value = mock_client_instance
+    def mock_transport(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(HTTPStatus.NOT_FOUND, content=b"Not Found")
 
-    result = get_epic_mobile_free_games()
+    mock_client = httpx.Client(transport=httpx.MockTransport(mock_transport))
+
+    with patch("discord_free_game_notifier.epic_mobile.httpx.Client", return_value=mock_client):
+        result: list[tuple[DiscordEmbed, str]] | None = get_epic_mobile_json_games()
 
     assert result is None
