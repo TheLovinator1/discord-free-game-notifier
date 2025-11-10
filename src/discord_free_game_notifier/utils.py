@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from discord_free_game_notifier.webhook import GameService
 
 
-def _normalized_variants(name: str) -> set[str]:
+def normalized_variants(name: str) -> set[str]:
     """Create a set of normalized variants for robust comparison.
 
     This includes:
@@ -50,9 +50,9 @@ def already_posted(game_service: GameService, game_name: str) -> bool:
 
     try:
         with previous_games.open("r", encoding="utf-8") as file:
-            target_variants: set[str] = _normalized_variants(game_name)
+            target_variants: set[str] = normalized_variants(game_name)
             for line in file:
-                stored_variants: set[str] = _normalized_variants(line)
+                stored_variants: set[str] = normalized_variants(line)
                 if stored_variants & target_variants:
                     return True
 
@@ -84,9 +84,9 @@ def already_posted_upcoming(game_service: GameService, game_name: str) -> bool:
 
     try:
         with previous_games.open("r", encoding="utf-8") as file:
-            target_variants: set[str] = _normalized_variants(game_name)
+            target_variants: set[str] = normalized_variants(game_name)
             for line in file:
-                stored_variants: set[str] = _normalized_variants(line)
+                stored_variants: set[str] = normalized_variants(line)
                 if stored_variants & target_variants:
                     return True
 

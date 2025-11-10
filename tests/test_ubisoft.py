@@ -5,6 +5,8 @@ from typing import Any
 from typing import LiteralString
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 from pydantic import HttpUrl
 from pydantic import ValidationError
 
@@ -236,3 +238,33 @@ def test_ubisoft_free_games_empty_list() -> None:
     """Test UbisoftFreeGames with an empty list of games."""
     free_games = UbisoftFreeGames(free_games=[])
     assert free_games.free_games == [], f"Expected empty list but got {free_games.free_games}"
+
+
+@given(st.datetimes(timezones=st.just(datetime.UTC)))
+def test_serialize_datetime_property_is_iso_format(dt: datetime.datetime) -> None:
+    """Property: serialize_datetime always returns ISO format with timezone."""
+    game: UbisoftGame = _make_game()
+    result: str = game.serialize_datetime(dt)
+    # Should be valid ISO format
+    assert "T" in result, f"Expected ISO format with 'T' separator but got '{result}'"
+    # Should have timezone info
+    assert "+" in result or "Z" in result, f"Expected timezone in '{result}'"
+    # Should round-trip parse
+    parsed: datetime.datetime = datetime.datetime.fromisoformat(result)
+    assert parsed.tzinfo is not None, f"Expected timezone-aware datetime from '{result}'"
+
+
+@given(st.text(min_size=1, max_size=200), st.text(min_size=1, max_size=4000))
+def test_ubisoft_game_property_accepts_valid_strings(name: str, desc: str) -> None:
+    """Property: UbisoftGame accepts any valid name/description within limits."""
+    game = UbisoftGame(
+        id="test",
+        game_name=name,
+        game_url=HttpUrl("https://example.com/game"),
+        start_date=datetime.datetime.now(tz=datetime.UTC),
+        end_date=(datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1)),
+        image_link=HttpUrl("https://example.com/image.png"),
+        description=desc,
+    )
+    assert game.game_name == name
+    assert game.description == desc

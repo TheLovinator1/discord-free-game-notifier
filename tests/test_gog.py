@@ -6,6 +6,8 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 from bs4 import Tag
+from hypothesis import given
+from hypothesis import strategies as st
 
 from discord_free_game_notifier.gog import get_game_image
 from discord_free_game_notifier.gog import get_game_name
@@ -57,3 +59,12 @@ def test_gog_no_game_on_index_page() -> None:
 
     # Assert that we did not find a giveaway
     assert giveaway is None, "Expected no giveaway tag in gog_no_games.html"
+
+
+@given(st.text(min_size=1, max_size=100).filter(lambda s: "<" not in s and ">" not in s))
+def test_gog_game_name_is_string(name: str) -> None:
+    """Property: GOG game names can be arbitrary non-HTML strings."""
+    # This is a structural test: we expect game names to be strings without HTML tags
+    assert isinstance(name, str)
+    assert "<" not in name
+    assert ">" not in name

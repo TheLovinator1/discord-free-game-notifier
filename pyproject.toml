@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [{ name = "Joakim Hellsén", email = "tlovinator@gmail.com" }]
 requires-python = ">=3.14"
 dependencies = [
-    "apscheduler>=3.0,<4.0",
+    "apscheduler",
     "beautifulsoup4",
     "discord-webhook",
     "httpx",
@@ -24,7 +24,7 @@ requires = ["uv_build>=0.8.23,<0.9.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["pytest", "pyinstaller"]
+dev = ["pytest", "pyinstaller", "hypothesis"]
 
 [tool.ruff]
 preview = true
