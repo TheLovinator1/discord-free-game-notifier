@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import calendar
 import datetime
 import html
@@ -217,7 +219,7 @@ def promotion_start(game: EpicGameElement) -> int:
             if offer.startDate:
                 try:
                     start_candidates.append(_parse_iso_utc_to_unix(offer.startDate))
-                except Exception as e:  # noqa: BLE001
+                except (ValueError, TypeError, AttributeError) as e:
                     logger.warning(f"{game.title}: Unable to parse startDate '{offer.startDate}': {e}")
 
     # Upcoming promotions
@@ -226,7 +228,7 @@ def promotion_start(game: EpicGameElement) -> int:
             if offer.startDate:
                 try:
                     start_candidates.append(_parse_iso_utc_to_unix(offer.startDate))
-                except Exception as e:  # noqa: BLE001
+                except (ValueError, TypeError, AttributeError) as e:
                     logger.warning(f"{game.title}: Unable to parse upcoming startDate '{offer.startDate}': {e}")
 
     start_date: int = min(start_candidates) if start_candidates else 0
@@ -258,7 +260,7 @@ def promotion_end(game: EpicGameElement) -> int:
             if offer.endDate:
                 try:
                     end_candidates.append(_parse_iso_utc_to_unix(offer.endDate))
-                except Exception as e:  # noqa: BLE001
+                except (ValueError, TypeError, AttributeError) as e:
                     logger.warning(f"{game.title}: Unable to parse endDate '{offer.endDate}': {e}")
 
     # Upcoming promotions
@@ -267,7 +269,7 @@ def promotion_end(game: EpicGameElement) -> int:
             if offer.endDate:
                 try:
                     end_candidates.append(_parse_iso_utc_to_unix(offer.endDate))
-                except Exception as e:  # noqa: BLE001
+                except (ValueError, TypeError, AttributeError) as e:
                     logger.warning(f"{game.title}: Unable to parse upcoming endDate '{offer.endDate}': {e}")
 
     end_date: int = max(end_candidates) if end_candidates else 0

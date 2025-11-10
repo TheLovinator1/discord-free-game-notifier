@@ -1,5 +1,7 @@
 """Tests for APScheduler integration."""
 
+from __future__ import annotations
+
 import datetime
 import time
 from collections.abc import Callable
@@ -47,13 +49,13 @@ def test_add_listener() -> None:
 
 
 def test_add_job_with_cron_trigger() -> None:
-    """Test that jobs can be added with cron trigger and next_run_time."""
+    """Test that jobs can be added with cron trigger and next_run_time using specific minutes."""
     scheduler = BlockingScheduler()
 
     job: Job = scheduler.add_job(
         check_free_games,
         "cron",
-        minute="*/15",
+        minute="1,16,31,46",
         replace_existing=True,
         next_run_time=datetime.datetime.now(tz=datetime.UTC),
     )
@@ -110,14 +112,14 @@ def test_scheduler_shutdown_gracefully() -> None:
 
 
 def test_cron_trigger_parameters() -> None:
-    """Test that cron trigger accepts expected parameters."""
+    """Test that cron trigger accepts expected parameters with custom minute list."""
     scheduler = BlockingScheduler()
 
     # Test various cron parameters to ensure API compatibility
     job: Job = scheduler.add_job(
         check_free_games,
         "cron",
-        minute="*/15",
+        minute="1,16,31,46",
         hour="*",
         replace_existing=True,
     )

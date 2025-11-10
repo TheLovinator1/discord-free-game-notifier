@@ -1,5 +1,7 @@
-import datetime
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
+from typing import Any
 
 import httpx
 from apscheduler.events import EVENT_JOB_ERROR
@@ -23,7 +25,6 @@ from discord_free_game_notifier.webhook import send_text_webhook
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from typing import Any
 
 sched = BlockingScheduler()
 
@@ -133,19 +134,13 @@ def check_free_games() -> None:
 def main() -> None:
     """Main function for discord_free_game_notifier.
 
-    This function will check for free games every 15 minutes.
+    This function will check for free games at minute 01, 16, 31, and 46 of each hour.
     """
-    logger.info("Starting discord_free_game_notifier, checking for free games every 15 minutes")
+    logger.info("Starting discord_free_game_notifier, checks scheduled at xx:01, xx:16, xx:31, xx:46 each hour")
     sched.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 
     logger.info("Adding job to scheduler")
-    sched.add_job(
-        check_free_games,
-        "cron",
-        minute="*/15",
-        replace_existing=True,
-        next_run_time=datetime.datetime.now(tz=datetime.UTC),
-    )
+    sched.add_job(check_free_games, "cron", minute="1,16,31,46")
     logger.info("Starting scheduler")
     try:
         sched.start()

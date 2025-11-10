@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import html
 import pathlib
@@ -5,16 +7,14 @@ import textwrap
 from typing import TYPE_CHECKING
 from typing import Any
 
-import requests
 from discord_webhook import DiscordEmbed
 from discord_webhook import DiscordWebhook
 from loguru import logger
-from requests.models import Response
 
 from discord_free_game_notifier import settings
 
 if TYPE_CHECKING:
-    from requests import Response
+    import requests
 
 
 class GameService(enum.StrEnum):
@@ -34,6 +34,33 @@ class GameService(enum.StrEnum):
 
     UBISOFT = "Ubisoft"
     """Send embed to Ubisoft webhook URL. Uses the UBISOFT_WEBHOOK environment variable."""
+
+
+def get_webhook_url(game_service: GameService) -> str:
+    """Get the appropriate webhook URL for a game service.
+
+    Args:
+        game_service: The game service to get webhook for.
+
+    Returns:
+        str: The webhook URL to use.
+    """
+    webhook_url: str = settings.webhook_url
+    if game_service is GameService.EPIC and settings.epic_webhook:
+        logger.debug(f"Using {game_service.name} webhook: {settings.epic_webhook}")
+        webhook_url = settings.epic_webhook
+    elif game_service is GameService.GOG and settings.gog_webhook:
+        logger.debug(f"Using {game_service.name} webhook: {settings.gog_webhook}")
+        webhook_url = settings.gog_webhook
+    elif game_service is GameService.STEAM and settings.steam_webhook:
+        logger.debug(f"Using {game_service.name} webhook: {settings.steam_webhook}")
+        webhook_url = settings.steam_webhook
+    elif game_service is GameService.UBISOFT and settings.ubisoft_webhook:
+        logger.debug(f"Using {game_service.name} webhook: {settings.ubisoft_webhook}")
+        webhook_url = settings.ubisoft_webhook
+    else:
+        logger.debug(f"Using main webhook: {webhook_url}")
+    return webhook_url
 
 
 def embed_to_dict(embed: DiscordEmbed) -> dict[str, Any]:
@@ -69,40 +96,24 @@ def send_embed_webhook(embed: DiscordEmbed, game_id: str, game_service: GameServ
         game_id (str): The ID of the game. Used for for adding to the posted games list.
         game_service (GameService): The name of the game service (Steam/GOG/Epic)
     """
-    webhook_url: str = settings.webhook_url
-    if game_service is GameService.EPIC and settings.epic_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.epic_webhook
-    elif game_service is GameService.GOG and settings.gog_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.gog_webhook
-    elif game_service is GameService.STEAM and settings.steam_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.steam_webhook
-    elif game_service is GameService.UBISOFT and settings.ubisoft_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.ubisoft_webhook
-
+    webhook_url: str = get_webhook_url(game_service)
     webhook = DiscordWebhook(url=webhook_url, rate_limit_retry=True)
     webhook.add_embed(embed=embed)
 
     embed.description = textwrap.shorten(embed.description or "", width=1000, placeholder="...")
 
-    try:
-        response: Response = webhook.execute()
+    response: requests.Response = webhook.execute()
 
-        if response.ok:
-            logger.info(f"Sent embed for {game_id=} to {game_service=}")
-            # Persist a trimmed, unescaped identifier to avoid duplicates caused by formatting
-            normalized_id: str = html.unescape(str(game_id)).strip()
-            with pathlib.Path(f"{settings.app_dir}/{game_service.lower()}.txt").open(mode="a+", encoding="utf-8") as file:
-                file.write(f"{normalized_id}\n")
-        else:
-            logger.error(f"Failed to send embed for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
-            logger.error(f"Response content: {response.content}")
-            logger.error(f"Embed content: {embed_to_dict(embed)}")
-    except (requests.RequestException, requests.HTTPError, requests.ConnectionError, requests.Timeout, OSError) as e:
-        logger.error(f"Exception when sending embed for {game_id=} to {game_service=}: {e}")
+    if response.ok:
+        logger.info(f"Sent embed for {game_id=} to {game_service=}")
+        # Persist a trimmed, unescaped identifier to avoid duplicates caused by formatting
+        normalized_id: str = html.unescape(str(game_id)).strip()
+        with pathlib.Path(f"{settings.app_dir}/{game_service.lower()}.txt").open(mode="a+", encoding="utf-8") as file:
+            file.write(f"{normalized_id}\n")
+    else:
+        logger.error(f"Failed to send embed for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
+        logger.error(f"Response content: {response.content}")
+        logger.error(f"Embed content: {embed_to_dict(embed)}")
 
 
 def send_text_webhook(message: str, game_id: str, game_service: GameService) -> None:
@@ -113,33 +124,17 @@ def send_text_webhook(message: str, game_id: str, game_service: GameService) -> 
         game_id (str): The ID of the game. Used for adding to the upcoming games list.
         game_service (GameService): The name of the game service (Steam/GOG/Epic)
     """
-    webhook_url: str = settings.webhook_url
-    if game_service is GameService.EPIC and settings.epic_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.epic_webhook
-    elif game_service is GameService.GOG and settings.gog_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.gog_webhook
-    elif game_service is GameService.STEAM and settings.steam_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.steam_webhook
-    elif game_service is GameService.UBISOFT and settings.ubisoft_webhook:
-        logger.info(f"Using {game_service.name} webhook")
-        webhook_url = settings.ubisoft_webhook
-
+    webhook_url: str = get_webhook_url(game_service)
     webhook = DiscordWebhook(url=webhook_url, content=message, rate_limit_retry=True)
 
-    try:
-        response: Response = webhook.execute()
+    response: requests.Response = webhook.execute()
 
-        if response.ok:
-            logger.info(f"Sent text message for {game_id=} to {game_service=}")
-            # Persist a trimmed, unescaped identifier to avoid duplicates caused by formatting
-            normalized_id: str = html.unescape(str(game_id)).strip()
-            with pathlib.Path(f"{settings.app_dir}/{game_service.lower()}_upcoming.txt").open(mode="a+", encoding="utf-8") as file:
-                file.write(f"{normalized_id}\n")
-        else:
-            logger.error(f"Failed to send text message for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
-            logger.error(f"Response content: {response.content}")
-    except (requests.RequestException, requests.HTTPError, requests.ConnectionError, requests.Timeout, OSError) as e:
-        logger.error(f"Exception when sending text message for {game_id=} to {game_service=}: {e}")
+    if response.ok:
+        logger.info(f"Sent text message for {game_id=} to {game_service=}")
+        # Persist a trimmed, unescaped identifier to avoid duplicates caused by formatting
+        normalized_id: str = html.unescape(str(game_id)).strip()
+        with pathlib.Path(f"{settings.app_dir}/{game_service.lower()}_upcoming.txt").open(mode="a+", encoding="utf-8") as file:
+            file.write(f"{normalized_id}\n")
+    else:
+        logger.error(f"Failed to send text message for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
+        logger.error(f"Response content: {response.content}")

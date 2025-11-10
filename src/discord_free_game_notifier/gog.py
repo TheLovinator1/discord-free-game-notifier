@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import httpx
 from bs4 import BeautifulSoup
 from bs4 import Tag
@@ -22,11 +24,7 @@ class GOGGame(BaseModel):
     image_url: HttpUrl | None = None
 
 
-def create_embed(
-    game: GOGGame,
-    *,
-    no_claim: bool = False,
-) -> DiscordEmbed:
+def create_embed(game: GOGGame, *, no_claim: bool = False) -> DiscordEmbed:
     """Create the embed that we will send to Discord.
 
     Args:
@@ -38,7 +36,7 @@ def create_embed(
     """
     game_url = str(game.game_url)
 
-    description = (
+    description: str = (
         f"[Click here to claim {game.game_name}!](https://www.gog.com/giveaway/claim)\n"
         "[Click here to unsubscribe from emails!]("
         "https://www.gog.com/en/account/settings/subscriptions)"
@@ -59,7 +57,7 @@ def create_embed(
     )
 
     if game.image_url:
-        image_url_str = str(game.image_url).removesuffix(",")
+        image_url_str: str = str(game.image_url).removesuffix(",")
         if image_url_str.startswith("//"):
             image_url_str = f"https:{image_url_str}"
         embed.set_image(url=image_url_str)
@@ -198,7 +196,7 @@ def get_game_image(giveaway: BeautifulSoup, game_name: str) -> str:
     default_image = "https://images.gog.com/86843ada19050958a1aecf7de9c7403876f74d53230a5a96d7e615c1348ba6a9.webp"
 
     # Game image
-    image_url_class = giveaway.find("source", attrs={"srcset": True})
+    image_url_class: Tag | None = giveaway.find("source", attrs={"srcset": True})
 
     # If no image URL, return an empty list
     if image_url_class is None:
@@ -210,8 +208,8 @@ def get_game_image(giveaway: BeautifulSoup, game_name: str) -> str:
         logger.error("No attrs found on GOG for {}", giveaway)
         return default_image
 
-    images = str(image_url_class.attrs["srcset"]).strip().split()
-    image_url = images[0]
+    images: list[str] = str(image_url_class.attrs["srcset"]).strip().split()
+    image_url: str = images[0]
 
     if not image_url:
         logger.error("No image URL found on GOG for {}", giveaway)
@@ -232,7 +230,7 @@ def get_game_name(giveaway_soup: BeautifulSoup, giveaway: Tag | None) -> str:
     Returns:
         str: The game name. Defaults to "GOG Giveaway" if not found.
     """
-    img_tag = giveaway_soup.find("img", alt=True)
+    img_tag: Tag | None = giveaway_soup.find("img", alt=True)
     if not hasattr(img_tag, "attrs"):
         logger.error("No img tag found on GOG for {}", giveaway)
         return "GOG Giveaway"
@@ -266,24 +264,24 @@ def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
             )
 
         soup = BeautifulSoup(response.text, "html.parser")
-        giveaway = soup.find("giveaway")
+        giveaway: Tag | None = soup.find("giveaway")
         giveaway_soup = BeautifulSoup(str(giveaway), "html.parser")
 
         if giveaway is None:
             return None
 
         # Get the game name
-        game_name = get_game_name(giveaway_soup=giveaway_soup, giveaway=giveaway)
-        game_id = game_name.lower().replace(" ", "_")
+        game_name: str = get_game_name(giveaway_soup=giveaway_soup, giveaway=giveaway)
+        game_id: str = game_name.lower().replace(" ", "_")
 
         if already_posted(game_service=GameService.GOG, game_name=game_id):
             return None
 
-        giveaway_link = get_giveaway_link(giveaway=giveaway, game_name=game_name)
-        image_url_str = get_game_image(giveaway=giveaway_soup, game_name=game_name)
+        giveaway_link: str = get_giveaway_link(giveaway=giveaway, game_name=game_name)
+        image_url_str: str = get_game_image(giveaway=giveaway_soup, game_name=game_name)
 
         # Convert image URL to HttpUrl if valid
-        image_url = HttpUrl(image_url_str) if image_url_str else None
+        image_url: HttpUrl | None = HttpUrl(image_url_str) if image_url_str else None
 
         gog_game = GOGGame(
             id=game_id,

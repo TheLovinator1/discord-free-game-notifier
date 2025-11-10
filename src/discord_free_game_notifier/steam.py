@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import html
 from typing import Self
 
@@ -116,7 +118,7 @@ class MoreData(BaseModel):
     reviews: str = ""
 
     @classmethod
-    def from_app_details(cls, data: AppDetailsData, game_id: str) -> MoreData:
+    def from_app_details(cls, data: AppDetailsData, game_id: str) -> Self:
         """Create MoreData from AppDetailsData.
 
         Args:

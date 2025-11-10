@@ -16,7 +16,6 @@ dependencies = [
     "pydantic-settings",
     "python-dotenv",
     "pytz",
-    "requests",
     "selectolax",
 ]
 
@@ -32,6 +31,8 @@ preview = true
 line-length = 140
 lint.select = ["ALL"]
 lint.pydocstyle.convention = "google"
+lint.isort.required-imports = ["from __future__ import annotations"]
+lint.isort.force-single-line = true
 
 lint.ignore = [
     "ANN201",  # Checks that public functions and methods have return type annotations.
@@ -77,6 +78,3 @@ lint.ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "D103", "PLR2004"]
-
-[tool.ruff.lint.isort]
-force-single-line = true

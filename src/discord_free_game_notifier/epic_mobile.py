@@ -10,6 +10,8 @@ Environment variables for local testing:
 - EPIC_MOBILE_PREVIEW=1  Print embeds to console instead of sending to Discord
 """
 
+from __future__ import annotations
+
 import datetime
 import json
 import os

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 
 from discord_free_game_notifier.epic import CatalogNs

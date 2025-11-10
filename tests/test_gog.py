@@ -1,5 +1,7 @@
 """Tests for GOG free game checker."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from bs4 import BeautifulSoup
