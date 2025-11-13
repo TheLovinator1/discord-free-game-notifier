@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING
 from typing import Any
 
@@ -140,7 +141,7 @@ def main() -> None:
     sched.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 
     logger.info("Adding job to scheduler")
-    sched.add_job(check_free_games, "cron", minute="1,16,31,46")
+    sched.add_job(check_free_games, "cron", minute="1,16,31,46", next_run_time=datetime.datetime.now(tz=datetime.UTC))
     logger.info("Starting scheduler")
     try:
         sched.start()
