@@ -66,6 +66,30 @@ class UbisoftGame(BaseModel):
         """
         return dt.isoformat()
 
+    @field_validator("image_link")
+    @classmethod
+    def validate_image_link(cls, url: HttpUrl) -> HttpUrl:
+        """Validate that the image link is a valid URL.
+
+        Args:
+            url: The image URL to validate.
+
+        Raises:
+            ValueError: If the image file does not exist at the expected path.
+
+        Returns:
+            The validated image URL.
+        """
+        if url.path is None:
+            msg: str = "Image URL path cannot be None"
+            raise ValueError(msg)
+
+        image_path: Path = Path("pages/images/") / Path(url.path).name
+        if not image_path.is_file():
+            msg: str = f"Image file not found at expected path: {image_path}"
+            raise ValueError(msg)
+        return url
+
 
 class UbisoftFreeGames(BaseModel):
     """Structure for the Ubisoft free games JSON."""
@@ -109,7 +133,17 @@ def create_json_file() -> None:
         description="London, 1868. In the heart of the Industrial Revolution, lead your underworld organization and grow your influence to fight those who exploit the less privileged in the name of progress.",  # noqa: E501
     )
 
-    free_games = UbisoftFreeGames(free_games=[ac_syndicate])
+    immortals_fenyx_rising = UbisoftGame(
+        id="immortals_fenyx_rising",
+        game_name="Immortals Fenyx Rising",
+        game_url=HttpUrl("https://register.ubisoft.com/ImmortalsFenyxRising_Free/en-US"),
+        start_date=datetime.datetime(2025, 11, 13, 13, 0, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2025, 12, 2, 10, 0, 0, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/immortals_fenyx_rising.jpg"),
+        description="Play as Fenyx, a new winged demigod, on a quest to save the Greek gods and their home from a dark curse. Take on mythological beasts, master the legendary powers of the gods, and defeat Typhon, the deadliest Titan in Greek mythology, in an epic fight for the ages.",  # noqa: E501
+    )
+
+    free_games = UbisoftFreeGames(free_games=[ac_syndicate, immortals_fenyx_rising])
 
     with Path.open(Path("pages/ubisoft.json"), "w", encoding="utf-8") as file:
         json.dump(free_games.model_dump(mode="json"), file, indent=4)
