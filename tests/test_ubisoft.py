@@ -26,7 +26,7 @@ def _make_game() -> UbisoftGame:
         game_url=HttpUrl("https://example.com/game"),
         start_date=datetime.datetime.now(tz=datetime.UTC),
         end_date=(datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1)),
-        image_link=HttpUrl("https://example.com/image.png"),
+        image_link=HttpUrl("https://example.com/test_image.png"),
         description="Test description",
     )
 
@@ -57,7 +57,7 @@ def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
         game_url=HttpUrl("https://example.com/game"),
         start_date=start,
         end_date=end,
-        image_link=HttpUrl("https://example.com/image.png"),
+        image_link=HttpUrl("https://example.com/test_image.png"),
         description="desc",
     )
     assert game.start_date == start, f"Expected start_date to be {start} but got {game.start_date}"
@@ -74,7 +74,7 @@ def test_validate_timezone_aware_rejects_naive_start_date() -> None:
             game_url=HttpUrl("https://example.com/game"),
             start_date=start,
             end_date=end,
-            image_link=HttpUrl("https://example.com/image.png"),
+            image_link=HttpUrl("https://example.com/test_image.png"),
             description="desc",
         )
     assert "Input should have timezone info" in str(exc.value), f"Unexpected error message: {exc.value}"
@@ -93,7 +93,7 @@ def test_validate_timezone_aware_rejects_naive_end_date() -> None:
             game_url=HttpUrl("https://example.com/game"),
             start_date=start,
             end_date=end,
-            image_link=HttpUrl("https://example.com/image.png"),
+            image_link=HttpUrl("https://example.com/test_image.png"),
             description="desc",
         )
     assert "Input should have timezone info" in str(exc.value), f"Unexpected error message: {exc.value}"
@@ -110,7 +110,7 @@ def test_validate_timezone_aware_accepts_non_utc_timezone() -> None:
         game_url=HttpUrl("https://example.com/game"),
         start_date=start,
         end_date=end,
-        image_link=HttpUrl("https://example.com/image.png"),
+        image_link=HttpUrl("https://example.com/test_image.png"),
         description="desc",
     )
     assert game.start_date.tzinfo is not None, "Expected start_date to be timezone-aware"
@@ -127,7 +127,7 @@ def test_game_name_max_length() -> None:
             game_url=HttpUrl("https://example.com/game"),
             start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
-            image_link=HttpUrl("https://example.com/image.png"),
+            image_link=HttpUrl("https://example.com/test_image.png"),
             description="desc",
         )
     assert "String should have at most 200 characters" in str(exc.value), f"Unexpected error message: {exc.value}"
@@ -143,7 +143,7 @@ def test_description_max_length() -> None:
             game_url=HttpUrl("https://example.com/game"),
             start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
-            image_link=HttpUrl("https://example.com/image.png"),
+            image_link=HttpUrl("https://example.com/test_image.png"),
             description=long_desc,
         )
     assert "String should have at most 4000 characters" in str(exc.value), f"Unexpected error message: {exc.value}"
@@ -158,7 +158,7 @@ def test_invalid_game_url() -> None:
             game_url="not-a-url",  # pyright: ignore[reportArgumentType]
             start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
-            image_link=HttpUrl("https://example.com/image.png"),
+            image_link=HttpUrl("https://example.com/test_image.png"),
             description="desc",
         )
     assert "url" in str(exc.value).lower(), f"Unexpected error message: {exc.value}"
@@ -188,7 +188,7 @@ def test_ubisoft_free_games_unique_ids() -> None:
         game_url=HttpUrl("https://example.com/game2"),
         start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
         end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
-        image_link=HttpUrl("https://example.com/image2.png"),
+        image_link=HttpUrl("https://example.com/test_image.png"),
         description="Test description 2",
     )
     free_games = UbisoftFreeGames(free_games=[game1, game2])
@@ -204,7 +204,7 @@ def test_ubisoft_free_games_duplicate_ids() -> None:
         game_url=HttpUrl("https://example.com/game2"),
         start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
         end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
-        image_link=HttpUrl("https://example.com/image2.png"),
+        image_link=HttpUrl("https://example.com/test_image.png"),
         description="Test description 2",
     )
     with pytest.raises(ValidationError) as exc:
@@ -263,7 +263,7 @@ def test_ubisoft_game_property_accepts_valid_strings(name: str, desc: str) -> No
         game_url=HttpUrl("https://example.com/game"),
         start_date=datetime.datetime.now(tz=datetime.UTC),
         end_date=(datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1)),
-        image_link=HttpUrl("https://example.com/image.png"),
+        image_link=HttpUrl("https://example.com/test_image.png"),
         description=desc,
     )
     assert game.game_name == name
