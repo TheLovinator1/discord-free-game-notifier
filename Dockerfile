@@ -15,14 +15,15 @@ WORKDIR /app
 # Uses cache mount to speed up repeated builds and bind mounts for files
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --no-install-project --no-dev
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    uv sync --no-install-project --no-dev --frozen
 
 # Copy the project into the image
 ADD . /app
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-dev
+    uv sync --no-dev --frozen
 
 # ============================================================================
 # Runtime Stage: Minimal image with only runtime dependencies
