@@ -28,6 +28,7 @@ from pydantic import ValidationError
 from pydantic import field_serializer
 from pydantic import field_validator
 
+from discord_free_game_notifier import settings
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import GameService
 
@@ -283,6 +284,12 @@ def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
                 logger.info(f"{game.game_name} is no longer free, skipping.")
                 continue
 
+            # Check if the game's platform is enabled
+            platform_enabled: bool = is_platform_enabled_for_game(game)
+            if not platform_enabled:
+                logger.info(f"{game.game_name} platform '{game.platform}' is not enabled, skipping.")
+                continue
+
             embed: DiscordEmbed = _build_embed_for_game(game)
             notified_games.append((embed, game.id))
 
@@ -297,6 +304,24 @@ def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
         return None
     else:
         return notified_games
+
+
+def is_platform_enabled_for_game(game: EpicMobileGame) -> bool:
+    """Check if the game's platform is enabled in settings.
+
+    Args:
+        game: The EpicMobileGame instance to check.
+
+    Returns:
+        bool: True if the platform is enabled, False otherwise.
+    """
+    game_platform_lower: str = game.platform.lower()
+    platform_enabled: bool = False
+    if "android" in game_platform_lower and settings.is_platform_enabled("android"):
+        platform_enabled = True
+    if "ios" in game_platform_lower and settings.is_platform_enabled("ios"):
+        platform_enabled = True
+    return platform_enabled
 
 
 def main() -> None:

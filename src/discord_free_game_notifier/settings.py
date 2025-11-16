@@ -52,6 +52,14 @@ class Settings(BaseSettings):
     steam_webhook: str = Field(default="", description="Discord webhook URL for Steam game notifications")
     epic_webhook: str = Field(default="", description="Discord webhook URL for Epic Games notifications")
     ubisoft_webhook: str = Field(default="", description="Discord webhook URL for Ubisoft game notifications")
+    platforms: str = Field(
+        default="",
+        description="Comma-separated list of platforms to check (pc, android, ios). Leave empty for all platforms",
+    )
+    stores: str = Field(
+        default="",
+        description="Comma-separated list of stores to check (steam, epic, gog, ubisoft). Leave empty for all stores",
+    )
 
     @field_validator("webhook_url", "gog_webhook", "steam_webhook", "epic_webhook", "ubisoft_webhook")
     @classmethod
@@ -101,6 +109,60 @@ class Settings(BaseSettings):
             msg: str = f"Log level must be one of {allowed_levels}, got: {v}"
             raise ValueError(msg)
         return v_upper
+
+    @field_validator("platforms")
+    @classmethod
+    def validate_platforms(cls, v: str) -> str:
+        """Validate that platforms are valid values.
+
+        Args:
+            v: The platforms string to validate (comma-separated).
+
+        Returns:
+            The validated platforms string in lowercase, with whitespace stripped.
+
+        Raises:
+            ValueError: If any platform is not one of the allowed values.
+        """
+        if not v or not v.strip():
+            return ""
+
+        allowed_platforms: set[str] = {"pc", "android", "ios"}
+        platforms: list[str] = [p.strip().lower() for p in v.split(",") if p.strip()]
+
+        invalid_platforms: set[str] = set(platforms) - allowed_platforms
+        if invalid_platforms:
+            msg: str = f"Invalid platforms: {invalid_platforms}. Allowed values: {allowed_platforms}"
+            raise ValueError(msg)
+
+        return ",".join(platforms)
+
+    @field_validator("stores")
+    @classmethod
+    def validate_stores(cls, v: str) -> str:
+        """Validate that stores are valid values.
+
+        Args:
+            v: The stores string to validate (comma-separated).
+
+        Returns:
+            The validated stores string in lowercase, with whitespace stripped.
+
+        Raises:
+            ValueError: If any store is not one of the allowed values.
+        """
+        if not v or not v.strip():
+            return ""
+
+        allowed_stores: set[str] = {"steam", "epic", "gog", "ubisoft"}
+        stores: list[str] = [s.strip().lower() for s in v.split(",") if s.strip()]
+
+        invalid_stores: set[str] = set(stores) - allowed_stores
+        if invalid_stores:
+            msg: str = f"Invalid stores: {invalid_stores}. Allowed values: {allowed_stores}"
+            raise ValueError(msg)
+
+        return ",".join(stores)
 
 
 def load_legacy_config() -> dict[str, str]:
@@ -155,13 +217,15 @@ def validate_webhooks(settings_obj: Settings) -> None:
     Args:
         settings_obj: The settings instance to validate.
     """
-    has_webhook: bool = any([
-        settings_obj.webhook_url,
-        settings_obj.gog_webhook,
-        settings_obj.steam_webhook,
-        settings_obj.epic_webhook,
-        settings_obj.ubisoft_webhook,
-    ])
+    has_webhook: bool = any(
+        [
+            settings_obj.webhook_url,
+            settings_obj.gog_webhook,
+            settings_obj.steam_webhook,
+            settings_obj.epic_webhook,
+            settings_obj.ubisoft_webhook,
+        ],
+    )
     if not has_webhook:
         msg = "At least one webhook URL must be configured (WEBHOOK_URL, GOG_WEBHOOK, STEAM_WEBHOOK, EPIC_WEBHOOK, or UBISOFT_WEBHOOK)"
         logger.critical(msg)
@@ -212,3 +276,57 @@ gog_webhook: str = settings.gog_webhook
 steam_webhook: str = settings.steam_webhook
 epic_webhook: str = settings.epic_webhook
 ubisoft_webhook: str = settings.ubisoft_webhook
+platforms: str = settings.platforms
+stores: str = settings.stores
+
+
+def get_enabled_platforms() -> set[str]:
+    """Get the set of enabled platforms.
+
+    Returns:
+        set[str]: Set of enabled platform names. Empty set means all platforms are enabled.
+    """
+    if not platforms or not platforms.strip():
+        return set()
+    return {p.strip().lower() for p in platforms.split(",") if p.strip()}
+
+
+def get_enabled_stores() -> set[str]:
+    """Get the set of enabled stores.
+
+    Returns:
+        set[str]: Set of enabled store names. Empty set means all stores are enabled.
+    """
+    if not stores or not stores.strip():
+        return set()
+    return {s.strip().lower() for s in stores.split(",") if s.strip()}
+
+
+def is_platform_enabled(platform: str) -> bool:
+    """Check if a platform is enabled.
+
+    Args:
+        platform: The platform name to check (pc, android, ios).
+
+    Returns:
+        bool: True if the platform is enabled or if no platform filter is set.
+    """
+    enabled: set[str] = get_enabled_platforms()
+    if not enabled:
+        return True
+    return platform.lower() in enabled
+
+
+def is_store_enabled(store: str) -> bool:
+    """Check if a store is enabled.
+
+    Args:
+        store: The store name to check (steam, epic, gog, ubisoft).
+
+    Returns:
+        bool: True if the store is enabled or if no store filter is set.
+    """
+    enabled: set[str] = get_enabled_stores()
+    if not enabled:
+        return True
+    return store.lower() in enabled

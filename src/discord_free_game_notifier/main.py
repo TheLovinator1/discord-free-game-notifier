@@ -12,6 +12,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from discord_webhook import DiscordEmbed
 from loguru import logger
 
+from discord_free_game_notifier import settings
 from discord_free_game_notifier.epic import get_free_epic_games
 from discord_free_game_notifier.epic_json import get_epic_json_games
 from discord_free_game_notifier.epic_mobile import get_epic_mobile_json_games
@@ -122,14 +123,27 @@ def check_free_games() -> None:
     """Check for free games on Epic, Steam, GOG and Ubisoft and send them to Discord."""
     logger.info("Checking for free games")
 
-    _safe_check_service("Epic (API)", _check_epic_games)
-    _safe_check_service("Epic (JSON)", _check_epic_json_games)
-    _safe_check_service("Epic (Mobile JSON)", _check_epic_mobile_json_games)
-    _safe_check_service("Steam", _check_steam_games)
-    _safe_check_service("Steam (JSON)", _check_steam_json_games)
-    _safe_check_service("GOG (store search)", _check_gog_store_games)
-    _safe_check_service("GOG (front page)", _check_gog_front_page)
-    _safe_check_service("Ubisoft", _check_ubisoft_games)
+    # Check Epic Games if enabled and PC or mobile platforms are enabled
+    if settings.is_store_enabled("epic"):
+        if settings.is_platform_enabled("pc"):
+            _safe_check_service("Epic (API)", _check_epic_games)
+            _safe_check_service("Epic (JSON)", _check_epic_json_games)
+        if settings.is_platform_enabled("android") or settings.is_platform_enabled("ios"):
+            _safe_check_service("Epic (Mobile JSON)", _check_epic_mobile_json_games)
+
+    # Check Steam if enabled and PC platform is enabled
+    if settings.is_store_enabled("steam") and settings.is_platform_enabled("pc"):
+        _safe_check_service("Steam", _check_steam_games)
+        _safe_check_service("Steam (JSON)", _check_steam_json_games)
+
+    # Check GOG if enabled and PC platform is enabled
+    if settings.is_store_enabled("gog") and settings.is_platform_enabled("pc"):
+        _safe_check_service("GOG (store search)", _check_gog_store_games)
+        _safe_check_service("GOG (front page)", _check_gog_front_page)
+
+    # Check Ubisoft if enabled and PC platform is enabled
+    if settings.is_store_enabled("ubisoft") and settings.is_platform_enabled("pc"):
+        _safe_check_service("Ubisoft", _check_ubisoft_games)
 
 
 def main() -> None:

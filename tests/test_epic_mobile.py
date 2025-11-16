@@ -15,6 +15,7 @@ from pydantic import ValidationError
 
 from discord_free_game_notifier.epic_mobile import EpicMobileGame
 from discord_free_game_notifier.epic_mobile import get_epic_mobile_json_games
+from discord_free_game_notifier.epic_mobile import is_platform_enabled_for_game
 
 
 def test_epic_mobile_game_model() -> None:
@@ -165,3 +166,117 @@ def test_get_epic_mobile_free_games_http_error(monkeypatch: pytest.MonkeyPatch) 
         result: list[tuple[DiscordEmbed, str]] | None = get_epic_mobile_json_games()
 
     assert result is None
+
+
+@patch("discord_free_game_notifier.epic_mobile.settings.is_platform_enabled")
+def test_is_platform_enabled_for_game_android(mock_is_platform_enabled: MagicMock) -> None:
+    """Test platform checking for Android games."""
+    mock_is_platform_enabled.return_value = True
+
+    game = EpicMobileGame(
+        id="test_android",
+        game_name="Android Game",
+        game_url=HttpUrl("https://www.epicgames.com/en-US/p/test"),
+        start_date=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2025, 12, 31, 23, 59, 59, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image.jpg"),
+        description="Test description",
+        developer="Test Developer",
+        platform="Android",
+    )
+
+    result = is_platform_enabled_for_game(game)
+
+    assert result is True
+    mock_is_platform_enabled.assert_called_once_with("android")
+
+
+@patch("discord_free_game_notifier.epic_mobile.settings.is_platform_enabled")
+def test_is_platform_enabled_for_game_ios(mock_is_platform_enabled: MagicMock) -> None:
+    """Test platform checking for iOS games."""
+    mock_is_platform_enabled.return_value = True
+
+    game = EpicMobileGame(
+        id="test_ios",
+        game_name="iOS Game",
+        game_url=HttpUrl("https://www.epicgames.com/en-US/p/test"),
+        start_date=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2025, 12, 31, 23, 59, 59, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image.jpg"),
+        description="Test description",
+        developer="Test Developer",
+        platform="iOS",
+    )
+
+    result = is_platform_enabled_for_game(game)
+
+    assert result is True
+    mock_is_platform_enabled.assert_called_once_with("ios")
+
+
+@patch("discord_free_game_notifier.epic_mobile.settings.is_platform_enabled")
+def test_is_platform_enabled_for_game_both_platforms(mock_is_platform_enabled: MagicMock) -> None:
+    """Test platform checking for Android & iOS games."""
+    mock_is_platform_enabled.side_effect = lambda platform: platform in {"android", "ios"}
+
+    game = EpicMobileGame(
+        id="test_both",
+        game_name="Cross-platform Game",
+        game_url=HttpUrl("https://www.epicgames.com/en-US/p/test"),
+        start_date=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2025, 12, 31, 23, 59, 59, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image.jpg"),
+        description="Test description",
+        developer="Test Developer",
+        platform="Android & iOS",
+    )
+
+    result = is_platform_enabled_for_game(game)
+
+    assert result is True
+
+
+@patch("discord_free_game_notifier.epic_mobile.settings.is_platform_enabled")
+def test_is_platform_enabled_for_game_disabled(mock_is_platform_enabled: MagicMock) -> None:
+    """Test platform checking when platform is disabled."""
+    mock_is_platform_enabled.return_value = False
+
+    game = EpicMobileGame(
+        id="test_disabled",
+        game_name="Disabled Platform Game",
+        game_url=HttpUrl("https://www.epicgames.com/en-US/p/test"),
+        start_date=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2025, 12, 31, 23, 59, 59, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image.jpg"),
+        description="Test description",
+        developer="Test Developer",
+        platform="Android",
+    )
+
+    result = is_platform_enabled_for_game(game)
+
+    assert result is False
+    mock_is_platform_enabled.assert_called_once_with("android")
+
+
+@patch("discord_free_game_notifier.epic_mobile.settings.is_platform_enabled")
+def test_is_platform_enabled_for_game_mixed_enabled(mock_is_platform_enabled: MagicMock) -> None:
+    """Test platform checking when only one platform is enabled for Android & iOS game."""
+    # Only Android enabled, iOS disabled
+    mock_is_platform_enabled.side_effect = lambda platform: platform == "android"
+
+    game = EpicMobileGame(
+        id="test_mixed",
+        game_name="Mixed Platform Game",
+        game_url=HttpUrl("https://www.epicgames.com/en-US/p/test"),
+        start_date=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC),
+        end_date=datetime.datetime(2025, 12, 31, 23, 59, 59, tzinfo=datetime.UTC),
+        image_link=HttpUrl("https://example.com/image.jpg"),
+        description="Test description",
+        developer="Test Developer",
+        platform="Android & iOS",
+    )
+
+    result = is_platform_enabled_for_game(game)
+
+    assert result is True
