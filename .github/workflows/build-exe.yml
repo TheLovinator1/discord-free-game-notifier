@@ -94,10 +94,28 @@ jobs:
             dist/discord-free-game-notifier.exe.sha256
           retention-days: 90
 
+      - name: Extract version from pyproject.toml
+        id: version
+        run: |
+          $version = (Get-Content pyproject.toml | Select-String 'version = "(.+)"').Matches.Groups[1].Value
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          generate_release_notes: true
+          body: |
+            ## Docker Images
+
+            ```bash
+            docker pull ghcr.io/thelovinator1/discord-free-game-notifier:${{ steps.version.outputs.version }}
+            ```
+
+            Available tags:
+            - `ghcr.io/thelovinator1/discord-free-game-notifier:${{ steps.version.outputs.version }}`
+            - `ghcr.io/thelovinator1/discord-free-game-notifier:latest`
           files: |
             dist/discord-free-game-notifier.exe
             dist/discord-free-game-notifier.exe.sha256
@@ -161,13 +179,18 @@ jobs:
             dist/discord-free-game-notifier.sha256
           retention-days: 90
 
+      - name: Rename for release
+        run: |
+          mv dist/discord-free-game-notifier dist/discord-free-game-notifier-linux-x86_64
+          mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-linux-x86_64.sha256
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            dist/discord-free-game-notifier
-            dist/discord-free-game-notifier.sha256
+            dist/discord-free-game-notifier-linux-x86_64
+            dist/discord-free-game-notifier-linux-x86_64.sha256
           draft: false
           prerelease: false
         env:
@@ -228,13 +251,18 @@ jobs:
             dist/discord-free-game-notifier.sha256
           retention-days: 90
 
+      - name: Rename for release
+        run: |
+          mv dist/discord-free-game-notifier dist/discord-free-game-notifier-macos-x86_64
+          mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-macos-x86_64.sha256
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            dist/discord-free-game-notifier
-            dist/discord-free-game-notifier.sha256
+            dist/discord-free-game-notifier-macos-x86_64
+            dist/discord-free-game-notifier-macos-x86_64.sha256
           draft: false
           prerelease: false
         env:
@@ -301,16 +329,16 @@ jobs:
 
       - name: Rename for release
         run: |
-          mv dist/discord-free-game-notifier dist/discord-free-game-notifier-macos-arm64
-          mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-macos-arm64.sha256
+          mv dist/discord-free-game-notifier dist/discord-free-game-notifier-macos-aarch64
+          mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-macos-aarch64.sha256
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            dist/discord-free-game-notifier-macos-arm64
-            dist/discord-free-game-notifier-macos-arm64.sha256
+            dist/discord-free-game-notifier-macos-aarch64
+            dist/discord-free-game-notifier-macos-aarch64.sha256
           draft: false
           prerelease: false
         env:
@@ -377,16 +405,16 @@ jobs:
 
       - name: Rename for release
         run: |
-          mv dist/discord-free-game-notifier dist/discord-free-game-notifier-linux-arm64
-          mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-linux-arm64.sha256
+          mv dist/discord-free-game-notifier dist/discord-free-game-notifier-linux-aarch64
+          mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-linux-aarch64.sha256
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            dist/discord-free-game-notifier-linux-arm64
-            dist/discord-free-game-notifier-linux-arm64.sha256
+            dist/discord-free-game-notifier-linux-aarch64
+            dist/discord-free-game-notifier-linux-aarch64.sha256
           draft: false
           prerelease: false
         env:
