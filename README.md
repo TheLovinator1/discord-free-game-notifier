@@ -10,6 +10,13 @@ Discord webhook notifications for free games on Steam, Epic, GOG, and Ubisoft.
 
 **Docker:** See [docker-compose.yml](./docker-compose.yml)
 
+Available tags:
+
+- `latest` - Latest build from master branch
+- `2.0.0` - Pin to specific version (recommended for stability)
+- `2.0` - Pin to minor version (gets patch updates)
+- `2` - Pin to major version
+
 **Direct:**
 
 ```bash
@@ -25,35 +32,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv run python -m discord_free_game_notifier.main
 ```
 
-## Manual Checking
-
-```bash
-# Check stores directly
-uv run python -m discord_free_game_notifier.{steam,epic,gog,ubisoft}
-
-# Check JSON files from /pages
-uv run python -m discord_free_game_notifier.{steam,epic}_json_check
-```
-
-## Generate JSON
-
-For games not found by scraping, modify `create_json_file()` in:
-
-- [steam_json.py](src/discord_free_game_notifier/steam_json.py)
-- [epic_json.py](src/discord_free_game_notifier/epic_json.py)
-
-Then run:
-
-```bash
-uv run python -m discord_free_game_notifier.{steam,epic}_json
-```
-
 ## Data Storage
 
 - Windows: `%APPDATA%/TheLovinator/discord_free_game_notifier`
 - Linux: `~/.local/share/discord_free_game_notifier/`
-
-## Notes
-
-- VS Code tasks available: `Ctrl+Shift+P` → "Tasks: Run Task"
-- JSON files hosted via GitHub Pages: <https://thelovinator1.github.io/discord-free-game-notifier/>
