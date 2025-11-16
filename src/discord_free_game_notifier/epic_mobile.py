@@ -181,7 +181,7 @@ def create_json_file() -> None:
             ),
             start_date=start_dt,
             end_date=end_dt,
-            image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/idle_champions_nixie.png"),
+            image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/idle_champions_nixie.jpg"),
             description=(
                 "**Nixie's Champions of Renown Bundle Pack (Epic Exclusive)** — free by "
                 "logging into Idle Champions via the Epic Games Store before "
