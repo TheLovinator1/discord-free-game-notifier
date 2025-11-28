@@ -168,6 +168,19 @@ def create_json_file() -> None:
             description="8th anniversary of World of Warships on Steam! This package includes:\n- 1x Steam container\n- Steam patch symbol and background\n- Steam permanent camouflage\n- Piece of Cake flag\n- 3 days of Warships Premium Account\n- Access to a two-part combat mission chain (available from 14 November). Complete to receive: Steam Cat permanent camouflage for German Tier V cruiser Königsberg, Steam container, Steam permanent camouflage.",  # noqa: E501
             developer="Wargaming Group Limited",
         ),
+        # World of Warships: Holiday Gift
+        SteamGame(
+            id="world_of_warships_holiday_gift",
+            game_name="World of Warships: Holiday Gift",
+            game_url=HttpUrl("https://store.steampowered.com/app/4134400/World_of_Warships__Holiday_Gift/"),
+            start_date=datetime.datetime(2025, 11, 28, 17, 30, 0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(2026, 1, 6, 18, 0, 0, tzinfo=datetime.UTC),
+            image_link=HttpUrl(
+                "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_holiday_gift.jpg",
+            ),
+            description='Happy Holidays from World of Warships! Tear into this limited-time free DLC to find the Steam flag, a mission to unlock a Steam permanent camouflage, and a "Christmas and New Year in the Navy" container, which contains an element of the in-game collection of the same name. By gathering all 24 elements, you will obtain a Santa\'s Big Gift container, as well as days of Warships Premium Account!\nThis package contains:\n- 2 "Christmas and New Year in the Navy" container\n- Steam flag\n- Access to a combat mission: Complete 10 battles to receive 1 Steam permanent camouflage',  # noqa: E501
+            developer="Wargaming Group Limited",
+        ),
     ]
 
     free_games = SteamFreeGames(free_games=games)
