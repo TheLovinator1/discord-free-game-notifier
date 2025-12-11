@@ -373,7 +373,8 @@ def if_mystery_game(game: EpicGameElement) -> bool:
     Returns:
         bool: True if game is a mystery game.
     """
-    if game.title == "Mystery Game":
+    title: str = game.title.lower()
+    if title.startswith("mystery game"):
         logger.info(f"{game.title}: Mystery game, skipping")
         return True
     return False
