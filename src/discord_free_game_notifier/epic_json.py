@@ -27,7 +27,7 @@ class EpicGame(BaseModel):
     game_url: HttpUrl
     start_date: AwareDatetime
     end_date: AwareDatetime
-    image_link: HttpUrl
+    image_link: HttpUrl | None = Field(default=None)
     description: str = Field(..., max_length=4000)
     developer: str = Field(..., max_length=200)
 
@@ -216,6 +216,26 @@ def create_json_file() -> None:
             description="The Echo Starter Pack includes:\n- 1 Incomplete Echo\n- 10 Premium Tuner\n- 5 Advanced Sealed Tube",
             developer="KURO GAMES",
         ),
+        EpicGame(
+            id="epic_christmas_sale_2025_part1",
+            game_name="Epic Christmas Sale 2025 (Part 1)",
+            game_url=HttpUrl("https://store.epicgames.com/en-US/free-games"),
+            start_date=datetime.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
+            image_link=None,
+            description="Random shit for the following games:\n• [Asphalt Legends](https://store.epicgames.com/purchase?offers=1-9159cceaae3e48bc9a5ec237d7a4f388-099087585107462d9219d8654a18fdfa)\n• [Discord Nitro](https://store.epicgames.com/purchase?offers=1-5f3c898b2a3244af99e9900e015717f8-58d59510955043fb8a3dd9e6c69efc02)\n• [Disney Speedstorm](https://store.epicgames.com/purchase?offers=1-47bf168a2214456fb7bd4c217e2a4fd6-c3c12bd13f6f466fb947d44b3126dc57)\n• [Fall Guys](https://store.epicgames.com/purchase?offers=1-50118b7f954e450f8823df1614b24e80-4f5cee54a31444eebbce30e7d61399d6)\n• [Firestone](https://store.epicgames.com/purchase?offers=1-bda8d2133655435982b9118972792328-c47b928cdf9c47bb80c4c7182656d676)\n• [Fortnite](https://store.epicgames.com/purchase?offers=1-fn-fff08dea01f346c49660f3aa9dd3c890)\n• [Idle Champions](https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-a500e9f0ac2a427db04d30d2bcc608cf)",  # noqa: E501
+            developer="Happy yuletide!",
+        ),
+        EpicGame(
+            id="epic_christmas_sale_2025_part2",
+            game_name="Epic Christmas Sale 2025 (Part 2)",
+            game_url=HttpUrl("https://store.epicgames.com/en-US/free-games"),
+            start_date=datetime.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            end_date=datetime.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
+            image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/epic_christmas_sale_2025.jpg"),
+            description="• [Infinity Nikki](https://store.epicgames.com/purchase?offers=1-ad13a7222a9b4e899e14cd021c7c5118-fd11d240818b4427aa632c6a0ca1353e)\n• [Neverwinter](https://store.epicgames.com/purchase?offers=1-9a4a6536096c4307bfb235d811f754ce-60c2ce621b3d46d6884ae3da6a3342cb)\n• [Rocket League](https://store.epicgames.com/purchase?offers=1-9773aa1aa54f4f7b80e44bef04986cea-8d2977f72fd34d42b54c62e102b9411f)\n• [SMITE 2](https://store.epicgames.com/purchase?offers=1-16ed9f15b1b449ccb59cb610b13df5b8-5e70cd48c74140e18bd152136282cf30)\n• [Star Trek Online](https://store.epicgames.com/purchase?offers=1-06a97980aac14fdfb914ef603a113792-a6c5b19271dd46c39a706d50496b29c5)\n• [World of Warships](https://store.epicgames.com/purchase?offers=1-84c76746bce94effb8e1047fabfd7eb7-d815be0a5f19422a8c8afddaef5f8cb6)",  # noqa: E501
+            developer="And a happy new year! :-)",
+        ),
     ]
 
     free_games = EpicFreeGames(free_games=games_list)
@@ -259,7 +279,9 @@ def get_epic_json_games() -> list[tuple[DiscordEmbed, str]] | None:
 
             embed = DiscordEmbed(description=game.description)
 
-            embed.set_image(url=str(game.image_link))
+            if game.image_link is not None:
+                embed.set_image(url=str(game.image_link))
+
             embed.set_timestamp()
             embed.add_embed_field(name="Start", value=f"<t:{unix_start_date}:R>")
             embed.add_embed_field(name="End", value=f"<t:{unix_end_date}:R>")

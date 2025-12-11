@@ -395,3 +395,37 @@ class TestGetEpicFreeGames:
         results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
         assert isinstance(results, list)
         assert results == []
+
+    def test_handles_missing_image_link(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+
+        payload: dict[str, list[dict[str, str | None]]] = {
+            "free_games": [
+                {
+                    "id": "game_without_image",
+                    "game_name": "No Image",
+                    "game_url": "https://example.com/no-image",
+                    "start_date": _iso(now - datetime.timedelta(hours=1)),
+                    "end_date": _iso(now + datetime.timedelta(hours=1)),
+                    "image_link": None,
+                    "description": "No image available",
+                    "developer": "Dev",
+                },
+            ],
+        }
+
+        def response_factory(_: str) -> _DummyResponse:
+            return _DummyResponse(payload=payload, is_error=False)
+
+        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]  # noqa: ARG005
+        monkeypatch.setattr(epic_mod, "already_posted", lambda **kwargs: False)  # noqa: ARG005
+
+        results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
+        assert isinstance(results, list)
+        assert len(results) == 1
+
+        embed, game_id = results[0]
+        assert game_id == "game_without_image"
+
+        embed_dict: dict[str, Any] = embed_to_dict(embed)
+        assert embed_dict.get("image") is None

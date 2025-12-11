@@ -96,6 +96,42 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"label": "[Test Embeds] Epic (all)",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.test_embeds epic",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Test Embeds] Steam (all)",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.test_embeds steam",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Test Embeds] Epic Mobile (all)",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.test_embeds epic_mobile",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Test Embeds] All",
+			"type": "shell",
+			"command": "uv run python -m discord_free_game_notifier.test_embeds all",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

@@ -16,6 +16,9 @@ from discord_free_game_notifier import settings
 if TYPE_CHECKING:
     import requests
 
+# Maximum description length for Discord embeds
+MAX_DESCRIPTION_LENGTH = 1000
+
 
 class GameService(enum.StrEnum):
     """Current supported game services.
@@ -100,7 +103,21 @@ def send_embed_webhook(embed: DiscordEmbed, game_id: str, game_service: GameServ
     webhook = DiscordWebhook(url=webhook_url, rate_limit_retry=True)
     webhook.add_embed(embed=embed)
 
-    embed.description = textwrap.shorten(embed.description or "", width=1000, placeholder="...")
+    # Shorten description while preserving newlines
+    description: str = embed.description or ""
+    if len(description) > MAX_DESCRIPTION_LENGTH:
+        lines: list[str] = description.split("\n")
+        shortened_lines: list[str] = []
+        total_length: int = 0
+        for line in lines:
+            if total_length + len(line) + 1 > MAX_DESCRIPTION_LENGTH:  # +1 for the newline character
+                shortened_lines.append(textwrap.shorten(line, width=MAX_DESCRIPTION_LENGTH - total_length, placeholder="..."))
+                break
+            shortened_lines.append(line)
+            total_length += len(line) + 1
+        embed.description = "\n".join(shortened_lines)
+    else:
+        embed.description = description
 
     response: requests.Response = webhook.execute()
 
