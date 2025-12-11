@@ -24,7 +24,7 @@ requires = ["uv_build>=0.9.9,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["pytest", "pyinstaller", "hypothesis"]
+dev = ["pytest", "pyinstaller", "hypothesis", "types-pytz", "types-requests"]
 
 [tool.ruff]
 preview = true
@@ -78,3 +78,10 @@ lint.ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "D103", "PLR2004"]
+
+[tool.mypy]
+python_version = "3.14"
+
+[[tool.mypy.overrides]]
+module = ["discord_webhook", "discord_webhook.*", "apscheduler.*"]
+ignore_missing_imports = true

@@ -81,12 +81,12 @@ class UbisoftGame(BaseModel):
             The validated image URL.
         """
         if url.path is None:
-            msg: str = "Image URL path cannot be None"
+            msg = "Image URL path cannot be None"
             raise ValueError(msg)
 
         image_path: Path = Path("pages/images/") / Path(url.path).name
         if not image_path.is_file():
-            msg: str = f"Image file not found at expected path: {image_path}"
+            msg = f"Image file not found at expected path: {image_path}"
             raise ValueError(msg)
         return url
 

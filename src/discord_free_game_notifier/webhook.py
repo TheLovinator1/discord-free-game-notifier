@@ -112,7 +112,7 @@ def send_embed_webhook(embed: DiscordEmbed, game_id: str, game_service: GameServ
             file.write(f"{normalized_id}\n")
     else:
         logger.error(f"Failed to send embed for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
-        logger.error(f"Response content: {response.content}")
+        logger.error(f"Response content: {response.text}")
         logger.error(f"Embed content: {embed_to_dict(embed)}")
 
 
@@ -137,4 +137,4 @@ def send_text_webhook(message: str, game_id: str, game_service: GameService) -> 
             file.write(f"{normalized_id}\n")
     else:
         logger.error(f"Failed to send text message for {game_id=} to {game_service=}: {response.status_code} - {response.text}")
-        logger.error(f"Response content: {response.content}")
+        logger.error(f"Response content: {response.text}")

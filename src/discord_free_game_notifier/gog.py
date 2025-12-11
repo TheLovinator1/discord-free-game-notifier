@@ -98,12 +98,12 @@ def _process_game_child(child: Tag) -> tuple[DiscordEmbed, str] | None:
     logger.info(f"Game URL: {game_url}")
 
     # Game image
-    image_url = None
+    image_url: HttpUrl | None = None
     image_url_class: Tag | None = child.find("source", attrs={"srcset": True})
     if image_url_class and hasattr(image_url_class, "attrs"):
         images: list[str] = str(image_url_class.attrs.get("srcset", "")).strip().split()
         if images:
-            image_url: HttpUrl | None = HttpUrl(images[0]) if images[0] else None
+            image_url = HttpUrl(images[0]) if images[0] else None
             logger.info(f"Image URL: {image_url}")
 
     gog_game = GOGGame(id=game_id, game_name=game_name, game_url=HttpUrl(game_url), image_url=image_url)

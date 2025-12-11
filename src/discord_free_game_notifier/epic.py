@@ -58,7 +58,7 @@ class CatalogNsMapping(BaseModel):
 class CatalogNs(BaseModel):
     """Structure for catalog namespace container."""
 
-    mappings: list[CatalogNsMapping] | None = Field(default_factory=list)
+    mappings: list[CatalogNsMapping] | None = None
 
 
 class DiscountSetting(BaseModel):
@@ -124,7 +124,7 @@ class EpicGameElement(BaseModel):
     urlSlug: str | None = None
     url: str | None = None
     categories: list[Category] = Field(default_factory=list)
-    offerMappings: list[OfferMapping] | None = Field(default_factory=list)
+    offerMappings: list[OfferMapping] | None = None
     catalogNs: CatalogNs | None = None
     price: Price
     promotions: Promotions | None = None
