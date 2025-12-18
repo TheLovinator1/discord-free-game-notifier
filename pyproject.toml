@@ -1,6 +1,6 @@
 [project]
 name = "discord-free-game-notifier"
-version = "2.1.2"
+version = "2.2.0"
 description = "Send webhook to Discord when a new game releases on Epic, Steam, GOG and Ubisoft."
 readme = "README.md"
 authors = [{ name = "Joakim Hellsén", email = "tlovinator@gmail.com" }]
