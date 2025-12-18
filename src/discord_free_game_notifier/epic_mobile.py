@@ -165,11 +165,14 @@ def create_json_file() -> None:
     The bot will use this file to check if there are any new free mobile games.
     """
     # Define event window datetimes (UTC)
-    start_dt = datetime.datetime(2025, 11, 6, 16, 0, 0, tzinfo=datetime.UTC)
-    end_dt = datetime.datetime(2025, 11, 13, 16, 0, 0, tzinfo=datetime.UTC)
+    idle_champions_start = datetime.datetime(2025, 11, 6, 16, 0, 0, tzinfo=datetime.UTC)
+    idle_champions_end = datetime.datetime(2025, 11, 13, 16, 0, 0, tzinfo=datetime.UTC)
+    shotgun_king_start = datetime.datetime(2025, 12, 18, 16, 0, 0, tzinfo=datetime.UTC)
+    shotgun_king_end = datetime.datetime(2025, 12, 25, 16, 0, 0, tzinfo=datetime.UTC)
 
     # Precompute unix timestamps for Discord timestamp tokens
-    end_unix = int(end_dt.timestamp())
+    idle_champions_end_unix = int(idle_champions_end.timestamp())
+    shotgun_king_end_unix = int(shotgun_king_end.timestamp())
 
     games_list: list[EpicMobileGame] = [
         # Idle Champions - Nixie's Champions of Renown Pack (Epic Exclusive mobile login bundle)
@@ -180,13 +183,13 @@ def create_json_file() -> None:
             game_url=HttpUrl(
                 "https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-c9f2ce27f1c44ba9ad0cf4260f9e709e&offers=1-7e508f543b05465abe3a935960eb70ac-dd07843b88f64ee898a4ea415c6dcb17",
             ),
-            start_date=start_dt,
-            end_date=end_dt,
+            start_date=idle_champions_start,
+            end_date=idle_champions_end,
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/idle_champions_nixie.jpg"),
             description=(
                 "**Nixie's Champions of Renown Bundle Pack (Epic Exclusive)** — free by "
                 "logging into Idle Champions via the Epic Games Store before "
-                f"<t:{end_unix}:R>."
+                f"<t:{idle_champions_end_unix}:R>."
             ),
             developer="Codename Entertainment",
             platform="Android & iOS",
@@ -208,6 +211,36 @@ def create_json_file() -> None:
                 ),
                 "Store Android": HttpUrl("https://store.epicgames.com/p/idle-champions-of-the-forgotten-realms-android-6df748"),
                 "Store iOS": HttpUrl("https://store.epicgames.com/p/idle-champions-of-the-forgotten-realms-ios-77e761"),
+                "Transactions": HttpUrl("https://www.epicgames.com/account/transactions?productName=egs"),
+            },
+        ),
+        # Shotgun King: The Final Checkmate
+        EpicMobileGame(
+            id="shotgun_king_the_final_checkmate",
+            game_name="Shotgun King: The Final Checkmate",
+            game_url=HttpUrl(
+                "https://store.epicgames.com/en-US/p/shotgun-king-android-74f556",
+            ),
+            start_date=shotgun_king_start,
+            end_date=shotgun_king_end,
+            image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/shotgun_king_checkmate.jpg"),
+            description=(
+                "Chess, but you replace your entire army with a royal shotgun. "
+                "A unique strategy rogue-like based on the timeless checkerboard classic. "
+                f"Free until <t:{shotgun_king_end_unix}:R>."
+            ),
+            developer="PUNKCAKE Delicieux",
+            platform="Android & iOS",
+            quick_links={
+                "Buy Both": HttpUrl(
+                    "https://store.epicgames.com/purchase?offers=1-ce6f60f1c65644da87de06399935eac6-bcf9a1a9466a456195619d12c1e08841&offers=1-ce6f60f1c65644da87de06399935eac6-5f1fa293e5c8417283e5c039ba218a5c",
+                ),
+                "Buy Android": HttpUrl(
+                    "https://store.epicgames.com/purchase?offers=1-ce6f60f1c65644da87de06399935eac6-bcf9a1a9466a456195619d12c1e08841",
+                ),
+                "Buy iOS": HttpUrl(
+                    "https://store.epicgames.com/purchase?offers=1-ce6f60f1c65644da87de06399935eac6-5f1fa293e5c8417283e5c039ba218a5c",
+                ),
                 "Transactions": HttpUrl("https://www.epicgames.com/account/transactions?productName=egs"),
             },
         ),

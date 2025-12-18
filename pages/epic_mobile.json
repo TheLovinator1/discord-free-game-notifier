@@ -24,6 +24,24 @@
                 "Store iOS": "https://store.epicgames.com/p/idle-champions-of-the-forgotten-realms-ios-77e761",
                 "Transactions": "https://www.epicgames.com/account/transactions?productName=egs"
             }
+        },
+        {
+            "id": "shotgun_king_the_final_checkmate",
+            "game_name": "Shotgun King: The Final Checkmate",
+            "game_url": "https://store.epicgames.com/en-US/p/shotgun-king-android-74f556",
+            "start_date": "2025-12-18T16:00:00+00:00",
+            "end_date": "2025-12-25T16:00:00+00:00",
+            "image_link": "https://thelovinator1.github.io/discord-free-game-notifier/images/shotgun_king_checkmate.jpg",
+            "description": "Chess, but you replace your entire army with a royal shotgun. A unique strategy rogue-like based on the timeless checkerboard classic. Free until <t:1766678400:R>.",
+            "developer": "PUNKCAKE Delicieux",
+            "platform": "Android & iOS",
+            "includes": null,
+            "quick_links": {
+                "Buy Both": "https://store.epicgames.com/purchase?offers=1-ce6f60f1c65644da87de06399935eac6-bcf9a1a9466a456195619d12c1e08841&offers=1-ce6f60f1c65644da87de06399935eac6-5f1fa293e5c8417283e5c039ba218a5c",
+                "Buy Android": "https://store.epicgames.com/purchase?offers=1-ce6f60f1c65644da87de06399935eac6-bcf9a1a9466a456195619d12c1e08841",
+                "Buy iOS": "https://store.epicgames.com/purchase?offers=1-ce6f60f1c65644da87de06399935eac6-5f1fa293e5c8417283e5c039ba218a5c",
+                "Transactions": "https://www.epicgames.com/account/transactions?productName=egs"
+            }
         }
     ]
 }

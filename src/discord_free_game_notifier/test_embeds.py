@@ -76,6 +76,50 @@ def _load_epic_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None:
         return notified_games
 
 
+def _load_epic_mobile_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None:
+    """Load Epic Mobile games from local pages/epic_mobile.json file.
+
+    Returns:
+        List of tuples containing (DiscordEmbed, game_id) or None if error.
+    """
+    try:
+        epic_mobile_json_path = Path("pages/epic_mobile.json")
+        if not epic_mobile_json_path.exists():
+            logger.error(f"Epic Mobile JSON file not found at {epic_mobile_json_path.absolute()}")
+            return None
+
+        with epic_mobile_json_path.open(encoding="utf-8") as file:
+            data = json.load(file)
+
+        epic_mobile_games: epic_mobile.EpicMobileFreeGames = epic_mobile.EpicMobileFreeGames.model_validate(data)
+        free_games: list[epic_mobile.EpicMobileGame] = epic_mobile_games.free_games
+
+        notified_games: list[tuple[DiscordEmbed, str]] = []
+        for game in free_games:
+            unix_start_date = int(game.start_date.timestamp())
+            unix_end_date = int(game.end_date.timestamp())
+
+            embed = DiscordEmbed(description=game.description)
+
+            if game.image_link is not None:
+                embed.set_image(url=str(game.image_link))
+
+            embed.set_timestamp()
+            embed.add_embed_field(name="Start", value=f"<t:{unix_start_date}:R>")
+            embed.add_embed_field(name="End", value=f"<t:{unix_end_date}:R>")
+            embed.set_footer(text=game.developer)
+
+            icon_url = "https://thelovinator1.github.io/discord-free-game-notifier/images/Epic.png"
+            embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
+
+            notified_games.append((embed, game.id))
+    except (ValidationError, ValueError, KeyError, TypeError, json.JSONDecodeError, OSError) as e:
+        logger.error(f"Error loading Epic Mobile games from local JSON: {e}")
+        return None
+    else:
+        return notified_games
+
+
 def _load_steam_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None:
     """Load Steam games from local pages/steam.json file.
 
@@ -164,7 +208,7 @@ def send_epic_mobile_embeds(index: int | None = None) -> None:
     Args:
         index: Optional index of specific game to send. If None, sends all games.
     """
-    free_games: list[tuple[DiscordEmbed, str]] | None = epic_mobile.get_epic_mobile_json_games()
+    free_games: list[tuple[DiscordEmbed, str]] | None = _load_epic_mobile_games_from_local_json()
 
     if not free_games:
         logger.warning("No Epic Mobile Games found in JSON")
