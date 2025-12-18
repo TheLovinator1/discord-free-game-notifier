@@ -66,30 +66,6 @@ class UbisoftGame(BaseModel):
         """
         return dt.isoformat()
 
-    @field_validator("image_link")
-    @classmethod
-    def validate_image_link(cls, url: HttpUrl) -> HttpUrl:
-        """Validate that the image link is a valid URL.
-
-        Args:
-            url: The image URL to validate.
-
-        Raises:
-            ValueError: If the image file does not exist at the expected path.
-
-        Returns:
-            The validated image URL.
-        """
-        if url.path is None:
-            msg = "Image URL path cannot be None"
-            raise ValueError(msg)
-
-        image_path: Path = Path("pages/images/") / Path(url.path).name
-        if not image_path.is_file():
-            msg = f"Image file not found at expected path: {image_path}"
-            raise ValueError(msg)
-        return url
-
 
 class UbisoftFreeGames(BaseModel):
     """Structure for the Ubisoft free games JSON."""
