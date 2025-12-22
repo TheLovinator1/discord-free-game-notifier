@@ -17,6 +17,7 @@ dependencies = [
     "python-dotenv",
     "pytz",
     "selectolax",
+    "sentry-sdk",
 ]
 
 [build-system]

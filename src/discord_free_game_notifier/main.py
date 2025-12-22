@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from typing import Any
 
 import httpx
+import sentry_sdk
 from apscheduler.events import EVENT_JOB_ERROR
 from apscheduler.events import EVENT_JOB_EXECUTED
 from apscheduler.events import JobExecutionEvent
@@ -151,6 +152,19 @@ def main() -> None:
 
     This function will check for free games at minute 01, 16, 31, and 46 of each hour.
     """
+    # Initialize Sentry if DSN is configured
+    if settings.sentry_dsn:
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            traces_sample_rate=1.0,
+            profiles_sample_rate=1.0,
+            # Enable automatic breadcrumbs for better context
+            enable_tracing=True,
+        )
+        logger.info("Sentry error tracking initialized")
+    else:
+        logger.info("Sentry DSN not configured, error tracking disabled")
+
     logger.info("Starting discord_free_game_notifier, checks scheduled at xx:01, xx:16, xx:31, xx:46 each hour")
     sched.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 

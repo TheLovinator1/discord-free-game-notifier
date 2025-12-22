@@ -68,6 +68,7 @@ Control which games you want to be notified about:
 ### Other Settings
 
 - `LOG_LEVEL` - Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL). Default: INFO
+- `SENTRY_DSN` - Sentry DSN for error tracking. Enabled by default. Set to empty string (`SENTRY_DSN=`) to disable error reporting. You can also set your own DSN from [sentry.io](https://sentry.io/)
 
 ### Example Configuration
 
@@ -84,6 +85,12 @@ PLATFORMS=pc
 
 # Optional: Adjust logging
 LOG_LEVEL=INFO
+
+# Optional: Disable Sentry error tracking (enabled by default)
+# SENTRY_DSN=
+
+# Optional: Use your own Sentry DSN
+# SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
 ```
 
 ## Data Storage

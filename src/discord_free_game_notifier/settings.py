@@ -60,6 +60,10 @@ class Settings(BaseSettings):
         default="",
         description="Comma-separated list of stores to check (steam, epic, gog, ubisoft). Leave empty for all stores",
     )
+    sentry_dsn: str = Field(
+        default="https://3a8452073ffde39275934b90f66ce277@o4505228040339456.ingest.us.sentry.io/4510580594049024",
+        description="Sentry DSN for error tracking. Set to empty string to disable error reporting",
+    )
 
     @field_validator("webhook_url", "gog_webhook", "steam_webhook", "epic_webhook", "ubisoft_webhook")
     @classmethod
@@ -278,6 +282,7 @@ epic_webhook: str = settings.epic_webhook
 ubisoft_webhook: str = settings.ubisoft_webhook
 platforms: str = settings.platforms
 stores: str = settings.stores
+sentry_dsn: str = settings.sentry_dsn
 
 
 def get_enabled_platforms() -> set[str]:
