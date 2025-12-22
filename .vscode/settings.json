@@ -19,6 +19,7 @@
         "botuser",
         "buildx",
         "celerybeat",
+        "cffi",
         "chartboost",
         "codz",
         "Connor",

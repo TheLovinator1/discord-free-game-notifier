@@ -7,6 +7,7 @@ import time
 
 import httpx
 import pytz
+from curl_cffi import requests as curl_requests
 from discord_webhook import DiscordEmbed
 from loguru import logger
 from pydantic import BaseModel
@@ -421,26 +422,37 @@ def _build_search_url(count: int = 5) -> str:
 
 
 def _fetch_search_results(
-    client: httpx.Client,
     initial_count: int,
     seen_ids: set[str],
+    headers: dict[str, str],
 ) -> tuple[list[EpicGameElement], bool]:
-    """Fetch search results from Epic and check if all are free.
+    """Fetch search results from Epic GraphQL and check if all are free.
+
+    Uses curl-cffi for the GraphQL request to improve compatibility with
+    Epic's storefront. Only GraphQL requests are switched; other endpoints
+    continue to use httpx.
 
     Args:
-        client: HTTP client instance.
         initial_count: Number of results to fetch.
         seen_ids: Set of already-seen game IDs to avoid duplicates.
+        headers: Headers to send with the request (same as the httpx client).
 
     Returns:
         tuple: (list of new elements, all_free boolean)
     """
     search_url: str = _build_search_url(count=initial_count)
-    response: httpx.Response = client.get(search_url)
-    logger.debug(f"Search endpoint (count={initial_count}) response: {response.status_code} - {response.reason_phrase}")
+    # Perform the GraphQL HTTP/2-friendly request via curl-cffi
+    try:
+        response: curl_requests.Response = curl_requests.get(search_url, headers=headers, timeout=30, impersonate="firefox")
+        logger.debug(f"Search endpoint (count={initial_count}) response: {response.status_code}")
+    except (TimeoutError, OSError) as e:
+        logger.error(f"Exception during Epic GraphQL request: {e}")
+        return [], False
 
-    if response.is_error:
-        logger.error(f"Error fetching Epic search results: {response.status_code} - {response.reason_phrase}")
+    if not getattr(response, "ok", False):
+        # curl-cffi Response has .ok similar to requests.
+        reason: str = getattr(response, "reason", "")
+        logger.error(f"Error fetching Epic search results: {response.status_code} - {reason}")
         return [], False
 
     parsed_response: EpicGamesResponse = EpicGamesResponse.model_validate(response.json())
@@ -519,7 +531,7 @@ def get_response() -> EpicGamesResponse | None:
         search_result_limit = 100
         try:
             for initial_count in [5, search_result_limit]:
-                new_elements, all_free = _fetch_search_results(client, initial_count, seen_ids)
+                new_elements, all_free = _fetch_search_results(initial_count, seen_ids, headers)
                 all_elements.extend(new_elements)
 
                 if not all_free:
@@ -529,7 +541,7 @@ def get_response() -> EpicGamesResponse | None:
                     logger.info(f"All results are free, expanding search to {search_result_limit} items")
                 else:
                     logger.info(f"All results are free at max count ({search_result_limit})")
-        except (httpx.HTTPError, ValueError) as e:
+        except (TimeoutError, OSError, ValueError) as e:
             logger.error(f"Error fetching/parsing search endpoint: {e}")
 
         # If we didn't get any results from either endpoint, return None
