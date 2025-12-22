@@ -479,12 +479,20 @@ def get_response() -> EpicGamesResponse | None:
         EpicGamesResponse: The parsed Epic Games API response with merged results, or None if error.
     """
     headers: dict[str, str] = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/json",
-        "Accept-Language": "en-US,en;q=0.9",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.7,sv;q=0.3",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Referer": "https://store.epicgames.com/en-US/",
+        "Origin": "https://store.epicgames.com",
+        "Connection": "keep-alive",
+        "DNT": "1",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
     }
 
-    with httpx.Client(timeout=30, transport=httpx.HTTPTransport(retries=5), headers=headers) as client:
+    with httpx.Client(timeout=30, transport=httpx.HTTPTransport(retries=5), headers=headers, follow_redirects=True) as client:
         all_elements: list[EpicGameElement] = []
         seen_ids: set[str] = set()
 
