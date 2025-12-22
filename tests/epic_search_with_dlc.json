@@ -1,0 +1,743 @@
+{
+    "data": {
+        "Catalog": {
+            "searchStore": {
+                "elements": [
+                    {
+                        "title": "Train Sim World® 6: Spirit of Steam: Liverpool Lime Street - Crewe",
+                        "id": "c09a8ee4c3f7425fa1b9cda29372c901",
+                        "namespace": "1d34d1fbf2f44d4493fbc39811a5405d",
+                        "description": "Step back in time and discover the soot and sounds of the romantic steam era through historic Merseyside and Cheshire with Train Sim World 3: Spirit of Steam: Liverpool Lime Street - Crewe!",
+                        "effectiveDate": "2025-09-30T17:00:00.000Z",
+                        "isCodeRedemptionOnly": false,
+                        "keyImages": [
+                            {
+                                "type": "OfferImageTall",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_S2_1200x1600-7df295f49cdbd285515ef880f48f89ab"
+                            },
+                            {
+                                "type": "OfferImageWide",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_S2_1200x1600-7df295f49cdbd285515ef880f48f89ab"
+                            },
+                            {
+                                "type": "ProductLogo",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_IC1_200x200-25fb68de611204f0c885125b15c6ac1b"
+                            },
+                            {
+                                "type": "Thumbnail",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_S2_1200x1600-7df295f49cdbd285515ef880f48f89ab"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_00_1920x1080-048eba8b09733b78f8eeb4e04e36444d"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_01_1920x1080-0bc602a8bd5bf658518e8c29cacd398c"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_02_1920x1080-e2c0a8a335a633ef7551f2dab7a00639"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_03_1920x1080-d3dfba62b8496f35448b0af4dac1e74a"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_04_1920x1080-078e981064417e0f1a520607b9fe0263"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_05_1920x1080-4c24d24b82e042aa4529007aca364bf2"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_06_1920x1080-8fdd42488b3b3e78d2962a79ef301aad"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/offer/1d34d1fbf2f44d4493fbc39811a5405d/EGS_TrainSimWorld6SpiritofSteam_DovetailGames_DLC_G1A_07_1920x1080-c5ceff457cc7ae0c16f55224e08fea1d"
+                            }
+                        ],
+                        "currentPrice": 33900,
+                        "seller": {
+                            "id": "o-hsu3hatj83tj7fpcykxyf7tn6ypg3e",
+                            "name": "Dovetail Games"
+                        },
+                        "productSlug": null,
+                        "urlSlug": "train-sim-world-6--spirit-of-steam-liverpool-lime-street-crewe",
+                        "url": null,
+                        "tags": [
+                            {
+                                "id": "9547"
+                            }
+                        ],
+                        "items": [
+                            {
+                                "id": "dbafc0c5e1b34272bdc8ea6c13bbe73f",
+                                "namespace": "1d34d1fbf2f44d4493fbc39811a5405d"
+                            }
+                        ],
+                        "customAttributes": [],
+                        "categories": [
+                            {
+                                "path": "addons"
+                            },
+                            {
+                                "path": "addons/durable"
+                            },
+                            {
+                                "path": "applications"
+                            }
+                        ],
+                        "catalogNs": {
+                            "mappings": [
+                                {
+                                    "pageSlug": "train-sim-world-6",
+                                    "pageType": "productHome"
+                                }
+                            ]
+                        },
+                        "offerMappings": [
+                            {
+                                "pageSlug": "train-sim-world-6--spirit-of-steam-liverpool-lime-street-crewe",
+                                "pageType": "addon--cms-hybrid"
+                            }
+                        ],
+                        "developerDisplayName": "Dovetail Games",
+                        "publisherDisplayName": "Dovetail Games",
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 0,
+                                "originalPrice": 33900,
+                                "voucherDiscount": 0,
+                                "discount": 33900,
+                                "currencyCode": "SEK",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "SEK 339.00",
+                                    "discountPrice": "0",
+                                    "intermediatePrice": "0"
+                                },
+                                "dualPrice": null,
+                                "dualOriginalPrice": null
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": [
+                                        {
+                                            "id": "65b9da630d0943dd86d6ab298b3e1c65",
+                                            "endDate": "2026-01-05T18:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "prePurchase": null,
+                        "releaseDate": "2025-09-30T17:00:00.000Z",
+                        "pcReleaseDate": "2025-09-30T17:00:00.000Z",
+                        "viewableDate": "2025-09-30T17:00:00.000Z",
+                        "approximateReleasePlan": null
+                    },
+                    {
+                        "title": "Paradise Killer",
+                        "id": "c8a6d95c091b4fe0be8fdfb53216f942",
+                        "namespace": "88f877d800874f1d8a503ef29d919e38",
+                        "description": "Paradise Island, a world outside reality. There’s been a murder that only \"investigation freak\" Lady Love Dies can solve. Gather evidence and interrogate suspects in this open world adventure. You can accuse anyone, but you’ll have to prove your case in trial to convict.",
+                        "effectiveDate": "2022-03-16T19:00:00.000Z",
+                        "isCodeRedemptionOnly": false,
+                        "keyImages": [
+                            {
+                                "type": "OfferImageTall",
+                                "url": "https://cdn1.epicgames.com/spt-assets/4ffbf3fddf3343c2af7d6c49cf3014b6/download-paradise-killer-offer-dy13q.jpg"
+                            },
+                            {
+                                "type": "OfferImageWide",
+                                "url": "https://cdn1.epicgames.com/spt-assets/4ffbf3fddf3343c2af7d6c49cf3014b6/paradise-killer-offer-1lvos.jpg"
+                            },
+                            {
+                                "type": "Thumbnail",
+                                "url": "https://cdn1.epicgames.com/spt-assets/4ffbf3fddf3343c2af7d6c49cf3014b6/download-paradise-killer-offer-dy13q.jpg"
+                            }
+                        ],
+                        "currentPrice": 16900,
+                        "seller": {
+                            "id": "o-22uq4lnmzc6kmlbbaf5gp8yvysnn3t",
+                            "name": "Surprise Attack Pty Ltd DBA Fellow Traveller Games"
+                        },
+                        "productSlug": null,
+                        "urlSlug": "f71c773b1f9843c5939b29f424b2ab5d",
+                        "url": null,
+                        "tags": [
+                            {
+                                "id": "1370"
+                            },
+                            {
+                                "id": "9547"
+                            },
+                            {
+                                "id": "1117"
+                            },
+                            {
+                                "id": "9549"
+                            },
+                            {
+                                "id": "1294"
+                            },
+                            {
+                                "id": "1263"
+                            }
+                        ],
+                        "items": [
+                            {
+                                "id": "259da81667f447de822289714d80a8e0",
+                                "namespace": "88f877d800874f1d8a503ef29d919e38"
+                            }
+                        ],
+                        "customAttributes": [
+                            {
+                                "key": "autoGeneratedPrice",
+                                "value": "false"
+                            },
+                            {
+                                "key": "extraLaunchOption_001_Args",
+                                "value": "-dx12"
+                            },
+                            {
+                                "key": "isPromotionalContentUsed",
+                                "value": "false"
+                            },
+                            {
+                                "key": "extraLaunchOption_001_Name",
+                                "value": "Paradise Killer Launcher"
+                            },
+                            {
+                                "key": "isBlockchainUsed",
+                                "value": "false"
+                            }
+                        ],
+                        "categories": [
+                            {
+                                "path": "games/edition/base"
+                            },
+                            {
+                                "path": "games/edition"
+                            },
+                            {
+                                "path": "games"
+                            }
+                        ],
+                        "catalogNs": {
+                            "mappings": [
+                                {
+                                    "pageSlug": "paradise-killer-c3ea1c",
+                                    "pageType": "productHome"
+                                }
+                            ]
+                        },
+                        "offerMappings": [
+                            {
+                                "pageSlug": "paradise-killer-c3ea1c",
+                                "pageType": "productHome"
+                            }
+                        ],
+                        "developerDisplayName": "Kaizen Game Works",
+                        "publisherDisplayName": "Fellow Traveller",
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 0,
+                                "originalPrice": 16900,
+                                "voucherDiscount": 0,
+                                "discount": 16900,
+                                "currencyCode": "SEK",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "SEK 169.00",
+                                    "discountPrice": "0",
+                                    "intermediatePrice": "0"
+                                },
+                                "dualPrice": null,
+                                "dualOriginalPrice": null
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": [
+                                        {
+                                            "id": "8612ec068a424efda8fe8bdf828b0253",
+                                            "endDate": "2025-12-23T16:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "prePurchase": null,
+                        "releaseDate": "2022-03-16T19:00:00.000Z",
+                        "pcReleaseDate": "2022-03-16T00:00:00.000Z",
+                        "viewableDate": "2022-03-04T18:00:00.000Z",
+                        "approximateReleasePlan": null
+                    },
+                    {
+                        "title": "Umm Oyoun",
+                        "id": "0b09d98e514b4808a9ba2ff31af8e44f",
+                        "namespace": "0d151a7a42fe46a381a9f4371c8d572a",
+                        "description": "The game is an episodic narrative journey following a mother and her daughter, Sarah, as they search for Sarah's missing father in a stormy, mysterious setting. It combines emotional depth and suspense, immersing players in a world of secrets and intrigue.",
+                        "effectiveDate": "2025-11-13T08:24:47.000Z",
+                        "isCodeRedemptionOnly": false,
+                        "keyImages": [
+                            {
+                                "type": "OfferImageWide",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-15u85.png"
+                            },
+                            {
+                                "type": "OfferImageTall",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-14u58.png"
+                            },
+                            {
+                                "type": "Thumbnail",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-14u58.png"
+                            },
+                            {
+                                "type": "heroCarouselVideo",
+                                "url": "com.epicgames.video.qs://dc6bc8eb-95fa-411a-ad1f-8b1252728986?cover=https%3A%2F%2Fcdn1.epicgames.com%2Fspt-assets%2F615e7ed9fb8d49b395cf6b0524a42d39%2Fummoyoun-video-1s2do.png"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-qo4mt.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-t6z0w.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-kjx0m.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-cq738.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-ivdmy.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-ch4ge.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-1pl7k.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-176fo.jpg"
+                            },
+                            {
+                                "type": "featuredMedia",
+                                "url": "https://cdn1.epicgames.com/spt-assets/615e7ed9fb8d49b395cf6b0524a42d39/ummoyoun-1oux0.jpg"
+                            }
+                        ],
+                        "currentPrice": 2100,
+                        "seller": {
+                            "id": "o-wzhump87dmvcw5ebzq6d3a352me7yr",
+                            "name": "GOLDEN ROCK GTEAM"
+                        },
+                        "productSlug": null,
+                        "urlSlug": "29e01d649b7147f6aa031507ba8d6e86",
+                        "url": null,
+                        "tags": [
+                            {
+                                "id": "1216"
+                            },
+                            {
+                                "id": "1218"
+                            },
+                            {
+                                "id": "1370"
+                            },
+                            {
+                                "id": "9547"
+                            },
+                            {
+                                "id": "1294"
+                            }
+                        ],
+                        "items": [
+                            {
+                                "id": "6c0adea7d81d4cec8368995a0fde09df",
+                                "namespace": "0d151a7a42fe46a381a9f4371c8d572a"
+                            }
+                        ],
+                        "customAttributes": [
+                            {
+                                "key": "autoGeneratedPrice",
+                                "value": "false"
+                            },
+                            {
+                                "key": "isManuallySetViewableDate",
+                                "value": "true"
+                            },
+                            {
+                                "key": "isPromotionalContentUsed",
+                                "value": "false"
+                            },
+                            {
+                                "key": "isManuallySetPCReleaseDate",
+                                "value": "true"
+                            },
+                            {
+                                "key": "isBlockchainUsed",
+                                "value": "false"
+                            }
+                        ],
+                        "categories": [
+                            {
+                                "path": "games/edition/base"
+                            },
+                            {
+                                "path": "games/edition"
+                            },
+                            {
+                                "path": "games"
+                            }
+                        ],
+                        "catalogNs": {
+                            "mappings": [
+                                {
+                                    "pageSlug": "ummoyoun-a2aa02",
+                                    "pageType": "productHome"
+                                }
+                            ]
+                        },
+                        "offerMappings": [
+                            {
+                                "pageSlug": "ummoyoun-a2aa02",
+                                "pageType": "productHome"
+                            }
+                        ],
+                        "developerDisplayName": "Mesopotamia Games Studio",
+                        "publisherDisplayName": "Golden Rock GTeam",
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 105,
+                                "originalPrice": 2100,
+                                "voucherDiscount": 0,
+                                "discount": 1995,
+                                "currencyCode": "SEK",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "SEK 21.00",
+                                    "discountPrice": "SEK 1.05",
+                                    "intermediatePrice": "SEK 1.05"
+                                },
+                                "dualPrice": null,
+                                "dualOriginalPrice": null
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": [
+                                        {
+                                            "id": "fb45bc01c1ff4a1f97e9b0d2827d177b",
+                                            "endDate": "2025-12-27T21:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "prePurchase": null,
+                        "releaseDate": "2025-11-13T08:24:47.000Z",
+                        "pcReleaseDate": "2025-03-22T22:00:00.000Z",
+                        "viewableDate": "2025-11-13T08:24:47.000Z",
+                        "approximateReleasePlan": null
+                    },
+                    {
+                        "title": "Space Empires I",
+                        "id": "0a6538f097774fa8ae3de3268b7b6998",
+                        "namespace": "7bdbbb9adde647319e311e3d2ea9e10e",
+                        "description": "Space Empires I is the first chapter of the Space Empires series. A classic galactic conquest and turn-based strategy video game where you are the leader of a race of intelligent beings building large spaceships for interplanetary and interstellar travel through warp points...",
+                        "effectiveDate": "2022-09-15T03:00:00.000Z",
+                        "isCodeRedemptionOnly": false,
+                        "keyImages": [
+                            {
+                                "type": "OfferImageWide",
+                                "url": "https://cdn1.epicgames.com/spt-assets/f1da9e6086ca49dfb605befe772d4af8/space-empires-i-offer-ycouc.png"
+                            },
+                            {
+                                "type": "OfferImageTall",
+                                "url": "https://cdn1.epicgames.com/spt-assets/f1da9e6086ca49dfb605befe772d4af8/download-space-empires-i-offer-1bewl.png"
+                            },
+                            {
+                                "type": "Thumbnail",
+                                "url": "https://cdn1.epicgames.com/spt-assets/f1da9e6086ca49dfb605befe772d4af8/download-space-empires-i-offer-1bewl.png"
+                            }
+                        ],
+                        "currentPrice": 700,
+                        "seller": {
+                            "id": "o-a3vefcg43bn6j4lwc7qs8n5y38jm7k",
+                            "name": "Strategy First"
+                        },
+                        "productSlug": null,
+                        "urlSlug": "db8f3ba9fa08491d96ef566b49967ed0",
+                        "url": null,
+                        "tags": [
+                            {
+                                "id": "1121"
+                            },
+                            {
+                                "id": "1370"
+                            },
+                            {
+                                "id": "24570"
+                            },
+                            {
+                                "id": "1115"
+                            },
+                            {
+                                "id": "9547"
+                            },
+                            {
+                                "id": "1198"
+                            }
+                        ],
+                        "items": [
+                            {
+                                "id": "670c0a900fd14bee8ec9fe9b38cd0897",
+                                "namespace": "7bdbbb9adde647319e311e3d2ea9e10e"
+                            }
+                        ],
+                        "customAttributes": [
+                            {
+                                "key": "autoGeneratedPrice",
+                                "value": "false"
+                            },
+                            {
+                                "key": "isManuallySetPCReleaseDate",
+                                "value": "true"
+                            }
+                        ],
+                        "categories": [
+                            {
+                                "path": "games/edition/base"
+                            },
+                            {
+                                "path": "games/edition"
+                            },
+                            {
+                                "path": "games"
+                            }
+                        ],
+                        "catalogNs": {
+                            "mappings": [
+                                {
+                                    "pageSlug": "space-empires-i-02f40b",
+                                    "pageType": "productHome"
+                                }
+                            ]
+                        },
+                        "offerMappings": [
+                            {
+                                "pageSlug": "space-empires-i-02f40b",
+                                "pageType": "productHome"
+                            }
+                        ],
+                        "developerDisplayName": "Malfador Machinations",
+                        "publisherDisplayName": "Strategy First",
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 140,
+                                "originalPrice": 700,
+                                "voucherDiscount": 0,
+                                "discount": 560,
+                                "currencyCode": "SEK",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "SEK 7.00",
+                                    "discountPrice": "SEK 1.40",
+                                    "intermediatePrice": "SEK 1.40"
+                                },
+                                "dualPrice": null,
+                                "dualOriginalPrice": null
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": [
+                                        {
+                                            "id": "1fbd1422fa4947a1a5642eca97823a75",
+                                            "endDate": "2026-01-08T16:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "prePurchase": null,
+                        "releaseDate": "2022-09-15T03:00:00.000Z",
+                        "pcReleaseDate": "1995-01-01T04:00:00.000Z",
+                        "viewableDate": "2022-09-14T04:00:00.000Z",
+                        "approximateReleasePlan": null
+                    },
+                    {
+                        "title": "Bad Rats Revenge",
+                        "id": "14c18b1900f24dc887e02d98115f2447",
+                        "namespace": "176692bf214148b1b0b1d37907d8d585",
+                        "description": "Bad Rats is a physics puzzle game where rats finally get their bloody revenge on their new prisoners: The cats. Come up with creative solutions for each puzzle using physics, functional objects, and your specially trained Rats",
+                        "effectiveDate": "2023-06-29T04:00:00.000Z",
+                        "isCodeRedemptionOnly": false,
+                        "keyImages": [
+                            {
+                                "type": "OfferImageWide",
+                                "url": "https://cdn1.epicgames.com/spt-assets/ea271c64b1504ca3a066faee80e69ef3/bad-rats-revenge-13330.png"
+                            },
+                            {
+                                "type": "OfferImageTall",
+                                "url": "https://cdn1.epicgames.com/spt-assets/ea271c64b1504ca3a066faee80e69ef3/bad-rats-revenge-gr881.png"
+                            },
+                            {
+                                "type": "Thumbnail",
+                                "url": "https://cdn1.epicgames.com/spt-assets/ea271c64b1504ca3a066faee80e69ef3/bad-rats-revenge-gr881.png"
+                            }
+                        ],
+                        "currentPrice": 1700,
+                        "seller": {
+                            "id": "o-a3vefcg43bn6j4lwc7qs8n5y38jm7k",
+                            "name": "Strategy First"
+                        },
+                        "productSlug": null,
+                        "urlSlug": "bbbcf88c0de24f50a7fb6a1d9f9aaeb6",
+                        "url": null,
+                        "tags": [
+                            {
+                                "id": "1370"
+                            },
+                            {
+                                "id": "24570"
+                            },
+                            {
+                                "id": "9547"
+                            },
+                            {
+                                "id": "1263"
+                            }
+                        ],
+                        "items": [
+                            {
+                                "id": "b6873dbdbda94f95a4cde436f7b13940",
+                                "namespace": "176692bf214148b1b0b1d37907d8d585"
+                            }
+                        ],
+                        "customAttributes": [
+                            {
+                                "key": "autoGeneratedPrice",
+                                "value": "false"
+                            },
+                            {
+                                "key": "isManuallySetViewableDate",
+                                "value": "true"
+                            },
+                            {
+                                "key": "isPromotionalContentUsed",
+                                "value": "false"
+                            },
+                            {
+                                "key": "isManuallySetPCReleaseDate",
+                                "value": "true"
+                            },
+                            {
+                                "key": "isBlockchainUsed",
+                                "value": "false"
+                            }
+                        ],
+                        "categories": [
+                            {
+                                "path": "games/edition/base"
+                            },
+                            {
+                                "path": "games/edition"
+                            },
+                            {
+                                "path": "games"
+                            }
+                        ],
+                        "catalogNs": {
+                            "mappings": [
+                                {
+                                    "pageSlug": "bad-rats-revenge-7f0eed",
+                                    "pageType": "productHome"
+                                }
+                            ]
+                        },
+                        "offerMappings": [
+                            {
+                                "pageSlug": "bad-rats-revenge-7f0eed",
+                                "pageType": "productHome"
+                            }
+                        ],
+                        "developerDisplayName": "Invent4 Entertainment",
+                        "publisherDisplayName": "Strategy First",
+                        "price": {
+                            "totalPrice": {
+                                "discountPrice": 170,
+                                "originalPrice": 1700,
+                                "voucherDiscount": 0,
+                                "discount": 1530,
+                                "currencyCode": "SEK",
+                                "currencyInfo": {
+                                    "decimals": 2
+                                },
+                                "fmtPrice": {
+                                    "originalPrice": "SEK 17.00",
+                                    "discountPrice": "SEK 1.70",
+                                    "intermediatePrice": "SEK 1.70"
+                                },
+                                "dualPrice": null,
+                                "dualOriginalPrice": null
+                            },
+                            "lineOffers": [
+                                {
+                                    "appliedRules": [
+                                        {
+                                            "id": "382445b2d2fe4e05acb8923618af7399",
+                                            "endDate": "2026-01-08T16:00:00.000Z",
+                                            "discountSetting": {
+                                                "discountType": "PERCENTAGE"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "prePurchase": null,
+                        "releaseDate": "2023-06-29T04:00:00.000Z",
+                        "pcReleaseDate": "2009-07-20T04:00:00.000Z",
+                        "viewableDate": "2023-06-29T04:00:00.000Z",
+                        "approximateReleasePlan": null
+                    }
+                ],
+                "paging": {
+                    "count": 5,
+                    "total": 4088
+                }
+            }
+        }
+    }
+}

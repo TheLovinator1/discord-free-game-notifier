@@ -65,7 +65,7 @@ class DiscountSetting(BaseModel):
     """Structure for discount settings."""
 
     discountType: str
-    discountPercentage: int
+    discountPercentage: int = 0
 
 
 class PromotionalOffer(BaseModel):
@@ -99,10 +99,26 @@ class TotalPrice(BaseModel):
     currencyCode: str
 
 
+class AppliedRule(BaseModel):
+    """Structure for applied discount rules in lineOffers."""
+
+    id: str
+    endDate: str | None = None
+    startDate: str | None = None
+    discountSetting: DiscountSetting | None = None
+
+
+class LineOffer(BaseModel):
+    """Structure for line offers containing applied rules."""
+
+    appliedRules: list[AppliedRule] = Field(default_factory=list)
+
+
 class Price(BaseModel):
     """Structure for price information."""
 
     totalPrice: TotalPrice
+    lineOffers: list[LineOffer] = Field(default_factory=list)
 
 
 class EpicGameElement(BaseModel):
@@ -116,7 +132,7 @@ class EpicGameElement(BaseModel):
     offerType: str | None = None
     expiryDate: str | None = None
     viewableDate: str | None = None
-    status: str
+    status: str | None = None
     isCodeRedemptionOnly: bool | None = None
     keyImages: list[KeyImage] = Field(default_factory=list)
     seller: Seller | None = None
@@ -195,7 +211,7 @@ def _parse_iso_utc_to_unix(ts: str) -> int:
     return int(calendar.timegm(time.strptime(ts, "%Y-%m-%dT%H:%M:%S.%fZ")))
 
 
-def promotion_start(game: EpicGameElement) -> int:
+def promotion_start(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
     """Get the earliest start date of a game's promotion (current or upcoming).
 
     Epic frequently places free-game promos either under promotionalOffers (active)
@@ -208,35 +224,53 @@ def promotion_start(game: EpicGameElement) -> int:
     Returns:
         int: Start date as Unix timestamp, or 0 if unavailable.
     """
-    if not game.promotions:
-        return 0
-
     start_candidates: list[int] = []
 
-    # Active promotions
-    for group in game.promotions.promotionalOffers:
-        for offer in group.promotionalOffers:
-            if offer.startDate:
-                try:
-                    start_candidates.append(_parse_iso_utc_to_unix(offer.startDate))
-                except (ValueError, TypeError, AttributeError) as e:
-                    logger.warning(f"{game.title}: Unable to parse startDate '{offer.startDate}': {e}")
+    # Check promotions if available
+    if game.promotions:
+        # Active promotions
+        for group in game.promotions.promotionalOffers:
+            for offer in group.promotionalOffers:
+                if offer.startDate:
+                    try:
+                        start_candidates.append(_parse_iso_utc_to_unix(offer.startDate))
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.warning(f"{game.title}: Unable to parse startDate '{offer.startDate}': {e}")
 
-    # Upcoming promotions
-    for group in game.promotions.upcomingPromotionalOffers:
-        for offer in group.promotionalOffers:
-            if offer.startDate:
-                try:
-                    start_candidates.append(_parse_iso_utc_to_unix(offer.startDate))
-                except (ValueError, TypeError, AttributeError) as e:
-                    logger.warning(f"{game.title}: Unable to parse upcoming startDate '{offer.startDate}': {e}")
+        # Upcoming promotions
+        for group in game.promotions.upcomingPromotionalOffers:
+            for offer in group.promotionalOffers:
+                if offer.startDate:
+                    try:
+                        start_candidates.append(_parse_iso_utc_to_unix(offer.startDate))
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.warning(f"{game.title}: Unable to parse upcoming startDate '{offer.startDate}': {e}")
 
-    start_date: int = min(start_candidates) if start_candidates else 0
+    # Check lineOffers for additional promotion dates
+    for line_offer in game.price.lineOffers:
+        for rule in line_offer.appliedRules:
+            if rule.startDate:
+                try:
+                    start_candidates.append(_parse_iso_utc_to_unix(rule.startDate))
+                except (ValueError, TypeError, AttributeError) as e:
+                    logger.warning(f"{game.title}: Unable to parse lineOffer startDate '{rule.startDate}': {e}")
+
+    # If no start date found but there is an end date, use current time (promotion is already active)
+    if not start_candidates:
+        end_date = promotion_end(game)
+        if end_date > 0:
+            curr_dt: datetime.datetime = datetime.datetime.now(tz=pytz.UTC)
+            current_time = round(curr_dt.timestamp())
+            logger.info(f"{game.title}: No start date found but has end date, using current time: {current_time}")
+            return current_time
+        return 0
+
+    start_date: int = min(start_candidates)
     logger.info(f"{game.title}: Starts in: {start_date} ({datetime.datetime.fromtimestamp(start_date, tz=pytz.UTC)})")
     return start_date
 
 
-def promotion_end(game: EpicGameElement) -> int:
+def promotion_end(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
     """Get the latest end date of a game's promotion (current or upcoming).
 
     We consider both active and upcoming promotional groups. For active promos
@@ -249,28 +283,36 @@ def promotion_end(game: EpicGameElement) -> int:
     Returns:
         int: End date as Unix timestamp, or 0 if unavailable.
     """
-    if not game.promotions:
-        return 0
-
     end_candidates: list[int] = []
 
-    # Active promotions
-    for group in game.promotions.promotionalOffers:
-        for offer in group.promotionalOffers:
-            if offer.endDate:
-                try:
-                    end_candidates.append(_parse_iso_utc_to_unix(offer.endDate))
-                except (ValueError, TypeError, AttributeError) as e:
-                    logger.warning(f"{game.title}: Unable to parse endDate '{offer.endDate}': {e}")
+    # Check promotions if available
+    if game.promotions:
+        # Active promotions
+        for group in game.promotions.promotionalOffers:
+            for offer in group.promotionalOffers:
+                if offer.endDate:
+                    try:
+                        end_candidates.append(_parse_iso_utc_to_unix(offer.endDate))
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.warning(f"{game.title}: Unable to parse endDate '{offer.endDate}': {e}")
 
-    # Upcoming promotions
-    for group in game.promotions.upcomingPromotionalOffers:
-        for offer in group.promotionalOffers:
-            if offer.endDate:
+        # Upcoming promotions
+        for group in game.promotions.upcomingPromotionalOffers:
+            for offer in group.promotionalOffers:
+                if offer.endDate:
+                    try:
+                        end_candidates.append(_parse_iso_utc_to_unix(offer.endDate))
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.warning(f"{game.title}: Unable to parse upcoming endDate '{offer.endDate}': {e}")
+
+    # Check lineOffers for additional promotion dates
+    for line_offer in game.price.lineOffers:
+        for rule in line_offer.appliedRules:
+            if rule.endDate:
                 try:
-                    end_candidates.append(_parse_iso_utc_to_unix(offer.endDate))
+                    end_candidates.append(_parse_iso_utc_to_unix(rule.endDate))
                 except (ValueError, TypeError, AttributeError) as e:
-                    logger.warning(f"{game.title}: Unable to parse upcoming endDate '{offer.endDate}': {e}")
+                    logger.warning(f"{game.title}: Unable to parse lineOffer endDate '{rule.endDate}': {e}")
 
     end_date: int = max(end_candidates) if end_candidates else 0
     logger.info(f"{game.title}: Ends in: {end_date}")
@@ -341,25 +383,154 @@ def game_url(game: EpicGameElement) -> str:
     return requote_uri(url)
 
 
+def _build_search_url(count: int = 5) -> str:
+    """Build the Epic Games search API URL with current date.
+
+    Args:
+        count: Number of results to fetch (default 5, max 50).
+
+    Returns:
+        str: The search URL with current date parameter.
+    """
+    curr_dt: datetime.datetime = datetime.datetime.now(tz=pytz.UTC)
+    # Format: [,2025-12-22T19:53:46.096Z]
+    date_str: str = curr_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+    # Base URL with parameters
+    base_url = "https://store.epicgames.com/graphql"
+    params = {
+        "operationName": "searchStoreQuery",
+        "variables": (
+            '{"allowCountries":"SE","category":"games/edition/base|bundles/games|'
+            'games/edition|editors|addons|games/demo|software/edition/base|games/experience|subscription",'
+            f'"count":{count},"country":"SE","effectiveDate":"[,{date_str}]","keywords":"",'
+            '"locale":"en-US","onSale":true,"sortBy":"currentPrice","sortDir":"ASC",'
+            '"start":0,"tag":"","withPrice":true}'
+        ),
+        "extensions": '{"persistedQuery":{"version":1,"sha256Hash":"29d49ab31d438cd90be2d554d2d54704951e4223a8fcd290fcf68308841a1979"}}',
+    }
+
+    # Build the full URL
+    url: str = (
+        f"{base_url}?operationName={params['operationName']}"
+        f"&variables={requote_uri(params['variables'])}"
+        f"&extensions={requote_uri(params['extensions'])}"
+    )
+    logger.debug(f"Built search URL with count={count}: {url}")
+    return url
+
+
+def _fetch_search_results(
+    client: httpx.Client,
+    initial_count: int,
+    seen_ids: set[str],
+) -> tuple[list[EpicGameElement], bool]:
+    """Fetch search results from Epic and check if all are free.
+
+    Args:
+        client: HTTP client instance.
+        initial_count: Number of results to fetch.
+        seen_ids: Set of already-seen game IDs to avoid duplicates.
+
+    Returns:
+        tuple: (list of new elements, all_free boolean)
+    """
+    search_url: str = _build_search_url(count=initial_count)
+    response: httpx.Response = client.get(search_url)
+    logger.debug(f"Search endpoint (count={initial_count}) response: {response.status_code} - {response.reason_phrase}")
+
+    if response.is_error:
+        logger.error(f"Error fetching Epic search results: {response.status_code} - {response.reason_phrase}")
+        return [], False
+
+    parsed_response: EpicGamesResponse = EpicGamesResponse.model_validate(response.json())
+    new_elements: list[EpicGameElement] = []
+    free_count = 0
+    all_free = True
+
+    for element in parsed_response.data.Catalog.searchStore.elements:
+        if element.id not in seen_ids:
+            new_elements.append(element)
+            seen_ids.add(element.id)
+
+            # Check if this item is free
+            is_free: bool = element.price.totalPrice.discountPrice == 0 and element.price.totalPrice.originalPrice > 0
+            if is_free:
+                free_count += 1
+            else:
+                all_free = False
+
+    logger.info(
+        f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games "
+        f"from search endpoint (count={initial_count}): {len(new_elements)} new, "
+        f"{free_count} free",
+    )
+
+    return new_elements, all_free
+
+
 def get_response() -> EpicGamesResponse | None:
     """Get the response from Epic and parse it with Pydantic.
 
+    Fetches from both the free games promotions endpoint and the search endpoint
+    that includes DLCs, then merges the results.
+
     Returns:
-        EpicGamesResponse: The parsed Epic Games API response, or None if error.
+        EpicGamesResponse: The parsed Epic Games API response with merged results, or None if error.
     """
-    with httpx.Client(timeout=30, transport=httpx.HTTPTransport(retries=5)) as client:
+    headers: dict[str, str] = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    with httpx.Client(timeout=30, transport=httpx.HTTPTransport(retries=5), headers=headers) as client:
+        all_elements: list[EpicGameElement] = []
+        seen_ids: set[str] = set()
+
+        # Fetch from primary free games promotions endpoint
         try:
             response: httpx.Response = client.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions")
-            logger.debug(f"Response: {response.status_code} - {response.reason_phrase}")
+            logger.debug(f"Free games promotions response: {response.status_code} - {response.reason_phrase}")
 
             if response.is_error:
                 logger.error(f"Error fetching Epic free games: {response.status_code} - {response.reason_phrase}")
-                return None
-
-            return EpicGamesResponse.model_validate(response.json())
+            else:
+                parsed_response = EpicGamesResponse.model_validate(response.json())
+                for element in parsed_response.data.Catalog.searchStore.elements:
+                    if element.id not in seen_ids:
+                        all_elements.append(element)
+                        seen_ids.add(element.id)
+                logger.info(f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games from free promotions endpoint")
         except (httpx.HTTPError, ValueError) as e:
-            logger.error(f"Error parsing Epic Games API response: {e}")
+            logger.error(f"Error fetching/parsing free games promotions: {e}")
+
+        # Fetch from search endpoint (includes DLCs)
+        # Start with 5 results, expand to 100 if all are free
+        # Maximum number of games to fetch from search endpoint
+        search_result_limit = 100
+        try:
+            for initial_count in [5, search_result_limit]:
+                new_elements, all_free = _fetch_search_results(client, initial_count, seen_ids)
+                all_elements.extend(new_elements)
+
+                if not all_free:
+                    logger.info("Not all results are free, stopping search expansion")
+                    break
+                if initial_count < search_result_limit:
+                    logger.info(f"All results are free, expanding search to {search_result_limit} items")
+                else:
+                    logger.info(f"All results are free at max count ({search_result_limit})")
+        except (httpx.HTTPError, ValueError) as e:
+            logger.error(f"Error fetching/parsing search endpoint: {e}")
+
+        # If we didn't get any results from either endpoint, return None
+        if not all_elements:
+            logger.error("No results from any Epic Games endpoint")
             return None
+
+        # Create a response object with merged results
+        return EpicGamesResponse(data=DataWrapper(Catalog=Catalog(searchStore=SearchStore(elements=all_elements))))
 
 
 def if_mystery_game(game: EpicGameElement) -> bool:

@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from discord_free_game_notifier.epic import EpicGameElement
+from discord_free_game_notifier.epic import EpicGamesResponse
 from discord_free_game_notifier.epic import Price
 from discord_free_game_notifier.epic import TotalPrice
 from discord_free_game_notifier.epic import if_mystery_game
@@ -64,3 +68,43 @@ def test_if_mystery_game_with_partial_match(base_price: Price) -> None:
     """Test that a game with 'Mystery' but not 'Mystery Game' is not identified as mystery game."""
     game = EpicGameElement(title="Mystery Island", id="test-id", status="ACTIVE", price=base_price)
     assert if_mystery_game(game) is False
+
+
+def test_parse_search_endpoint_response() -> None:
+    """Test that the search endpoint response (with DLCs) can be properly parsed."""
+    # Load the test data
+    test_file: Path = Path(__file__).parent / "epic_search_with_dlc.json"
+    with test_file.open(encoding="utf-8") as f:
+        json_data = json.load(f)
+
+    # Parse the response
+    response: EpicGamesResponse = EpicGamesResponse.model_validate(json_data)
+
+    # Verify the response structure
+    assert response.data is not None
+    assert response.data.Catalog is not None
+    assert response.data.Catalog.searchStore is not None
+    assert len(response.data.Catalog.searchStore.elements) == 5
+
+    # Verify the first element (DLC)
+    dlc: EpicGameElement = response.data.Catalog.searchStore.elements[0]
+    assert dlc.title == "Train Sim World® 6: Spirit of Steam: Liverpool Lime Street - Crewe"
+    assert dlc.id == "c09a8ee4c3f7425fa1b9cda29372c901"
+    assert dlc.price.totalPrice.originalPrice == 33900
+    # DLC should have "addons" in categories
+    assert any(cat.path == "addons" for cat in dlc.categories)
+
+    # Verify a regular game (Paradise Killer)
+    game: EpicGameElement = response.data.Catalog.searchStore.elements[1]
+    assert game.title == "Paradise Killer"
+    assert game.id == "c8a6d95c091b4fe0be8fdfb53216f942"
+    assert game.price.totalPrice.originalPrice == 16900
+    # Game should have "games" in categories
+    assert any(cat.path == "games" for cat in game.categories)
+
+    # Verify all elements have required price information
+    for element in response.data.Catalog.searchStore.elements:
+        assert element.price is not None
+        assert element.price.totalPrice is not None
+        assert element.price.totalPrice.discountPrice is not None
+        assert element.price.totalPrice.originalPrice is not None
