@@ -66,7 +66,7 @@ def test_get_epic_mobile_free_games_success(mock_client: MagicMock) -> None:
                 "game_name": "Test Mobile Game",
                 "game_url": "https://www.epicgames.com/en-US/p/test",
                 "start_date": "2025-01-01T00:00:00+00:00",
-                "end_date": "2025-12-31T23:59:59+00:00",
+                "end_date": "3025-12-31T23:59:59+00:00",
                 "image_link": "https://example.com/image.jpg",
                 "description": "Test description",
                 "developer": "Test Developer",
