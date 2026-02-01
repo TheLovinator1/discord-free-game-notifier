@@ -143,7 +143,7 @@ class EpicGameElement(BaseModel):
     categories: list[Category] = Field(default_factory=list)
     offerMappings: list[OfferMapping] | None = None
     catalogNs: CatalogNs | None = None
-    price: Price
+    price: Price | None = None
     promotions: Promotions | None = None
 
     @field_validator("title")
@@ -248,13 +248,14 @@ def promotion_start(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
                         logger.warning(f"{game.title}: Unable to parse upcoming startDate '{offer.startDate}': {e}")
 
     # Check lineOffers for additional promotion dates
-    for line_offer in game.price.lineOffers:
-        for rule in line_offer.appliedRules:
-            if rule.startDate:
-                try:
-                    start_candidates.append(_parse_iso_utc_to_unix(rule.startDate))
-                except (ValueError, TypeError, AttributeError) as e:
-                    logger.warning(f"{game.title}: Unable to parse lineOffer startDate '{rule.startDate}': {e}")
+    if game.price:
+        for line_offer in game.price.lineOffers:
+            for rule in line_offer.appliedRules:
+                if rule.startDate:
+                    try:
+                        start_candidates.append(_parse_iso_utc_to_unix(rule.startDate))
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.warning(f"{game.title}: Unable to parse lineOffer startDate '{rule.startDate}': {e}")
 
     # If no start date found but there is an end date, use current time (promotion is already active)
     if not start_candidates:
@@ -307,13 +308,14 @@ def promotion_end(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
                         logger.warning(f"{game.title}: Unable to parse upcoming endDate '{offer.endDate}': {e}")
 
     # Check lineOffers for additional promotion dates
-    for line_offer in game.price.lineOffers:
-        for rule in line_offer.appliedRules:
-            if rule.endDate:
-                try:
-                    end_candidates.append(_parse_iso_utc_to_unix(rule.endDate))
-                except (ValueError, TypeError, AttributeError) as e:
-                    logger.warning(f"{game.title}: Unable to parse lineOffer endDate '{rule.endDate}': {e}")
+    if game.price:
+        for line_offer in game.price.lineOffers:
+            for rule in line_offer.appliedRules:
+                if rule.endDate:
+                    try:
+                        end_candidates.append(_parse_iso_utc_to_unix(rule.endDate))
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.warning(f"{game.title}: Unable to parse lineOffer endDate '{rule.endDate}': {e}")
 
     end_date: int = max(end_candidates) if end_candidates else 0
     logger.info(f"{game.title}: Ends in: {end_date}")
@@ -466,11 +468,12 @@ def _fetch_search_results(
             seen_ids.add(element.id)
 
             # Check if this item is free
-            is_free: bool = element.price.totalPrice.discountPrice == 0 and element.price.totalPrice.originalPrice > 0
-            if is_free:
-                free_count += 1
-            else:
-                all_free = False
+            if element.price:
+                is_free: bool = element.price.totalPrice.discountPrice == 0 and element.price.totalPrice.originalPrice > 0
+                if is_free:
+                    free_count += 1
+                else:
+                    all_free = False
 
     logger.info(
         f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games "
@@ -606,11 +609,12 @@ def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None: 
         is_upcoming: bool = False
 
         # Check if game is currently free
-        is_price_free: bool = game.price.totalPrice.discountPrice == 0 and game.price.totalPrice.originalPrice > 0
-        is_started: bool = start_time == 0 or start_time <= current_time
-        if is_price_free and is_started:
-            logger.info(f"{game.title}: Identified as currently free based on price.")
-            is_currently_free = True
+        if game.price:
+            is_price_free: bool = game.price.totalPrice.discountPrice == 0 and game.price.totalPrice.originalPrice > 0
+            is_started: bool = start_time == 0 or start_time <= current_time
+            if is_price_free and is_started:
+                logger.info(f"{game.title}: Identified as currently free based on price.")
+                is_currently_free = True
 
         # Check promotions
         if not is_currently_free and game.promotions:
