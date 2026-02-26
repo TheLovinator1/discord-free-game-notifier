@@ -81,7 +81,7 @@ jobs:
         shell: pwsh
 
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: "dist/discord-free-game-notifier.exe"
 
@@ -166,7 +166,7 @@ jobs:
           cat discord-free-game-notifier.sha256
 
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: "dist/discord-free-game-notifier"
 
@@ -238,7 +238,7 @@ jobs:
           cat discord-free-game-notifier.sha256
 
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: "dist/discord-free-game-notifier"
 
@@ -314,7 +314,7 @@ jobs:
           cat discord-free-game-notifier.sha256
 
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: "dist/discord-free-game-notifier"
 
@@ -390,7 +390,7 @@ jobs:
           cat discord-free-game-notifier.sha256
 
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: "dist/discord-free-game-notifier"
 
