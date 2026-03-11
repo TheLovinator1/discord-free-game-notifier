@@ -3,7 +3,7 @@ services:
     container_name: discord-free-game-notifier
     image: ghcr.io/thelovinator1/discord-free-game-notifier:latest
     env_file:
-      - .env
+      environment.env
     environment:
       - WEBHOOK_URL=${WEBHOOK_URL}
       # You can send notifications from multiple stores to different channels by adding different webhooks for each store.
