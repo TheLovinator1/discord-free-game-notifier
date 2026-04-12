@@ -102,7 +102,7 @@ jobs:
         shell: pwsh
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           generate_release_notes: true
@@ -185,7 +185,7 @@ jobs:
           mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-linux-x86_64.sha256
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
@@ -257,7 +257,7 @@ jobs:
           mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-macos-x86_64.sha256
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
@@ -333,7 +333,7 @@ jobs:
           mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-macos-aarch64.sha256
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
@@ -409,7 +409,7 @@ jobs:
           mv dist/discord-free-game-notifier.sha256 dist/discord-free-game-notifier-linux-aarch64.sha256
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
