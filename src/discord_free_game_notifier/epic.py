@@ -447,7 +447,10 @@ def _fetch_search_results(
     try:
         response: curl_requests.Response = curl_requests.get(search_url, headers=headers, timeout=30, impersonate="firefox")
         logger.debug(f"Search endpoint (count={initial_count}) response: {response.status_code}")
-    except (TimeoutError, OSError) as e:
+    except (TimeoutError, curl_requests.exceptions.Timeout) as e:
+        logger.warning(f"Epic GraphQL request timed out, skipping this endpoint: {e}")
+        return [], False
+    except OSError as e:
         logger.error(f"Exception during Epic GraphQL request: {e}")
         return [], False
 
@@ -525,6 +528,8 @@ def get_response() -> EpicGamesResponse | None:
                         all_elements.append(element)
                         seen_ids.add(element.id)
                 logger.info(f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games from free promotions endpoint")
+        except httpx.TimeoutException as e:
+            logger.warning(f"Epic free games promotions timed out, skipping this endpoint: {e}")
         except (httpx.HTTPError, ValueError) as e:
             logger.error(f"Error fetching/parsing free games promotions: {e}")
 
@@ -544,7 +549,9 @@ def get_response() -> EpicGamesResponse | None:
                     logger.info(f"All results are free, expanding search to {search_result_limit} items")
                 else:
                     logger.info(f"All results are free at max count ({search_result_limit})")
-        except (TimeoutError, OSError, ValueError) as e:
+        except TimeoutError as e:
+            logger.warning(f"Epic search endpoint timed out, skipping this endpoint: {e}")
+        except (OSError, ValueError) as e:
             logger.error(f"Error fetching/parsing search endpoint: {e}")
 
         # If we didn't get any results from either endpoint, return None

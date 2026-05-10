@@ -332,7 +332,10 @@ def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
                 logger.info(f"[PREVIEW] Would send Epic Mobile game: {game_id}")
                 logger.info(f"[PREVIEW] Description:\n{embed.description}")
             return []  # Return empty so caller treats as 'nothing to send'
-    except (httpx.HTTPError, httpx.TimeoutException, httpx.ConnectError, ValidationError, ValueError, KeyError, TypeError) as e:
+    except httpx.TimeoutException as e:
+        logger.warning(f"Epic mobile free games JSON timed out, skipping this check: {e}")
+        return None
+    except (httpx.HTTPError, ValidationError, ValueError, KeyError, TypeError) as e:
         logger.error(f"Error getting Epic mobile free games from JSON: {e}")
         return None
     else:

@@ -234,12 +234,16 @@ def _fetch_app_details(game_id: str) -> MoreData:
     Returns:
         MoreData: Populated MoreData instance or empty instance on error
     """
-    with httpx.Client(timeout=30) as client:
-        appdetails_response: httpx.Response = client.get(
-            url=f"https://store.steampowered.com/api/appdetails?appids={game_id}&l=english&filters=basic,short_description,developers,publishers,price_overview,release_date",
-            headers={"User-Agent": DEFAULT_USER_AGENT},
-            timeout=30,
-        )
+    try:
+        with httpx.Client(timeout=30) as client:
+            appdetails_response: httpx.Response = client.get(
+                url=f"https://store.steampowered.com/api/appdetails?appids={game_id}&l=english&filters=basic,short_description,developers,publishers,price_overview,release_date",
+                headers={"User-Agent": DEFAULT_USER_AGENT},
+                timeout=30,
+            )
+    except httpx.TimeoutException as e:
+        logger.warning(f"Steam app details timed out for {game_id=}, skipping details: {e}")
+        return MoreData()
 
     if appdetails_response.is_error:
         logger.error(f"Failed to get more data for {game_id=}: {appdetails_response.status_code} - {appdetails_response.reason_phrase}")
@@ -267,12 +271,16 @@ def _fetch_reviews(game_id: str, more_data: MoreData) -> None:
     """
     logger.debug(f"Getting reviews for {game_id=}")
 
-    with httpx.Client(timeout=30) as client:
-        reviews_response: httpx.Response = client.get(
-            url=f"https://store.steampowered.com/appreviews/{game_id}?json=1&language=all&num_per_page=0&purchase_type=all",
-            headers={"User-Agent": DEFAULT_USER_AGENT},
-            timeout=30,
-        )
+    try:
+        with httpx.Client(timeout=30) as client:
+            reviews_response: httpx.Response = client.get(
+                url=f"https://store.steampowered.com/appreviews/{game_id}?json=1&language=all&num_per_page=0&purchase_type=all",
+                headers={"User-Agent": DEFAULT_USER_AGENT},
+                timeout=30,
+            )
+    except httpx.TimeoutException as e:
+        logger.warning(f"Steam reviews timed out for {game_id=}, skipping reviews: {e}")
+        return
 
     if reviews_response.is_error:
         logger.error(f"Failed to get reviews for {game_id=}: {reviews_response.status_code} - {reviews_response.reason_phrase}")
@@ -314,6 +322,9 @@ def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
             if result:
                 found_games.append(result)
 
+    except httpx.TimeoutException as e:
+        logger.warning(f"Steam search timed out, skipping this check: {e}")
+        return None
     except (
         httpx.HTTPError,
         ValidationError,

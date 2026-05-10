@@ -234,6 +234,9 @@ def get_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
             embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
 
             notified_games.append((embed, game.id))
+    except httpx.TimeoutException as e:
+        logger.warning(f"Steam free games JSON timed out, skipping this check: {e}")
+        return None
     except (httpx.HTTPError, ValidationError, ValueError, KeyError, TypeError) as e:
         logger.error(f"Error getting Steam free games from JSON: {e}")
         return None
