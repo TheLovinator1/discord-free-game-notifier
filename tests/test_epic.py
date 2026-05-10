@@ -90,6 +90,8 @@ def test_parse_search_endpoint_response() -> None:
     dlc: EpicGameElement = response.data.Catalog.searchStore.elements[0]
     assert dlc.title == "Train Sim World® 6: Spirit of Steam: Liverpool Lime Street - Crewe"
     assert dlc.id == "c09a8ee4c3f7425fa1b9cda29372c901"
+
+    assert dlc.price
     assert dlc.price.totalPrice.originalPrice == 33900
     # DLC should have "addons" in categories
     assert any(cat.path == "addons" for cat in dlc.categories)
@@ -98,6 +100,8 @@ def test_parse_search_endpoint_response() -> None:
     game: EpicGameElement = response.data.Catalog.searchStore.elements[1]
     assert game.title == "Paradise Killer"
     assert game.id == "c8a6d95c091b4fe0be8fdfb53216f942"
+
+    assert game.price
     assert game.price.totalPrice.originalPrice == 16900
     # Game should have "games" in categories
     assert any(cat.path == "games" for cat in game.categories)

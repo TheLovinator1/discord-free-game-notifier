@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pydantic import AwareDatetime
+from pydantic import AwareDatetime  # noqa: TC002
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import HttpUrl
@@ -91,7 +91,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_a_present_from_vinnie_pack.jpg",
             ),
-            description='Winter fun has arrived in World of Tanks! Grab Holiday Ops resources to upgrade your Festive Village and an eye-catching decal with this exclusive, time-limited Holiday Ops Gift Pack DLC! Add the bundle to your account for free to get 50 of each Holiday Ops resource (Meteoric Iron, Pure Emerald, Rock Crystal, and Warm Amber) and 3 "Present from Vinnie" decals.',  # noqa: E501
+            description='Winter fun has arrived in World of Tanks! Grab Holiday Ops resources to upgrade your Festive Village and an eye-catching decal with this exclusive, time-limited Holiday Ops Gift Pack DLC! Add the bundle to your account for free to get 50 of each Holiday Ops resource (Meteoric Iron, Pure Emerald, Rock Crystal, and Warm Amber) and 3 "Present from Vinnie" decals.',
             developer="Wargaming Group Limited",
         ),
         # Warframe: Cumulus Collection
@@ -113,7 +113,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(2024, 1, 11, 15, 0, 0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(2024, 1, 24, 0, 0, 0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_snatch_gift_pack.jpg"),
-            description="The Snatch Gift Pack DLC includes:\n- 3 projection decals: Good Luck Charm\n- 3 Large Repair Kits\n- 3 Large First Aid Kits\n- 3 Automatic Fire Extinguishers",  # noqa: E501
+            description="The Snatch Gift Pack DLC includes:\n- 3 projection decals: Good Luck Charm\n- 3 Large Repair Kits\n- 3 Large First Aid Kits\n- 3 Automatic Fire Extinguishers",
             developer="Wargaming Group Limited",
         ),
         # World of Tanks Blitz - Bene Gesserit Pack
@@ -126,7 +126,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_blitz_bene_gesserit_pack.jpg",
             ),
-            description="The Bene Gesserit Pack includes:\n- Lady Jessica Profile Background\n- Bene Gesserit Epic avatar\n- Garage slot\n- 3 days of Premium Account\n- 5 certificates for x5 XP\n- 5 Epic Combat XP boosters",  # noqa: E501
+            description="The Bene Gesserit Pack includes:\n- Lady Jessica Profile Background\n- Bene Gesserit Epic avatar\n- Garage slot\n- 3 days of Premium Account\n- 5 certificates for x5 XP\n- 5 Epic Combat XP boosters",
             developer="Wargaming Group Limited",
         ),
         # World of Warships x Azur Lane: Free Intro Pack
@@ -139,7 +139,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_free_intro_pack.jpg",
             ),
-            description="The Azur Lane: Free Intro Pack includes:\n- 1x Azur Lane container\n- 5x “Azur Lane — Siren” expendable camouflages\n- Access to the Azur Lane Dorm Port",  # noqa: E501
+            description="The Azur Lane: Free Intro Pack includes:\n- 1x Azur Lane container\n- 5x “Azur Lane — Siren” expendable camouflages\n- Access to the Azur Lane Dorm Port",
             developer="Wargaming Group Limited",
         ),
         # World of Warships x Azur Lane — AL Avrora Free Unlock
@@ -152,7 +152,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_al_avrora_free_unlock.jpg",
             ),
-            description="Play 5 battles to obtain:\n- AL Avrora - Tier III Premium Soviet cruiser\n- A Port slot\n- A Commander with 3 skill points trained for AL Avrora",  # noqa: E501
+            description="Play 5 battles to obtain:\n- AL Avrora - Tier III Premium Soviet cruiser\n- A Port slot\n- A Commander with 3 skill points trained for AL Avrora",
             developer="Wargaming Group Limited",
         ),
         # World of Warships — "8 Years on Steam" Gift Bundle
@@ -165,7 +165,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_8_years_on_steam_gift_bundle.jpg",
             ),
-            description="8th anniversary of World of Warships on Steam! This package includes:\n- 1x Steam container\n- Steam patch symbol and background\n- Steam permanent camouflage\n- Piece of Cake flag\n- 3 days of Warships Premium Account\n- Access to a two-part combat mission chain (available from 14 November). Complete to receive: Steam Cat permanent camouflage for German Tier V cruiser Königsberg, Steam container, Steam permanent camouflage.",  # noqa: E501
+            description="8th anniversary of World of Warships on Steam! This package includes:\n- 1x Steam container\n- Steam patch symbol and background\n- Steam permanent camouflage\n- Piece of Cake flag\n- 3 days of Warships Premium Account\n- Access to a two-part combat mission chain (available from 14 November). Complete to receive: Steam Cat permanent camouflage for German Tier V cruiser Königsberg, Steam container, Steam permanent camouflage.",
             developer="Wargaming Group Limited",
         ),
         # World of Warships: Holiday Gift
@@ -178,7 +178,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_holiday_gift.jpg",
             ),
-            description='Happy Holidays from World of Warships! Tear into this limited-time free DLC to find the Steam flag, a mission to unlock a Steam permanent camouflage, and a "Christmas and New Year in the Navy" container, which contains an element of the in-game collection of the same name. By gathering all 24 elements, you will obtain a Santa\'s Big Gift container, as well as days of Warships Premium Account!\nThis package contains:\n- 2 "Christmas and New Year in the Navy" container\n- Steam flag\n- Access to a combat mission: Complete 10 battles to receive 1 Steam permanent camouflage',  # noqa: E501
+            description='Happy Holidays from World of Warships! Tear into this limited-time free DLC to find the Steam flag, a mission to unlock a Steam permanent camouflage, and a "Christmas and New Year in the Navy" container, which contains an element of the in-game collection of the same name. By gathering all 24 elements, you will obtain a Santa\'s Big Gift container, as well as days of Warships Premium Account!\nThis package contains:\n- 2 "Christmas and New Year in the Navy" container\n- Steam flag\n- Access to a combat mission: Complete 10 battles to receive 1 Steam permanent camouflage',
             developer="Wargaming Group Limited",
         ),
     ]

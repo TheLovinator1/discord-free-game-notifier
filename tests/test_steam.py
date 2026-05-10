@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup
-from bs4 import ResultSet
-from bs4 import Tag
 
 from discord_free_game_notifier.steam import AppDetailsData
 from discord_free_game_notifier.steam import MoreData
 from discord_free_game_notifier.steam import PriceOverview
 from discord_free_game_notifier.steam import ReleaseDate
+
+if TYPE_CHECKING:
+    from bs4 import ResultSet
+    from bs4 import Tag
 
 
 def test_steam_has_free_games() -> None:

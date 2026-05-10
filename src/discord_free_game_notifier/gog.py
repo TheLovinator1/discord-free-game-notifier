@@ -14,6 +14,10 @@ from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import GameService
 from discord_free_game_notifier.webhook import send_embed_webhook
 
+GOG_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0"}
+GOG_STORE_TIMEOUT = 30
+GOG_FRONT_PAGE_TIMEOUT = httpx.Timeout(10, connect=10)
+
 
 class GOGGame(BaseModel):
     """Structure for a single GOG free game."""
@@ -119,10 +123,10 @@ def get_free_gog_game_from_store() -> list[tuple[DiscordEmbed, str]]:
         list[tuple[DiscordEmbed, str]]: List of tuples containing embeds and game IDs for free GOG games.
     """
     try:
-        with httpx.Client(timeout=30) as client:
+        with httpx.Client(timeout=GOG_STORE_TIMEOUT) as client:
             response: httpx.Response = client.get(
                 "https://www.gog.com/en/games?priceRange=0,0&discounted=true",
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"},
+                headers=GOG_HEADERS,
             )
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -147,6 +151,9 @@ def get_free_gog_game_from_store() -> list[tuple[DiscordEmbed, str]]:
             if result:
                 free_games.append(result)
 
+    except httpx.TimeoutException as e:
+        logger.warning(f"GOG store search timed out, skipping this check: {e}")
+        return []
     except (httpx.HTTPError, ValidationError, ValueError, LookupError, AttributeError, TypeError) as e:
         logger.error(f"Error getting free GOG games from store: {e}")
         return []
@@ -257,10 +264,10 @@ def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
         tuple[DiscordEmbed, str] | None: Tuple containing embed and game ID, or None if no game found.
     """
     try:
-        with httpx.Client(timeout=30) as client:
+        with httpx.Client(timeout=GOG_FRONT_PAGE_TIMEOUT) as client:
             response = client.get(
                 "https://www.gog.com/",
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0"},
+                headers=GOG_HEADERS,
             )
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -293,6 +300,9 @@ def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
         # Create the embed and add it to the list of free games.
         embed: DiscordEmbed = create_embed(game=gog_game)
 
+    except httpx.TimeoutException as e:
+        logger.warning(f"GOG front page timed out, skipping this check: {e}")
+        return None
     except (httpx.HTTPError, ValidationError, ValueError, LookupError, AttributeError, TypeError) as e:
         logger.error(f"Error getting free GOG game: {e}")
         return None

@@ -7,14 +7,17 @@ import datetime
 import json
 import time
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 import pytz
 
-from discord_free_game_notifier.epic import EpicGameElement
 from discord_free_game_notifier.epic import EpicGamesResponse
 from discord_free_game_notifier.epic import promotion_end
 from discord_free_game_notifier.epic import promotion_start
+
+if TYPE_CHECKING:
+    from discord_free_game_notifier.epic import EpicGameElement
 
 
 @pytest.fixture
@@ -37,6 +40,7 @@ def test_dlc_with_lineoffers_end_date(dlc_response: EpicGamesResponse) -> None:
     assert dlc.title == "Train Sim World® 6: Spirit of Steam: Liverpool Lime Street - Crewe"
 
     # Check that it's free
+    assert dlc.price
     assert dlc.price.totalPrice.discountPrice == 0
     assert dlc.price.totalPrice.originalPrice > 0
 

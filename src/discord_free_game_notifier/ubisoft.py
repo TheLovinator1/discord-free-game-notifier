@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pydantic import AwareDatetime
+from pydantic import AwareDatetime  # noqa: TC002
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import HttpUrl
@@ -106,7 +106,7 @@ def create_json_file() -> None:
         start_date=datetime.datetime(2023, 11, 27, 13, 0, 0, tzinfo=datetime.UTC),
         end_date=datetime.datetime(2023, 12, 6, 13, 0, 0, tzinfo=datetime.UTC),
         image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/ac_syndicate.png"),
-        description="London, 1868. In the heart of the Industrial Revolution, lead your underworld organization and grow your influence to fight those who exploit the less privileged in the name of progress.",  # noqa: E501
+        description="London, 1868. In the heart of the Industrial Revolution, lead your underworld organization and grow your influence to fight those who exploit the less privileged in the name of progress.",
     )
 
     immortals_fenyx_rising = UbisoftGame(
@@ -116,7 +116,7 @@ def create_json_file() -> None:
         start_date=datetime.datetime(2025, 11, 13, 13, 0, 0, tzinfo=datetime.UTC),
         end_date=datetime.datetime(2025, 12, 2, 10, 0, 0, tzinfo=datetime.UTC),
         image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/immortals_fenyx_rising.jpg"),
-        description="Play as Fenyx, a new winged demigod, on a quest to save the Greek gods and their home from a dark curse. Take on mythological beasts, master the legendary powers of the gods, and defeat Typhon, the deadliest Titan in Greek mythology, in an epic fight for the ages.",  # noqa: E501
+        description="Play as Fenyx, a new winged demigod, on a quest to save the Greek gods and their home from a dark curse. Take on mythological beasts, master the legendary powers of the gods, and defeat Typhon, the deadliest Titan in Greek mythology, in an epic fight for the ages.",
     )
 
     free_games = UbisoftFreeGames(free_games=[ac_syndicate, immortals_fenyx_rising])

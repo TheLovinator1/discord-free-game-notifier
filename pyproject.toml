@@ -29,36 +29,44 @@ build-backend = "uv_build"
 dev = ["pytest", "pyinstaller", "hypothesis", "types-pytz", "types-requests"]
 
 [tool.ruff]
+fix = true
 preview = true
+unsafe-fixes = true
 line-length = 140
-lint.select = ["ALL"]
-lint.pydocstyle.convention = "google"
-lint.isort.required-imports = ["from __future__ import annotations"]
+
+format.docstring-code-format = true
+format.preview = true
+
+lint.future-annotations = true
 lint.isort.force-single-line = true
+lint.pycodestyle.ignore-overlong-task-comments = true
+lint.pydocstyle.convention = "google"
+lint.select = ["ALL"]
+
+# Don't automatically remove unused variables
+lint.unfixable = ["F841"]
 
 lint.ignore = [
-    "ANN201",  # Checks that public functions and methods have return type annotations.
+    "ANN002",  # Checks that function *args arguments have type annotations.
+    "ANN003",  # Checks that function **kwargs arguments have type annotations.
     "ARG001",  # Checks for the presence of unused arguments in function definitions.
-    "B008",    # Allow Form() as a default value
-    "CPY001",  # Missing copyright notice at top of file
+    "C901",    # Checks for functions with a high McCabe complexity.
+    "CPY001",  # Checks for the absence of copyright notices within Python files.
     "D100",    # Checks for undocumented public module definitions.
     "D101",    # Checks for undocumented public class definitions.
     "D102",    # Checks for undocumented public method definitions.
-    "D104",    # Missing docstring in public package.
-    "D105",    # Missing docstring in magic method.
-    "D105",    # pydocstyle - missing docstring in magic method
+    "D103",    # Checks for undocumented public function definitions.
+    "D104",    # Checks for undocumented public package definitions.
+    "D105",    # Checks for undocumented magic method definitions.
     "D106",    # Checks for undocumented public class definitions, for nested classes.
-    "ERA001",  # Found commented-out code
-    "FBT003",  # Checks for boolean positional arguments in function calls.
-    "FIX002",  # Line contains TODO
-    "G002",    # Allow % in logging
-    "PGH003",  # Check for type: ignore annotations that suppress all type warnings, as opposed to targeting specific type warnings.
-    "PLR6301", # Checks for the presence of unused self parameter in methods definitions.
-    "RUF029",  # Checks for functions declared async that do not await or otherwise use features requiring the function to be declared async.
-    "TD003",   # Checks that a TODO comment is associated with a link to a relevant issue or ticket.
-    "PLR0913", # Checks for function definitions that include too many arguments.
-    "PLR0917", # Checks for function definitions that include too many positional arguments.
+    "E501",    # Checks for lines that exceed the specified maximum character length.
+    "ERA001",  # Checks for commented-out Python code.
+    "FIX002",  # Checks for "TODO" comments.
     "N815",    # Checks for class variable names that follow the mixedCase convention.
+    "PLR0911", # Checks for functions or methods with too many return statements.
+    "PLR0912", # Checks for functions or methods with too many branches, including (nested) if, elif, and else branches, for loops, try-except clauses, and match and case statements.
+    "PLR6301", # Checks for the presence of unused self parameter in methods definitions.
+    "RUF012",  # Checks for mutable default values in class attributes.
 
     # Conflicting lint rules when using Ruff's formatter
     # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
@@ -79,10 +87,24 @@ lint.ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101", "D103", "PLR2004"]
+"**/tests/**" = [
+    "ARG",
+    "FBT",
+    "PLR0904",
+    "PLR2004",
+    "PLR6301",
+    "S101",
+    "S105",
+    "S106",
+    "S311",
+    "SLF001",
+]
 
 [tool.mypy]
 python_version = "3.14"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [[tool.mypy.overrides]]
 module = ["discord_webhook", "discord_webhook.*", "apscheduler.*"]

@@ -212,7 +212,7 @@ def _parse_iso_utc_to_unix(ts: str) -> int:
     return int(calendar.timegm(time.strptime(ts, "%Y-%m-%dT%H:%M:%S.%fZ")))
 
 
-def promotion_start(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
+def promotion_start(game: EpicGameElement) -> int:
     """Get the earliest start date of a game's promotion (current or upcoming).
 
     Epic frequently places free-game promos either under promotionalOffers (active)
@@ -272,7 +272,7 @@ def promotion_start(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
     return start_date
 
 
-def promotion_end(game: EpicGameElement) -> int:  # noqa: C901, PLR0912
+def promotion_end(game: EpicGameElement) -> int:
     """Get the latest end date of a game's promotion (current or upcoming).
 
     We consider both active and upcoming promotional groups. For active promos
@@ -574,7 +574,7 @@ def if_mystery_game(game: EpicGameElement) -> bool:
     return False
 
 
-def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None:  # noqa: C901, PLR0912, PLR0915
+def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None:  # noqa: PLR0915
     """Get the free games from Epic.
 
     Returns:

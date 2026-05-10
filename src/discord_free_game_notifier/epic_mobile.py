@@ -20,7 +20,7 @@ from pathlib import Path
 import httpx
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pydantic import AwareDatetime
+from pydantic import AwareDatetime  # noqa: TC002
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import HttpUrl

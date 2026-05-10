@@ -69,7 +69,14 @@ def _load_epic_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None:
             embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
 
             notified_games.append((embed, game.id))
-    except (ValidationError, ValueError, KeyError, TypeError, json.JSONDecodeError, OSError) as e:
+    except (
+        ValidationError,
+        ValueError,
+        KeyError,
+        TypeError,
+        json.JSONDecodeError,
+        OSError,
+    ) as e:
         logger.error(f"Error loading Epic games from local JSON: {e}")
         return None
     else:
@@ -113,7 +120,14 @@ def _load_epic_mobile_games_from_local_json() -> list[tuple[DiscordEmbed, str]] 
             embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
 
             notified_games.append((embed, game.id))
-    except (ValidationError, ValueError, KeyError, TypeError, json.JSONDecodeError, OSError) as e:
+    except (
+        ValidationError,
+        ValueError,
+        KeyError,
+        TypeError,
+        json.JSONDecodeError,
+        OSError,
+    ) as e:
         logger.error(f"Error loading Epic Mobile games from local JSON: {e}")
         return None
     else:
@@ -157,7 +171,14 @@ def _load_steam_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None
             embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
 
             notified_games.append((embed, game.id))
-    except (ValidationError, ValueError, KeyError, TypeError, json.JSONDecodeError, OSError) as e:
+    except (
+        ValidationError,
+        ValueError,
+        KeyError,
+        TypeError,
+        json.JSONDecodeError,
+        OSError,
+    ) as e:
         logger.error(f"Error loading Steam games from local JSON: {e}")
         return None
     else:

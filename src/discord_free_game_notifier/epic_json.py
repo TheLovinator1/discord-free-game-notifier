@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pydantic import AwareDatetime
+from pydantic import AwareDatetime  # noqa: TC002
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import HttpUrl
@@ -117,7 +117,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/fall_guys_giddy_gift.jpg"),
-            description="May we 'present' the free Giddy Gift costume! Wrap up this Winter & earn a crown or two in Fall Guys\n\nIncludes: Giddy Gift (Whole Costume)",  # noqa: E501
+            description="May we 'present' the free Giddy Gift costume! Wrap up this Winter & earn a crown or two in Fall Guys\n\nIncludes: Giddy Gift (Whole Costume)",
             developer="Mediatonic",
         ),
         EpicGame(
@@ -129,7 +129,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/disney_speedstorm_monochromatic_pack.jpg",
             ),
-            description="This pack includes:\n• Racing Suit for Goofy: Monochromatic Classic\n• Kart livery for Goofy: Monochromatic Classic\n• Chip n' Dale Rare Crew Shards\n• 5 Universal Box Credits",  # noqa: E501
+            description="This pack includes:\n• Racing Suit for Goofy: Monochromatic Classic\n• Kart livery for Goofy: Monochromatic Classic\n• Chip n' Dale Rare Crew Shards\n• 5 Universal Box Credits",
             developer="Gameloft",
         ),
         EpicGame(
@@ -143,7 +143,7 @@ def create_json_file() -> None:
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/dark_justiciar_shadowheart_party_pack.jpg",
             ),
-            description="This pack unlocks the first 3 Baldur's Gate 3 Champions: Lae'zel, Shadowheart, and Astarion. Also included are 7 Gold Champion Chests for each and an exclusive Skin & Feat Shadowheart!",  # noqa: E501
+            description="This pack unlocks the first 3 Baldur's Gate 3 Champions: Lae'zel, Shadowheart, and Astarion. Also included are 7 Gold Champion Chests for each and an exclusive Skin & Feat Shadowheart!",
             developer="Codename Entertainment",
         ),
         EpicGame(
@@ -153,7 +153,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/warframe_holiday_sale_2023.jpg"),
-            description="Come celebrate the Epic Games Holiday Sale with us and claim the Atterax Weapon, a 7-Day Credit Booster and 7-Day Affinity Booster for free!\nPlayers who launch and log in to WARFRAME on Epic Games Store during the promotional period will receive an inbox message with free content upon login into the game. ",  # noqa: E501
+            description="Come celebrate the Epic Games Holiday Sale with us and claim the Atterax Weapon, a 7-Day Credit Booster and 7-Day Affinity Booster for free!\nPlayers who launch and log in to WARFRAME on Epic Games Store during the promotional period will receive an inbox message with free content upon login into the game. ",
             developer="Digital Extremes",
         ),
         EpicGame(
@@ -163,7 +163,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/honkai_impact_holiday_sale_2023.jpg"),
-            description="Celebrate the Epic Games Holiday Sale and get 500 Asterites and 100,000 Coins for free!\nPlayers who log in to Honkai Impact 3rd on Epic Games Store during the event period will receive the bundle via an in-game mail within one week.",  # noqa: E501
+            description="Celebrate the Epic Games Holiday Sale and get 500 Asterites and 100,000 Coins for free!\nPlayers who log in to Honkai Impact 3rd on Epic Games Store during the event period will receive the bundle via an in-game mail within one week.",
             developer="miHoYo Limited",
         ),
         EpicGame(
@@ -173,7 +173,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/synced_holiday_sale_2023.jpg"),
-            description="Unlock this Bundle of SYNCED to obtain new Runner and weapon skins, and embrace fresh challenges in the new season - Lambent Dawn.",  # noqa: E501
+            description="Unlock this Bundle of SYNCED to obtain new Runner and weapon skins, and embrace fresh challenges in the new season - Lambent Dawn.",
             developer="NExT Studios",
         ),
         EpicGame(
@@ -183,7 +183,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_holiday_sale_2023.jpg"),
-            description="Embrace the magic of the winter holidays with this free DLC featuring cruiser Ning Hai and the enchanting allure of even more Premium ships that could drop from five festive Santa's Gift containers.",  # noqa: E501
+            description="Embrace the magic of the winter holidays with this free DLC featuring cruiser Ning Hai and the enchanting allure of even more Premium ships that could drop from five festive Santa's Gift containers.",
             developer="Wargaming",
         ),
         EpicGame(
@@ -193,7 +193,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/eve_online_superluminal_pack.jpg"),
-            description="The Superluminal Pack is a limited-time-only FREE giveaway exclusive to Epic! It contains Semiotique Superluminal SKINs for the Heron, Magnate, Imicus, and Probe as well as unique Superluminal clothing!",  # noqa: E501
+            description="The Superluminal Pack is a limited-time-only FREE giveaway exclusive to Epic! It contains Semiotique Superluminal SKINs for the Heron, Magnate, Imicus, and Probe as well as unique Superluminal clothing!",
             developer="CCP Games",
         ),
         EpicGame(
@@ -203,7 +203,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2024, month=5, day=16, hour=18, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2024, month=6, day=12, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/epic_mega_sale_2024.jpg"),
-            description="Free Epic stuff:\n- [Disney Speedstorm Monochromatic Pack - Racer Stitch](https://store.epicgames.com/en-US/p/disney-speedstorm--racer-stitch)\n- [Genshin Impact MEGA Sale Bundle](https://store.epicgames.com/en-US/p/genshin-impact--mega-sale-bundle)\n- [Honkai: Star Rail MEGA Sale Bundle](https://store.epicgames.com/en-US/p/honkai-star-rail--epic-mega-sale-event-bundle)\n- [Fortnite Overclocked Combo Pack](https://store.epicgames.com/en-US/p/fortnite--overclocked-combo-pack)\n- [Fall Guys - Soda Crown](https://store.epicgames.com/en-US/p/fall-guys--soda-crown)\n- [1 Month of Discord Nitro](https://store.epicgames.com/en-US/p/discord--discord-nitro)\n- [Dauntless Golden Drake's Eye Bundle](https://store.epicgames.com/en-US/p/dauntless--golden-drakes-eye-bundle)\n- [Warframe Pyra Syandana and Fire Color Picker](https://store.epicgames.com/en-US/p/warframe)\n- [Honkai Impact 3rd Bundle](https://store.epicgames.com/en-US/p/honkai-impact-3rd)",  # noqa: E501
+            description="Free Epic stuff:\n- [Disney Speedstorm Monochromatic Pack - Racer Stitch](https://store.epicgames.com/en-US/p/disney-speedstorm--racer-stitch)\n- [Genshin Impact MEGA Sale Bundle](https://store.epicgames.com/en-US/p/genshin-impact--mega-sale-bundle)\n- [Honkai: Star Rail MEGA Sale Bundle](https://store.epicgames.com/en-US/p/honkai-star-rail--epic-mega-sale-event-bundle)\n- [Fortnite Overclocked Combo Pack](https://store.epicgames.com/en-US/p/fortnite--overclocked-combo-pack)\n- [Fall Guys - Soda Crown](https://store.epicgames.com/en-US/p/fall-guys--soda-crown)\n- [1 Month of Discord Nitro](https://store.epicgames.com/en-US/p/discord--discord-nitro)\n- [Dauntless Golden Drake's Eye Bundle](https://store.epicgames.com/en-US/p/dauntless--golden-drakes-eye-bundle)\n- [Warframe Pyra Syandana and Fire Color Picker](https://store.epicgames.com/en-US/p/warframe)\n- [Honkai Impact 3rd Bundle](https://store.epicgames.com/en-US/p/honkai-impact-3rd)",
             developer="Epic Games et al.",
         ),
         EpicGame(
@@ -223,7 +223,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=None,
-            description="Random shit for the following games:\n• [Asphalt Legends](https://store.epicgames.com/purchase?offers=1-9159cceaae3e48bc9a5ec237d7a4f388-099087585107462d9219d8654a18fdfa)\n• [Discord Nitro](https://store.epicgames.com/purchase?offers=1-5f3c898b2a3244af99e9900e015717f8-58d59510955043fb8a3dd9e6c69efc02)\n• [Disney Speedstorm](https://store.epicgames.com/purchase?offers=1-47bf168a2214456fb7bd4c217e2a4fd6-c3c12bd13f6f466fb947d44b3126dc57)\n• [Fall Guys](https://store.epicgames.com/purchase?offers=1-50118b7f954e450f8823df1614b24e80-4f5cee54a31444eebbce30e7d61399d6)\n• [Firestone](https://store.epicgames.com/purchase?offers=1-bda8d2133655435982b9118972792328-c47b928cdf9c47bb80c4c7182656d676)\n• [Fortnite](https://store.epicgames.com/purchase?offers=1-fn-fff08dea01f346c49660f3aa9dd3c890)\n• [Idle Champions](https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-a500e9f0ac2a427db04d30d2bcc608cf)",  # noqa: E501
+            description="Random shit for the following games:\n• [Asphalt Legends](https://store.epicgames.com/purchase?offers=1-9159cceaae3e48bc9a5ec237d7a4f388-099087585107462d9219d8654a18fdfa)\n• [Discord Nitro](https://store.epicgames.com/purchase?offers=1-5f3c898b2a3244af99e9900e015717f8-58d59510955043fb8a3dd9e6c69efc02)\n• [Disney Speedstorm](https://store.epicgames.com/purchase?offers=1-47bf168a2214456fb7bd4c217e2a4fd6-c3c12bd13f6f466fb947d44b3126dc57)\n• [Fall Guys](https://store.epicgames.com/purchase?offers=1-50118b7f954e450f8823df1614b24e80-4f5cee54a31444eebbce30e7d61399d6)\n• [Firestone](https://store.epicgames.com/purchase?offers=1-bda8d2133655435982b9118972792328-c47b928cdf9c47bb80c4c7182656d676)\n• [Fortnite](https://store.epicgames.com/purchase?offers=1-fn-fff08dea01f346c49660f3aa9dd3c890)\n• [Idle Champions](https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-a500e9f0ac2a427db04d30d2bcc608cf)",
             developer="Happy yuletide!",
         ),
         EpicGame(
@@ -233,7 +233,7 @@ def create_json_file() -> None:
             start_date=datetime.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
             end_date=datetime.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/epic_christmas_sale_2025.jpg"),
-            description="• [Infinity Nikki](https://store.epicgames.com/purchase?offers=1-ad13a7222a9b4e899e14cd021c7c5118-fd11d240818b4427aa632c6a0ca1353e)\n• [Neverwinter](https://store.epicgames.com/purchase?offers=1-9a4a6536096c4307bfb235d811f754ce-60c2ce621b3d46d6884ae3da6a3342cb)\n• [Rocket League](https://store.epicgames.com/purchase?offers=1-9773aa1aa54f4f7b80e44bef04986cea-8d2977f72fd34d42b54c62e102b9411f)\n• [SMITE 2](https://store.epicgames.com/purchase?offers=1-16ed9f15b1b449ccb59cb610b13df5b8-5e70cd48c74140e18bd152136282cf30)\n• [Star Trek Online](https://store.epicgames.com/purchase?offers=1-06a97980aac14fdfb914ef603a113792-a6c5b19271dd46c39a706d50496b29c5)\n• [World of Warships](https://store.epicgames.com/purchase?offers=1-84c76746bce94effb8e1047fabfd7eb7-d815be0a5f19422a8c8afddaef5f8cb6)",  # noqa: E501
+            description="• [Infinity Nikki](https://store.epicgames.com/purchase?offers=1-ad13a7222a9b4e899e14cd021c7c5118-fd11d240818b4427aa632c6a0ca1353e)\n• [Neverwinter](https://store.epicgames.com/purchase?offers=1-9a4a6536096c4307bfb235d811f754ce-60c2ce621b3d46d6884ae3da6a3342cb)\n• [Rocket League](https://store.epicgames.com/purchase?offers=1-9773aa1aa54f4f7b80e44bef04986cea-8d2977f72fd34d42b54c62e102b9411f)\n• [SMITE 2](https://store.epicgames.com/purchase?offers=1-16ed9f15b1b449ccb59cb610b13df5b8-5e70cd48c74140e18bd152136282cf30)\n• [Star Trek Online](https://store.epicgames.com/purchase?offers=1-06a97980aac14fdfb914ef603a113792-a6c5b19271dd46c39a706d50496b29c5)\n• [World of Warships](https://store.epicgames.com/purchase?offers=1-84c76746bce94effb8e1047fabfd7eb7-d815be0a5f19422a8c8afddaef5f8cb6)",
             developer="And a happy new year! :-)",
         ),
     ]

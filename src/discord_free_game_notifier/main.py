@@ -8,7 +8,6 @@ import httpx
 import sentry_sdk
 from apscheduler.events import EVENT_JOB_ERROR
 from apscheduler.events import EVENT_JOB_EXECUTED
-from apscheduler.events import JobExecutionEvent
 from apscheduler.schedulers.blocking import BlockingScheduler
 from discord_webhook import DiscordEmbed
 from loguru import logger
@@ -29,6 +28,8 @@ from discord_free_game_notifier.webhook import send_text_webhook
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from apscheduler.events import JobExecutionEvent
+
 sched = BlockingScheduler()
 
 
@@ -47,7 +48,14 @@ def _safe_check_service(service_name: str, check_function: Callable[[], Any]) ->
     """
     try:
         check_function()
-    except (httpx.HTTPError, LookupError, ValueError, AttributeError, TypeError, OSError) as e:
+    except (
+        httpx.HTTPError,
+        LookupError,
+        ValueError,
+        AttributeError,
+        TypeError,
+        OSError,
+    ) as e:
         logger.exception(f"Error when checking {service_name} for free games: {e}")
 
 
@@ -152,6 +160,8 @@ def main() -> None:
 
     This function will check for free games at minute 01, 16, 31, and 46 of each hour.
     """
+    settings.validate_webhooks()
+
     # Initialize Sentry if DSN is configured
     if settings.sentry_dsn:
         sentry_sdk.init(
@@ -169,7 +179,12 @@ def main() -> None:
     sched.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 
     logger.info("Adding job to scheduler")
-    sched.add_job(check_free_games, "cron", minute="1,16,31,46", next_run_time=datetime.datetime.now(tz=datetime.UTC))
+    sched.add_job(
+        check_free_games,
+        "cron",
+        minute="1,16,31,46",
+        next_run_time=datetime.datetime.now(tz=datetime.UTC),
+    )
     logger.info("Starting scheduler")
     try:
         sched.start()

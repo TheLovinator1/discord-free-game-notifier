@@ -26,7 +26,12 @@ logger.configure(extra={"game_name": ""})  # Default value
 logger.remove()
 logger.add(sys.stderr, format=logger_format)
 
-app_dir: str = user_data_dir(appname="discord_free_game_notifier", appauthor="TheLovinator", roaming=True, ensure_exists=True)
+app_dir: str = user_data_dir(
+    appname="discord_free_game_notifier",
+    appauthor="TheLovinator",
+    roaming=True,
+    ensure_exists=True,
+)
 config_location: Path = Path(app_dir) / "config.conf"
 default_webhook_url = "https://discord.com/api/webhooks/1234/567890/ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
 
@@ -47,7 +52,10 @@ class Settings(BaseSettings):
     )
 
     webhook_url: str = Field(default="", description="Main Discord webhook URL for all game notifications")
-    log_level: str = Field(default="INFO", description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)")
+    log_level: str = Field(
+        default="INFO",
+        description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
+    )
     gog_webhook: str = Field(default="", description="Discord webhook URL for GOG game notifications")
     steam_webhook: str = Field(default="", description="Discord webhook URL for Steam game notifications")
     epic_webhook: str = Field(default="", description="Discord webhook URL for Epic Games notifications")
@@ -107,7 +115,15 @@ class Settings(BaseSettings):
         Raises:
             ValueError: If the log level is not one of the allowed values.
         """
-        allowed_levels: set[str] = {"TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"}
+        allowed_levels: set[str] = {
+            "TRACE",
+            "DEBUG",
+            "INFO",
+            "SUCCESS",
+            "WARNING",
+            "ERROR",
+            "CRITICAL",
+        }
         v_upper: str = v.upper()
         if v_upper not in allowed_levels:
             msg: str = f"Log level must be one of {allowed_levels}, got: {v}"
@@ -215,19 +231,20 @@ def log_webhook_config(settings_obj: Settings) -> None:
         logger.info("Will be sending Ubisoft games to Discord.")
 
 
-def validate_webhooks(settings_obj: Settings) -> None:
+def validate_webhooks(settings_obj: Settings | None = None) -> None:
     """Validate that at least one webhook is configured.
 
     Args:
-        settings_obj: The settings instance to validate.
+        settings_obj: The settings instance to validate. If omitted, validates the
+            module-level values used by the application.
     """
     has_webhook: bool = any(
         [
-            settings_obj.webhook_url,
-            settings_obj.gog_webhook,
-            settings_obj.steam_webhook,
-            settings_obj.epic_webhook,
-            settings_obj.ubisoft_webhook,
+            settings_obj.webhook_url if settings_obj else webhook_url,
+            settings_obj.gog_webhook if settings_obj else gog_webhook,
+            settings_obj.steam_webhook if settings_obj else steam_webhook,
+            settings_obj.epic_webhook if settings_obj else epic_webhook,
+            settings_obj.ubisoft_webhook if settings_obj else ubisoft_webhook,
         ],
     )
     if not has_webhook:
@@ -250,10 +267,10 @@ def apply_legacy_config(settings_obj: Settings, legacy_config: dict[str, str]) -
 
 
 def initialize_settings() -> Settings:
-    """Initialize and validate settings from environment and legacy config.
+    """Initialize settings from environment and legacy config.
 
     Returns:
-        Settings: Configured and validated settings instance.
+        Settings: Configured settings instance.
     """
     legacy_config: dict[str, str] = load_legacy_config()
 
@@ -264,7 +281,6 @@ def initialize_settings() -> Settings:
         sys.exit(1)
 
     apply_legacy_config(settings_obj, legacy_config)
-    validate_webhooks(settings_obj)
     log_webhook_config(settings_obj)
 
     if settings_obj.webhook_url == default_webhook_url:

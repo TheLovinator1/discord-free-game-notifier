@@ -7,7 +7,6 @@ import textwrap
 from typing import TYPE_CHECKING
 from typing import Any
 
-from discord_webhook import DiscordEmbed
 from discord_webhook import DiscordWebhook
 from loguru import logger
 
@@ -15,6 +14,7 @@ from discord_free_game_notifier import settings
 
 if TYPE_CHECKING:
     import requests
+    from discord_webhook import DiscordEmbed
 
 # Maximum description length for Discord embeds
 MAX_DESCRIPTION_LENGTH = 1000
@@ -99,6 +99,7 @@ def send_embed_webhook(embed: DiscordEmbed, game_id: str, game_service: GameServ
         game_id (str): The ID of the game. Used for for adding to the posted games list.
         game_service (GameService): The name of the game service (Steam/GOG/Epic)
     """
+    settings.validate_webhooks()
     webhook_url: str = get_webhook_url(game_service)
     webhook = DiscordWebhook(url=webhook_url, rate_limit_retry=True)
     webhook.add_embed(embed=embed)
@@ -111,7 +112,13 @@ def send_embed_webhook(embed: DiscordEmbed, game_id: str, game_service: GameServ
         total_length: int = 0
         for line in lines:
             if total_length + len(line) + 1 > MAX_DESCRIPTION_LENGTH:  # +1 for the newline character
-                shortened_lines.append(textwrap.shorten(line, width=MAX_DESCRIPTION_LENGTH - total_length, placeholder="..."))
+                shortened_lines.append(
+                    textwrap.shorten(
+                        line,
+                        width=MAX_DESCRIPTION_LENGTH - total_length,
+                        placeholder="...",
+                    ),
+                )
                 break
             shortened_lines.append(line)
             total_length += len(line) + 1
@@ -141,6 +148,7 @@ def send_text_webhook(message: str, game_id: str, game_service: GameService) -> 
         game_id (str): The ID of the game. Used for adding to the upcoming games list.
         game_service (GameService): The name of the game service (Steam/GOG/Epic)
     """
+    settings.validate_webhooks()
     webhook_url: str = get_webhook_url(game_service)
     webhook = DiscordWebhook(url=webhook_url, content=message, rate_limit_retry=True)
 

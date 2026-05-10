@@ -226,7 +226,7 @@ class TestCreateJsonFile:
 
 
 class _DummyResponse:
-    def __init__(self, payload: dict[str, Any] | None, is_error: bool = False, status_code: int = 200, reason: str = "OK") -> None:  # noqa: FBT001, FBT002
+    def __init__(self, payload: dict[str, Any] | None, is_error: bool = False, status_code: int = 200, reason: str = "OK") -> None:
         self._payload: dict[str, Any] | None = payload
         self.is_error: bool = is_error
         self.status_code: int = status_code
@@ -309,7 +309,7 @@ class TestGetEpicFreeGames:
             return _DummyResponse(payload=payload, is_error=False)
 
         # Patch httpx.Client to use our dummy client
-        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]  # noqa: ARG005
+        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]
 
         calls: list[tuple[epic_mod.GameService, str]] = []
 
@@ -348,10 +348,10 @@ class TestGetEpicFreeGames:
         def response_factory(_: str) -> _DummyResponse:
             return _DummyResponse(payload=None, is_error=True, status_code=500, reason="Internal Server Error")
 
-        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]  # noqa: ARG005
+        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]
 
         # Even if already_posted is called, it shouldn't matter because we return early
-        monkeypatch.setattr(epic_mod, "already_posted", lambda **kwargs: False)  # noqa: ARG005
+        monkeypatch.setattr(epic_mod, "already_posted", lambda **kwargs: False)
 
         results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
         assert results is None
@@ -385,7 +385,7 @@ class TestGetEpicFreeGames:
         def response_factory(_: str) -> _DummyResponse:
             return _DummyResponse(payload=payload, is_error=False)
 
-        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]  # noqa: ARG005
+        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]
 
         def already_posted_stub(game_service: epic_mod.GameService, game_name: str) -> bool:
             return game_name == "game_posted"
@@ -417,8 +417,8 @@ class TestGetEpicFreeGames:
         def response_factory(_: str) -> _DummyResponse:
             return _DummyResponse(payload=payload, is_error=False)
 
-        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]  # noqa: ARG005
-        monkeypatch.setattr(epic_mod, "already_posted", lambda **kwargs: False)  # noqa: ARG005
+        monkeypatch.setattr(epic_mod.httpx, "Client", lambda timeout=30: _DummyClient(response_factory))  # type: ignore[assignment]
+        monkeypatch.setattr(epic_mod, "already_posted", lambda **kwargs: False)
 
         results: list[tuple[DiscordEmbed, str]] | None = get_epic_json_games()
         assert isinstance(results, list)

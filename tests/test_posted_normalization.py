@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class _DummyResponse:
-    def __init__(self, ok: bool = True) -> None:  # noqa: FBT001, FBT002
+    def __init__(self, ok: bool = True) -> None:
         self.ok: bool = ok
         self.status_code = 200
         self.text = "OK"
@@ -25,7 +25,7 @@ class _DummyResponse:
 
 
 class _DummyWebhook:
-    def __init__(self, url: str, content: str | None = None, rate_limit_retry: bool = False) -> None:  # noqa: FBT001, FBT002
+    def __init__(self, url: str, content: str | None = None, rate_limit_retry: bool = False) -> None:
         self.url: str = url
         self.content: str | None = content
         self.rate_limit_retry: bool = rate_limit_retry
@@ -43,7 +43,12 @@ def tmp_app_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     # Redirect app_dir to a temporary folder for file operations
     monkeypatch.setattr(settings_mod, "app_dir", str(tmp_path), raising=True)
     # Ensure a valid webhook URL to satisfy validation in send functions
-    monkeypatch.setattr(settings_mod, "webhook_url", "https://discord.com/api/webhooks/123/test", raising=True)
+    monkeypatch.setattr(
+        settings_mod,
+        "webhook_url",
+        "https://discord.com/api/webhooks/123/test",
+        raising=True,
+    )
     return tmp_path
 
 
@@ -57,7 +62,9 @@ def test_already_posted_trims_and_handles_html_entities(tmp_app_dir: Path) -> No
     assert already_posted(service, "Not In List") is False
 
 
-def test_already_posted_upcoming_trims_and_handles_html_entities(tmp_app_dir: Path) -> None:
+def test_already_posted_upcoming_trims_and_handles_html_entities(
+    tmp_app_dir: Path,
+) -> None:
     service = GameService.STEAM
     upcoming_file: Path = tmp_app_dir / f"{service.value.lower()}_upcoming.txt"
     upcoming_file.write_text("  Soon ™  \nFish &amp; Chips\n", encoding="utf-8")

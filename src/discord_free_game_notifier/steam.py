@@ -96,7 +96,7 @@ class ReviewsResponse(BaseModel):
 class MoreData(BaseModel):
     """A Pydantic model to hold more data about the game."""
 
-    # "Stellar Mess is a 2D point&amp;click adventure game, set somewhere in Argentinean Patagonia. The game is inspired by early classic EGA games of the genre." # noqa: E501
+    # "Stellar Mess is a 2D point&amp;click adventure game, set somewhere in Argentinean Patagonia. The game is inspired by early classic EGA games of the genre."
     short_description: str = ""
 
     # "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1507530/header.jpg?t=1737679003"
@@ -293,7 +293,7 @@ def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
 
     Returns:
         list[tuple[DiscordEmbed, str]] | None: A list of tuples containing the Discord embed and the game name. Game name is to track already posted games.
-    """  # noqa: E501
+    """
     try:
         url = "https://store.steampowered.com/search/results/?maxprice=free&specials=1&category1=994%2C998%2C21&json=1"
 
@@ -314,7 +314,14 @@ def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
             if result:
                 found_games.append(result)
 
-    except (httpx.HTTPError, ValidationError, ValueError, LookupError, TypeError, AttributeError) as e:
+    except (
+        httpx.HTTPError,
+        ValidationError,
+        ValueError,
+        LookupError,
+        TypeError,
+        AttributeError,
+    ) as e:
         logger.error(f"Error getting free Steam games: {e}")
         return None
     else:
