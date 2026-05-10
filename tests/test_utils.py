@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import datetime
 import html
 import shutil
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 from hypothesis import assume
@@ -10,9 +12,24 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from discord_free_game_notifier import settings as settings_mod
+from discord_free_game_notifier.utils import active_free_games
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.utils import normalized_variants
 from discord_free_game_notifier.webhook import GameService
+
+
+@dataclass
+class _GameWithEnd:
+    end_date: datetime.datetime
+
+
+def test_active_free_games_filters_expired_games() -> None:
+    now = datetime.datetime(2026, 5, 10, 12, 0, 0, tzinfo=datetime.UTC)
+    expired_game = _GameWithEnd(end_date=now - datetime.timedelta(seconds=1))
+    ending_now_game = _GameWithEnd(end_date=now)
+    future_game = _GameWithEnd(end_date=now + datetime.timedelta(days=1))
+
+    assert active_free_games([expired_game, ending_now_game, future_game], now=now) == [ending_now_game, future_game]
 
 
 @given(st.text())

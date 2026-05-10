@@ -15,6 +15,7 @@ from pydantic import ValidationError
 from pydantic import field_serializer
 from pydantic import field_validator
 
+from discord_free_game_notifier.utils import active_free_games
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import GameService
 from discord_free_game_notifier.webhook import send_embed_webhook
@@ -119,7 +120,7 @@ def create_json_file() -> None:
         description="Play as Fenyx, a new winged demigod, on a quest to save the Greek gods and their home from a dark curse. Take on mythological beasts, master the legendary powers of the gods, and defeat Typhon, the deadliest Titan in Greek mythology, in an epic fight for the ages.",
     )
 
-    free_games = UbisoftFreeGames(free_games=[ac_syndicate, immortals_fenyx_rising])
+    free_games = UbisoftFreeGames(free_games=active_free_games([ac_syndicate, immortals_fenyx_rising]))
 
     with Path.open(Path("pages/ubisoft.json"), "w", encoding="utf-8") as file:
         json.dump(free_games.model_dump(mode="json"), file, indent=4)

@@ -15,6 +15,7 @@ from pydantic import ValidationError
 from pydantic import field_serializer
 from pydantic import field_validator
 
+from discord_free_game_notifier.utils import active_free_games
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import GameService
 
@@ -238,7 +239,7 @@ def create_json_file() -> None:
         ),
     ]
 
-    free_games = EpicFreeGames(free_games=games_list)
+    free_games = EpicFreeGames(free_games=active_free_games(games_list))
 
     with Path.open(Path("pages/epic.json"), "w", encoding="utf-8") as file:
         json.dump(free_games.model_dump(mode="json"), file, indent=4)

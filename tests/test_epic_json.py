@@ -166,6 +166,7 @@ class TestCreateJsonFile:
         monkeypatch.chdir(tmp_path)
 
         # Act
+        now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
         create_json_file()
 
         # Assert
@@ -175,7 +176,6 @@ class TestCreateJsonFile:
         data: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
         assert "free_games" in data
         assert isinstance(data["free_games"], list)
-        assert len(data["free_games"]) >= 1
 
         required_fields: set[str] = {
             "id",
@@ -199,6 +199,7 @@ class TestCreateJsonFile:
             assert iso_tz_regex.match(game["end_date"])
             assert "Z" not in game["start_date"]
             assert "Z" not in game["end_date"]
+            assert datetime.datetime.fromisoformat(game["end_date"]) >= now
 
         # Ensure IDs are unique
         assert len(ids) == len(set(ids)), "Duplicate game IDs found in generated JSON"
@@ -217,7 +218,6 @@ class TestCreateJsonFile:
 
         # Basic sanity checks on parsed model
         assert isinstance(model.free_games, list)
-        assert len(model.free_games) >= 1
 
         # Ensure timezone-aware datetimes have been parsed
         for g in model.free_games:

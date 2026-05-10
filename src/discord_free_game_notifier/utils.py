@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import datetime
 import html
 from pathlib import Path
 from typing import TYPE_CHECKING
+from typing import Protocol
 
 from loguru import logger
 
@@ -10,6 +12,16 @@ from discord_free_game_notifier import settings
 
 if TYPE_CHECKING:
     from discord_free_game_notifier.webhook import GameService
+
+
+class _HasEndDate(Protocol):
+    end_date: datetime.datetime
+
+
+def active_free_games[GameT: _HasEndDate](games: list[GameT], *, now: datetime.datetime | None = None) -> list[GameT]:
+    """Return only games whose giveaway window has not ended."""
+    current_time: datetime.datetime = now if now is not None else datetime.datetime.now(tz=datetime.UTC)
+    return [game for game in games if game.end_date >= current_time]
 
 
 def normalized_variants(name: str) -> set[str]:

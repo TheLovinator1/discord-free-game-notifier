@@ -15,6 +15,7 @@ from pydantic import ValidationError
 from pydantic import field_serializer
 from pydantic import field_validator
 
+from discord_free_game_notifier.utils import active_free_games
 from discord_free_game_notifier.utils import already_posted
 from discord_free_game_notifier.webhook import GameService
 
@@ -183,7 +184,7 @@ def create_json_file() -> None:
         ),
     ]
 
-    free_games = SteamFreeGames(free_games=games)
+    free_games = SteamFreeGames(free_games=active_free_games(games))
 
     with Path.open(Path("pages/steam.json"), "w", encoding="utf-8") as file:
         json.dump(free_games.model_dump(mode="json"), file, indent=4)
