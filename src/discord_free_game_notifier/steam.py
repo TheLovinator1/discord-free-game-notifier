@@ -244,6 +244,9 @@ def _fetch_app_details(game_id: str) -> MoreData:
     except httpx.TimeoutException as e:
         logger.warning(f"Steam app details timed out for {game_id=}, skipping details: {e}")
         return MoreData()
+    except httpx.RequestError as e:
+        logger.warning(f"Steam app details request failed for {game_id=}, skipping details: {e}")
+        return MoreData()
 
     if appdetails_response.is_error:
         logger.error(f"Failed to get more data for {game_id=}: {appdetails_response.status_code} - {appdetails_response.reason_phrase}")
@@ -280,6 +283,9 @@ def _fetch_reviews(game_id: str, more_data: MoreData) -> None:
             )
     except httpx.TimeoutException as e:
         logger.warning(f"Steam reviews timed out for {game_id=}, skipping reviews: {e}")
+        return
+    except httpx.RequestError as e:
+        logger.warning(f"Steam reviews request failed for {game_id=}, skipping reviews: {e}")
         return
 
     if reviews_response.is_error:
@@ -324,6 +330,9 @@ def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
 
     except httpx.TimeoutException as e:
         logger.warning(f"Steam search timed out, skipping this check: {e}")
+        return None
+    except httpx.RequestError as e:
+        logger.warning(f"Steam search request failed, skipping this check: {e}")
         return None
     except (
         httpx.HTTPError,

@@ -50,6 +50,8 @@ def _safe_check_service(service_name: str, check_function: Callable[[], Any]) ->
         check_function()
     except httpx.TimeoutException as e:
         logger.warning(f"{service_name} timed out, skipping this check: {e}")
+    except httpx.RequestError as e:
+        logger.warning(f"{service_name} request failed, skipping this check: {e}")
     except (
         httpx.HTTPError,
         LookupError,

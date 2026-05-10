@@ -154,6 +154,9 @@ def get_free_gog_game_from_store() -> list[tuple[DiscordEmbed, str]]:
     except httpx.TimeoutException as e:
         logger.warning(f"GOG store search timed out, skipping this check: {e}")
         return []
+    except httpx.RequestError as e:
+        logger.warning(f"GOG store search request failed, skipping this check: {e}")
+        return []
     except (httpx.HTTPError, ValidationError, ValueError, LookupError, AttributeError, TypeError) as e:
         logger.error(f"Error getting free GOG games from store: {e}")
         return []
@@ -302,6 +305,9 @@ def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
 
     except httpx.TimeoutException as e:
         logger.warning(f"GOG front page timed out, skipping this check: {e}")
+        return None
+    except httpx.RequestError as e:
+        logger.warning(f"GOG front page request failed, skipping this check: {e}")
         return None
     except (httpx.HTTPError, ValidationError, ValueError, LookupError, AttributeError, TypeError) as e:
         logger.error(f"Error getting free GOG game: {e}")

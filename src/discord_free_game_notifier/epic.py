@@ -450,6 +450,9 @@ def _fetch_search_results(
     except (TimeoutError, curl_requests.exceptions.Timeout) as e:
         logger.warning(f"Epic GraphQL request timed out, skipping this endpoint: {e}")
         return [], False
+    except curl_requests.exceptions.RequestException as e:
+        logger.warning(f"Epic GraphQL request failed, skipping this endpoint: {e}")
+        return [], False
     except OSError as e:
         logger.error(f"Exception during Epic GraphQL request: {e}")
         return [], False
@@ -530,6 +533,8 @@ def get_response() -> EpicGamesResponse | None:
                 logger.info(f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games from free promotions endpoint")
         except httpx.TimeoutException as e:
             logger.warning(f"Epic free games promotions timed out, skipping this endpoint: {e}")
+        except httpx.RequestError as e:
+            logger.warning(f"Epic free games promotions request failed, skipping this endpoint: {e}")
         except (httpx.HTTPError, ValueError) as e:
             logger.error(f"Error fetching/parsing free games promotions: {e}")
 

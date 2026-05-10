@@ -294,6 +294,9 @@ def get_epic_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     except httpx.TimeoutException as e:
         logger.warning(f"Epic free games JSON timed out, skipping this check: {e}")
         return None
+    except httpx.RequestError as e:
+        logger.warning(f"Epic free games JSON request failed, skipping this check: {e}")
+        return None
     except (httpx.HTTPError, ValidationError, ValueError, KeyError, TypeError) as e:
         logger.error(f"Error getting Epic free games from JSON: {e}")
         return None

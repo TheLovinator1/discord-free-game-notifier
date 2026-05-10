@@ -173,6 +173,9 @@ def get_ubisoft_free_games() -> list[tuple[DiscordEmbed, str]] | None:
     except httpx.TimeoutException as e:
         logger.warning(f"Ubisoft free games JSON timed out, skipping this check: {e}")
         return None
+    except httpx.RequestError as e:
+        logger.warning(f"Ubisoft free games JSON request failed, skipping this check: {e}")
+        return None
     except (httpx.HTTPError, ValidationError, ValueError, KeyError, TypeError) as e:
         logger.error(f"Error getting Ubisoft free games from JSON: {e}")
         return None
