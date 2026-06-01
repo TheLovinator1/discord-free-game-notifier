@@ -69,7 +69,7 @@ def test_job_execution_in_background(mock_safe_check: Mock) -> None:
     """Test that scheduled jobs can execute in background scheduler."""
     scheduler = BackgroundScheduler()
 
-    try:
+    try:  # noqa: PLW0717
         scheduler.add_job(check_free_games, "interval", seconds=1, max_instances=1)
 
         scheduler.start()

@@ -64,7 +64,7 @@ def test_already_posted_detects_variants(s: str) -> None:
     # Use a temporary directory for app_dir so file IO is isolated
     tmpdir: str = tempfile.mkdtemp()
     old_app_dir: str = settings_mod.app_dir
-    try:
+    try:  # noqa: PLW0717
         settings_mod.app_dir = tmpdir
 
         service = GameService.STEAM

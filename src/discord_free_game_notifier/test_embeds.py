@@ -38,7 +38,7 @@ def _load_epic_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None:
     Returns:
         List of tuples containing (DiscordEmbed, game_id) or None if error.
     """
-    try:
+    try:  # noqa: PLW0717
         epic_json_path = Path("pages/epic.json")
         if not epic_json_path.exists():
             logger.error(f"Epic JSON file not found at {epic_json_path.absolute()}")
@@ -89,7 +89,7 @@ def _load_epic_mobile_games_from_local_json() -> list[tuple[DiscordEmbed, str]] 
     Returns:
         List of tuples containing (DiscordEmbed, game_id) or None if error.
     """
-    try:
+    try:  # noqa: PLW0717
         epic_mobile_json_path = Path("pages/epic_mobile.json")
         if not epic_mobile_json_path.exists():
             logger.error(f"Epic Mobile JSON file not found at {epic_mobile_json_path.absolute()}")
@@ -140,7 +140,7 @@ def _load_steam_games_from_local_json() -> list[tuple[DiscordEmbed, str]] | None
     Returns:
         List of tuples containing (DiscordEmbed, game_id) or None if error.
     """
-    try:
+    try:  # noqa: PLW0717
         steam_json_path = Path("pages/steam.json")
         if not steam_json_path.exists():
             logger.error(f"Steam JSON file not found at {steam_json_path.absolute()}")

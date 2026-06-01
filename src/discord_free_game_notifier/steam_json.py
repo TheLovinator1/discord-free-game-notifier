@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pydantic import AwareDatetime  # noqa: TC002
+from pydantic import AwareDatetime
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import HttpUrl
@@ -191,6 +191,53 @@ def create_json_file() -> None:
         logger.bind(game_name="Steam").info("Created/updated steam.json")
 
 
+def _get_notified_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
+    """Fetch Steam JSON games and build embeds for new active offers.
+
+    Returns:
+        list[tuple[DiscordEmbed, str]] | None: Embeds and game IDs, or None if the endpoint returns an error.
+    """
+    with httpx.Client(timeout=30) as client:
+        steam_json_endpoint = "https://thelovinator1.github.io/discord-free-game-notifier/steam.json"
+        response: httpx.Response = client.get(url=steam_json_endpoint)
+
+    if response.is_error:
+        logger.error(f"Error fetching Steam free games JSON: {response.status_code} - {response.reason_phrase}")
+        return None
+
+    steam_json: SteamFreeGames = SteamFreeGames.model_validate(response.json())
+    free_games: list[SteamGame] = steam_json.free_games
+
+    notified_games: list[tuple[DiscordEmbed, str]] = []
+    for game in free_games:
+        if already_posted(game_service=GameService.STEAM, game_name=game.id):
+            continue
+
+        unix_start_date = int(game.start_date.timestamp())
+        unix_end_date = int(game.end_date.timestamp())
+
+        # Check if the game is still free
+        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        if unix_end_date < current_time:
+            logger.info(f"{game.game_name} is no longer free, skipping.")
+            continue
+
+        embed = DiscordEmbed(description=game.description)
+
+        embed.set_image(url=str(game.image_link))
+        embed.set_timestamp()
+        embed.add_embed_field(name="Start", value=f"<t:{unix_start_date}:R>")
+        embed.add_embed_field(name="End", value=f"<t:{unix_end_date}:R>")
+        embed.set_footer(text=game.developer)
+
+        icon_url = "https://thelovinator1.github.io/discord-free-game-notifier/images/Steam.png"
+        embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
+
+        notified_games.append((embed, game.id))
+
+    return notified_games
+
+
 def get_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     """Get the free games from steam.json.
 
@@ -198,43 +245,7 @@ def get_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
         Tuple[DiscordEmbed, str]: A tuple containing the Discord embed and the game ID.
     """
     try:
-        with httpx.Client(timeout=30) as client:
-            steam_json_endpoint = "https://thelovinator1.github.io/discord-free-game-notifier/steam.json"
-            response: httpx.Response = client.get(url=steam_json_endpoint)
-
-        if response.is_error:
-            logger.error(f"Error fetching Steam free games JSON: {response.status_code} - {response.reason_phrase}")
-            return None
-
-        steam_json: SteamFreeGames = SteamFreeGames.model_validate(response.json())
-        free_games: list[SteamGame] = steam_json.free_games
-
-        notified_games: list[tuple[DiscordEmbed, str]] = []
-        for game in free_games:
-            if already_posted(game_service=GameService.STEAM, game_name=game.id):
-                continue
-
-            unix_start_date = int(game.start_date.timestamp())
-            unix_end_date = int(game.end_date.timestamp())
-
-            # Check if the game is still free
-            current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
-            if unix_end_date < current_time:
-                logger.info(f"{game.game_name} is no longer free, skipping.")
-                continue
-
-            embed = DiscordEmbed(description=game.description)
-
-            embed.set_image(url=str(game.image_link))
-            embed.set_timestamp()
-            embed.add_embed_field(name="Start", value=f"<t:{unix_start_date}:R>")
-            embed.add_embed_field(name="End", value=f"<t:{unix_end_date}:R>")
-            embed.set_footer(text=game.developer)
-
-            icon_url = "https://thelovinator1.github.io/discord-free-game-notifier/images/Steam.png"
-            embed.set_author(name=f"{game.game_name}", url=str(game.game_url), icon_url=icon_url)
-
-            notified_games.append((embed, game.id))
+        return _get_notified_steam_json_games()
     except httpx.TimeoutException as e:
         logger.warning(f"Steam free games JSON timed out, skipping this check: {e}")
         return None
@@ -244,8 +255,6 @@ def get_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     except (httpx.HTTPError, ValidationError, ValueError, KeyError, TypeError) as e:
         logger.error(f"Error getting Steam free games from JSON: {e}")
         return None
-    else:
-        return notified_games
 
 
 def main() -> None:

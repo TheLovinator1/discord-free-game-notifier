@@ -302,6 +302,34 @@ def _fetch_reviews(game_id: str, more_data: MoreData) -> None:
         logger.error(f"Failed to parse reviews for {game_id=}: {e}")
 
 
+def _search_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
+    """Fetch Steam store search results and build embeds for free games.
+
+    Returns:
+        list[tuple[DiscordEmbed, str]] | None: Embeds and game IDs, or None if the endpoint returns an error.
+    """
+    url = "https://store.steampowered.com/search/results/?maxprice=free&specials=1&category1=994%2C998%2C21&json=1"
+
+    with httpx.Client(timeout=30) as client:
+        request: httpx.Response = client.get(url=url, headers={"User-Agent": DEFAULT_USER_AGENT})
+
+    if not request.is_success:
+        logger.error(f"Failed to get free Steam games: {request.status_code} - {request.reason_phrase}")
+        return None
+
+    parsed: Data = Data.model_validate_json(request.text)
+    games: list[Game] = [Game(name=item.name, id=item.app_id) for item in parsed.items]
+
+    found_games: list[tuple[DiscordEmbed, str]] = []
+
+    for game in games:
+        result: tuple[DiscordEmbed, str] | None = _process_game(game)
+        if result:
+            found_games.append(result)
+
+    return found_games
+
+
 def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
     """Go to the Steam store and check for free games and return them.
 
@@ -309,24 +337,7 @@ def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
         list[tuple[DiscordEmbed, str]] | None: A list of tuples containing the Discord embed and the game name. Game name is to track already posted games.
     """
     try:
-        url = "https://store.steampowered.com/search/results/?maxprice=free&specials=1&category1=994%2C998%2C21&json=1"
-
-        with httpx.Client(timeout=30) as client:
-            request: httpx.Response = client.get(url=url, headers={"User-Agent": DEFAULT_USER_AGENT})
-
-        if not request.is_success:
-            logger.error(f"Failed to get free Steam games: {request.status_code} - {request.reason_phrase}")
-            return None
-
-        parsed: Data = Data.model_validate_json(request.text)
-        games: list[Game] = [Game(name=item.name, id=item.app_id) for item in parsed.items]
-
-        found_games: list[tuple[DiscordEmbed, str]] = []
-
-        for game in games:
-            result: tuple[DiscordEmbed, str] | None = _process_game(game)
-            if result:
-                found_games.append(result)
+        return _search_free_steam_games()
 
     except httpx.TimeoutException as e:
         logger.warning(f"Steam search timed out, skipping this check: {e}")
@@ -344,8 +355,6 @@ def get_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
     ) as e:
         logger.error(f"Error getting free Steam games: {e}")
         return None
-    else:
-        return found_games
 
 
 def set_game_footer(more_data: MoreData, embed: DiscordEmbed) -> None:

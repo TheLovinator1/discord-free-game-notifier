@@ -20,7 +20,7 @@ from pathlib import Path
 import httpx
 from discord_webhook import DiscordEmbed
 from loguru import logger
-from pydantic import AwareDatetime  # noqa: TC002
+from pydantic import AwareDatetime
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import HttpUrl
@@ -292,6 +292,50 @@ def _build_embed_for_game(game: EpicMobileGame) -> DiscordEmbed:
     return embed
 
 
+def _get_notified_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
+    """Build embeds for new active Epic mobile offers.
+
+    Returns:
+        list[tuple[DiscordEmbed, str]] | None: Embeds and game IDs, or None if the source cannot be loaded.
+    """
+    epic_mobile_raw: dict[str, EpicMobileGame] | None = _load_epic_mobile_raw_from_source()
+    if epic_mobile_raw is None:
+        return None
+
+    epic_mobile_json: EpicMobileFreeGames = EpicMobileFreeGames.model_validate(epic_mobile_raw)
+    free_games: list[EpicMobileGame] = epic_mobile_json.free_games
+
+    notified_games: list[tuple[DiscordEmbed, str]] = []
+    for game in free_games:
+        if already_posted(game_service=GameService.EPIC, game_name=game.id):
+            continue
+
+        # Check if the game is still free
+        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        unix_end_date = int(game.end_date.timestamp())
+        if unix_end_date < current_time:
+            logger.info(f"{game.game_name} is no longer free, skipping.")
+            continue
+
+        # Check if the game's platform is enabled
+        platform_enabled: bool = is_platform_enabled_for_game(game)
+        if not platform_enabled:
+            logger.info(f"{game.game_name} platform '{game.platform}' is not enabled, skipping.")
+            continue
+
+        embed: DiscordEmbed = _build_embed_for_game(game)
+        notified_games.append((embed, game.id))
+
+    # Optional preview mode: just print embeds instead of sending (useful for local dev)
+    if os.getenv("EPIC_MOBILE_PREVIEW", "0") == "1":
+        for embed, game_id in notified_games:
+            logger.info(f"[PREVIEW] Would send Epic Mobile game: {game_id}")
+            logger.info(f"[PREVIEW] Description:\n{embed.description}")
+        return []  # Return empty so caller treats as 'nothing to send'
+
+    return notified_games
+
+
 def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     """Get the free mobile games from epic_mobile.json.
 
@@ -299,40 +343,7 @@ def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
         list[tuple[DiscordEmbed, str]] | None: A list of tuples containing the Discord embed and the game ID, or None if error.
     """
     try:
-        epic_mobile_raw: dict[str, EpicMobileGame] | None = _load_epic_mobile_raw_from_source()
-        if epic_mobile_raw is None:
-            return None
-
-        epic_mobile_json: EpicMobileFreeGames = EpicMobileFreeGames.model_validate(epic_mobile_raw)
-        free_games: list[EpicMobileGame] = epic_mobile_json.free_games
-
-        notified_games: list[tuple[DiscordEmbed, str]] = []
-        for game in free_games:
-            if already_posted(game_service=GameService.EPIC, game_name=game.id):
-                continue
-
-            # Check if the game is still free
-            current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
-            unix_end_date = int(game.end_date.timestamp())
-            if unix_end_date < current_time:
-                logger.info(f"{game.game_name} is no longer free, skipping.")
-                continue
-
-            # Check if the game's platform is enabled
-            platform_enabled: bool = is_platform_enabled_for_game(game)
-            if not platform_enabled:
-                logger.info(f"{game.game_name} platform '{game.platform}' is not enabled, skipping.")
-                continue
-
-            embed: DiscordEmbed = _build_embed_for_game(game)
-            notified_games.append((embed, game.id))
-
-        # Optional preview mode: just print embeds instead of sending (useful for local dev)
-        if os.getenv("EPIC_MOBILE_PREVIEW", "0") == "1":
-            for embed, game_id in notified_games:
-                logger.info(f"[PREVIEW] Would send Epic Mobile game: {game_id}")
-                logger.info(f"[PREVIEW] Description:\n{embed.description}")
-            return []  # Return empty so caller treats as 'nothing to send'
+        return _get_notified_epic_mobile_json_games()
     except httpx.TimeoutException as e:
         logger.warning(f"Epic mobile free games JSON timed out, skipping this check: {e}")
         return None
@@ -342,8 +353,6 @@ def get_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | None:
     except (httpx.HTTPError, ValidationError, ValueError, KeyError, TypeError) as e:
         logger.error(f"Error getting Epic mobile free games from JSON: {e}")
         return None
-    else:
-        return notified_games
 
 
 def is_platform_enabled_for_game(game: EpicMobileGame) -> bool:

@@ -116,6 +116,43 @@ def _process_game_child(child: Tag) -> tuple[DiscordEmbed, str] | None:
     return (embed, game_id)
 
 
+def _search_free_gog_games_from_store() -> list[tuple[DiscordEmbed, str]]:
+    """Search the GOG games store for free offers.
+
+    Returns:
+        list[tuple[DiscordEmbed, str]]: Embeds and game IDs for free GOG games.
+    """
+    with httpx.Client(timeout=GOG_STORE_TIMEOUT) as client:
+        response: httpx.Response = client.get(
+            "https://www.gog.com/en/games?priceRange=0,0&discounted=true",
+            headers=GOG_HEADERS,
+        )
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    games: Tag | None = soup.find("div", {"selenium-id": "paginatedProductsGrid"})
+
+    if games is None:
+        logger.debug("No free games found")
+        return []
+
+    if not hasattr(games, "children"):
+        logger.debug("No free games found")
+        return []
+
+    free_games: list[tuple[DiscordEmbed, str]] = []
+
+    # Process each child game element
+    for child in games.children:
+        if not isinstance(child, Tag):
+            continue
+
+        result: tuple[DiscordEmbed, str] | None = _process_game_child(child)
+        if result:
+            free_games.append(result)
+
+    return free_games
+
+
 def get_free_gog_game_from_store() -> list[tuple[DiscordEmbed, str]]:
     """Check if free GOG game from games store.
 
@@ -123,33 +160,7 @@ def get_free_gog_game_from_store() -> list[tuple[DiscordEmbed, str]]:
         list[tuple[DiscordEmbed, str]]: List of tuples containing embeds and game IDs for free GOG games.
     """
     try:
-        with httpx.Client(timeout=GOG_STORE_TIMEOUT) as client:
-            response: httpx.Response = client.get(
-                "https://www.gog.com/en/games?priceRange=0,0&discounted=true",
-                headers=GOG_HEADERS,
-            )
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        games: Tag | None = soup.find("div", {"selenium-id": "paginatedProductsGrid"})
-
-        if games is None:
-            logger.debug("No free games found")
-            return []
-
-        if not hasattr(games, "children"):
-            logger.debug("No free games found")
-            return []
-
-        free_games: list[tuple[DiscordEmbed, str]] = []
-
-        # Process each child game element
-        for child in games.children:
-            if not isinstance(child, Tag):
-                continue
-
-            result: tuple[DiscordEmbed, str] | None = _process_game_child(child)
-            if result:
-                free_games.append(result)
+        return _search_free_gog_games_from_store()
 
     except httpx.TimeoutException as e:
         logger.warning(f"GOG store search timed out, skipping this check: {e}")
@@ -160,8 +171,6 @@ def get_free_gog_game_from_store() -> list[tuple[DiscordEmbed, str]]:
     except (httpx.HTTPError, ValidationError, ValueError, LookupError, AttributeError, TypeError) as e:
         logger.error(f"Error getting free GOG games from store: {e}")
         return []
-    else:
-        return free_games
 
 
 def get_giveaway_link(giveaway: Tag | None, game_name: str) -> str:
@@ -260,6 +269,50 @@ def get_game_name(giveaway_soup: BeautifulSoup, giveaway: Tag | None) -> str:
     return game_name
 
 
+def _find_free_gog_game() -> tuple[DiscordEmbed, str] | None:
+    """Find the GOG front-page giveaway.
+
+    Returns:
+        tuple[DiscordEmbed, str] | None: Embed and game ID, or None if no giveaway is found.
+    """
+    with httpx.Client(timeout=GOG_FRONT_PAGE_TIMEOUT) as client:
+        response = client.get(
+            "https://www.gog.com/",
+            headers=GOG_HEADERS,
+        )
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    giveaway: Tag | None = soup.find("giveaway")
+    giveaway_soup = BeautifulSoup(str(giveaway), "html.parser")
+
+    if giveaway is None:
+        return None
+
+    # Get the game name
+    game_name: str = get_game_name(giveaway_soup=giveaway_soup, giveaway=giveaway)
+    game_id: str = game_name.lower().replace(" ", "_")
+
+    if already_posted(game_service=GameService.GOG, game_name=game_id):
+        return None
+
+    giveaway_link: str = get_giveaway_link(giveaway=giveaway, game_name=game_name)
+    image_url_str: str = get_game_image(giveaway=giveaway_soup, game_name=game_name)
+
+    # Convert image URL to HttpUrl if valid
+    image_url: HttpUrl | None = HttpUrl(image_url_str) if image_url_str else None
+
+    gog_game = GOGGame(
+        id=game_id,
+        game_name=game_name,
+        game_url=HttpUrl(giveaway_link),
+        image_url=image_url,
+    )
+
+    # Create the embed and add it to the list of free games.
+    embed: DiscordEmbed = create_embed(game=gog_game)
+    return (embed, game_id)
+
+
 def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
     """Check if free GOG game.
 
@@ -267,41 +320,7 @@ def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
         tuple[DiscordEmbed, str] | None: Tuple containing embed and game ID, or None if no game found.
     """
     try:
-        with httpx.Client(timeout=GOG_FRONT_PAGE_TIMEOUT) as client:
-            response = client.get(
-                "https://www.gog.com/",
-                headers=GOG_HEADERS,
-            )
-
-        soup = BeautifulSoup(response.text, "html.parser")
-        giveaway: Tag | None = soup.find("giveaway")
-        giveaway_soup = BeautifulSoup(str(giveaway), "html.parser")
-
-        if giveaway is None:
-            return None
-
-        # Get the game name
-        game_name: str = get_game_name(giveaway_soup=giveaway_soup, giveaway=giveaway)
-        game_id: str = game_name.lower().replace(" ", "_")
-
-        if already_posted(game_service=GameService.GOG, game_name=game_id):
-            return None
-
-        giveaway_link: str = get_giveaway_link(giveaway=giveaway, game_name=game_name)
-        image_url_str: str = get_game_image(giveaway=giveaway_soup, game_name=game_name)
-
-        # Convert image URL to HttpUrl if valid
-        image_url: HttpUrl | None = HttpUrl(image_url_str) if image_url_str else None
-
-        gog_game = GOGGame(
-            id=game_id,
-            game_name=game_name,
-            game_url=HttpUrl(giveaway_link),
-            image_url=image_url,
-        )
-
-        # Create the embed and add it to the list of free games.
-        embed: DiscordEmbed = create_embed(game=gog_game)
+        return _find_free_gog_game()
 
     except httpx.TimeoutException as e:
         logger.warning(f"GOG front page timed out, skipping this check: {e}")
@@ -312,8 +331,6 @@ def get_free_gog_game() -> tuple[DiscordEmbed, str] | None:
     except (httpx.HTTPError, ValidationError, ValueError, LookupError, AttributeError, TypeError) as e:
         logger.error(f"Error getting free GOG game: {e}")
         return None
-    else:
-        return (embed, game_id)
 
 
 def main() -> None:
