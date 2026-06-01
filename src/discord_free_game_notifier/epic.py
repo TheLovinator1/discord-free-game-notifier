@@ -490,6 +490,60 @@ def _fetch_search_results(
     return new_elements, all_free
 
 
+def _extend_free_promotions_results(
+    client: httpx.Client,
+    all_elements: list[EpicGameElement],
+    seen_ids: set[str],
+) -> None:
+    """Add unique results from the free games promotions endpoint.
+
+    Args:
+        client: HTTP client used to fetch the promotions endpoint.
+        all_elements: List to extend with unique results.
+        seen_ids: Set of already-seen game IDs to avoid duplicates.
+    """
+    response: httpx.Response = client.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions")
+    logger.debug(f"Free games promotions response: {response.status_code} - {response.reason_phrase}")
+
+    if response.is_error:
+        logger.error(f"Error fetching Epic free games: {response.status_code} - {response.reason_phrase}")
+        return
+
+    parsed_response = EpicGamesResponse.model_validate(response.json())
+    for element in parsed_response.data.Catalog.searchStore.elements:
+        if element.id not in seen_ids:
+            all_elements.append(element)
+            seen_ids.add(element.id)
+    logger.info(f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games from free promotions endpoint")
+
+
+def _extend_search_results(
+    all_elements: list[EpicGameElement],
+    seen_ids: set[str],
+    headers: dict[str, str],
+) -> None:
+    """Add unique results from the search endpoint.
+
+    Args:
+        all_elements: List to extend with unique results.
+        seen_ids: Set of already-seen game IDs to avoid duplicates.
+        headers: Headers to send with each search request.
+    """
+    # Start with 5 results, expand to 100 if all are free.
+    search_result_limit = 100
+    for initial_count in [5, search_result_limit]:
+        new_elements, all_free = _fetch_search_results(initial_count, seen_ids, headers)
+        all_elements.extend(new_elements)
+
+        if not all_free:
+            logger.info("Not all results are free, stopping search expansion")
+            break
+        if initial_count < search_result_limit:
+            logger.info(f"All results are free, expanding search to {search_result_limit} items")
+        else:
+            logger.info(f"All results are free at max count ({search_result_limit})")
+
+
 def get_response() -> EpicGamesResponse | None:
     """Get the response from Epic and parse it with Pydantic.
 
@@ -519,18 +573,7 @@ def get_response() -> EpicGamesResponse | None:
 
         # Fetch from primary free games promotions endpoint
         try:
-            response: httpx.Response = client.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions")
-            logger.debug(f"Free games promotions response: {response.status_code} - {response.reason_phrase}")
-
-            if response.is_error:
-                logger.error(f"Error fetching Epic free games: {response.status_code} - {response.reason_phrase}")
-            else:
-                parsed_response = EpicGamesResponse.model_validate(response.json())
-                for element in parsed_response.data.Catalog.searchStore.elements:
-                    if element.id not in seen_ids:
-                        all_elements.append(element)
-                        seen_ids.add(element.id)
-                logger.info(f"Found {len(parsed_response.data.Catalog.searchStore.elements)} games from free promotions endpoint")
+            _extend_free_promotions_results(client, all_elements, seen_ids)
         except httpx.TimeoutException as e:
             logger.warning(f"Epic free games promotions timed out, skipping this endpoint: {e}")
         except httpx.RequestError as e:
@@ -539,21 +582,8 @@ def get_response() -> EpicGamesResponse | None:
             logger.error(f"Error fetching/parsing free games promotions: {e}")
 
         # Fetch from search endpoint (includes DLCs)
-        # Start with 5 results, expand to 100 if all are free
-        # Maximum number of games to fetch from search endpoint
-        search_result_limit = 100
         try:
-            for initial_count in [5, search_result_limit]:
-                new_elements, all_free = _fetch_search_results(initial_count, seen_ids, headers)
-                all_elements.extend(new_elements)
-
-                if not all_free:
-                    logger.info("Not all results are free, stopping search expansion")
-                    break
-                if initial_count < search_result_limit:
-                    logger.info(f"All results are free, expanding search to {search_result_limit} items")
-                else:
-                    logger.info(f"All results are free at max count ({search_result_limit})")
+            _extend_search_results(all_elements, seen_ids, headers)
         except TimeoutError as e:
             logger.warning(f"Epic search endpoint timed out, skipping this endpoint: {e}")
         except (OSError, ValueError) as e:
