@@ -27,7 +27,8 @@ if TYPE_CHECKING:
 class _TimeoutClient:
     timeouts: ClassVar[list[object]] = []
 
-    def __init__(self, timeout: object) -> None:
+    def __init__(self, timeout: object, *, follow_redirects: bool = False) -> None:
+        _ = follow_redirects
         self.timeouts.append(timeout)
 
     def __enter__(self) -> Self:

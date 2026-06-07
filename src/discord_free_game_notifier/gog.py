@@ -107,7 +107,8 @@ def _process_game_child(child: Tag) -> tuple[DiscordEmbed, str] | None:
     if image_url_class and hasattr(image_url_class, "attrs"):
         images: list[str] = str(image_url_class.attrs.get("srcset", "")).strip().split()
         if images:
-            image_url = HttpUrl(images[0]) if images[0] else None
+            cleaned_url: str = images[0].rstrip(",")
+            image_url = HttpUrl(cleaned_url) if cleaned_url else None
             logger.info(f"Image URL: {image_url}")
 
     gog_game = GOGGame(id=game_id, game_name=game_name, game_url=HttpUrl(game_url), image_url=image_url)
@@ -228,7 +229,7 @@ def get_game_image(giveaway: BeautifulSoup, game_name: str) -> str:
         return default_image
 
     images: list[str] = str(image_url_class.attrs["srcset"]).strip().split()
-    image_url: str = images[0]
+    image_url: str = images[0].rstrip(",")
 
     if not image_url:
         logger.error("No image URL found on GOG for {}", giveaway)
@@ -254,16 +255,17 @@ def get_game_name(giveaway_soup: BeautifulSoup, giveaway: Tag | None) -> str:
         logger.error("No img tag found on GOG for {}", giveaway)
         return "GOG Giveaway"
 
+    game_name: str = "GOG Giveaway"
+
     # Extract the game name from the alt attribute
     if img_tag and isinstance(img_tag, Tag):
         game_name_alt = img_tag["alt"]
         if isinstance(game_name_alt, str) and game_name_alt:
-            game_name = game_name_alt.replace(" giveaway", "") if img_tag else "Game name not found"
-        if isinstance(game_name_alt, list) and game_name_alt:
-            game_name = game_name_alt[0].replace(" giveaway", "") if img_tag else "Game name not found"
+            game_name = game_name_alt.replace(" giveaway", "")
+        elif isinstance(game_name_alt, list) and game_name_alt:
+            game_name = game_name_alt[0].replace(" giveaway", "")
             logger.warning("was a list of strings so could be wrong?")
     else:
-        game_name = "GOG Giveaway"
         logger.error("No img tag found on GOG for {}", img_tag)
 
     return game_name
@@ -275,7 +277,7 @@ def _find_free_gog_game() -> tuple[DiscordEmbed, str] | None:
     Returns:
         tuple[DiscordEmbed, str] | None: Embed and game ID, or None if no giveaway is found.
     """
-    with httpx.Client(timeout=GOG_FRONT_PAGE_TIMEOUT) as client:
+    with httpx.Client(timeout=GOG_FRONT_PAGE_TIMEOUT, follow_redirects=True) as client:
         response = client.get(
             "https://www.gog.com/",
             headers=GOG_HEADERS,
@@ -283,10 +285,11 @@ def _find_free_gog_game() -> tuple[DiscordEmbed, str] | None:
 
     soup = BeautifulSoup(response.text, "html.parser")
     giveaway: Tag | None = soup.find("giveaway")
-    giveaway_soup = BeautifulSoup(str(giveaway), "html.parser")
 
     if giveaway is None:
         return None
+
+    giveaway_soup = BeautifulSoup(str(giveaway), "html.parser")
 
     # Get the game name
     game_name: str = get_game_name(giveaway_soup=giveaway_soup, giveaway=giveaway)
