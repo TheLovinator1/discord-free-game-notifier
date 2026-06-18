@@ -198,7 +198,7 @@ jobs:
 
   # MARK: macOS x86_64 Build
   build-macos-intel:
-    runs-on: macos-15-intel
+    runs-on: macos-26-intel
     permissions:
       contents: write
       id-token: write
