@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 class _TimeoutClient:
     timeouts: ClassVar[list[object]] = []
 
-    def __init__(self, timeout: object, **kwargs: Any) -> None:  # noqa: ANN401
+    def __init__(self, timeout: object, **kwargs: Any) -> None:  # ruff: ignore[any-type]
         _ = kwargs
         self.timeouts.append(timeout)
 
@@ -36,14 +36,14 @@ class _TimeoutClient:
     def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> None:
         return None
 
-    def get(self, *args: Any, **kwargs: Any) -> httpx.Response:  # noqa: ANN401
+    def get(self, *args: Any, **kwargs: Any) -> httpx.Response:  # ruff: ignore[any-type]
         _ = (args, kwargs)
         msg = "timed out"
         raise httpx.ReadTimeout(msg)
 
 
 class _RequestErrorClient:
-    def __init__(self, timeout: object, **kwargs: Any) -> None:  # noqa: ANN401
+    def __init__(self, timeout: object, **kwargs: Any) -> None:  # ruff: ignore[any-type]
         _ = (timeout, kwargs)
 
     def __enter__(self) -> Self:
@@ -52,7 +52,7 @@ class _RequestErrorClient:
     def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> None:
         return None
 
-    def get(self, *args: Any, **kwargs: Any) -> httpx.Response:  # noqa: ANN401
+    def get(self, *args: Any, **kwargs: Any) -> httpx.Response:  # ruff: ignore[any-type]
         _ = (args, kwargs)
         msg = "[Errno -3] Temporary failure in name resolution"
         raise httpx.ConnectError(msg)
@@ -283,7 +283,7 @@ def test_epic_graphql_timeout_is_warning(monkeypatch: pytest.MonkeyPatch) -> Non
     fake_logger = _FakeLogger()
     monkeypatch.setattr(epic_mod, "logger", fake_logger)
 
-    def timeout_get(*args: Any, **kwargs: Any) -> object:  # noqa: ANN401
+    def timeout_get(*args: Any, **kwargs: Any) -> object:  # ruff: ignore[any-type]
         _ = (args, kwargs)
         msg = "timed out"
         raise epic_mod.curl_requests.exceptions.Timeout(msg)
@@ -300,7 +300,7 @@ def test_epic_graphql_request_error_is_warning(monkeypatch: pytest.MonkeyPatch) 
     fake_logger = _FakeLogger()
     monkeypatch.setattr(epic_mod, "logger", fake_logger)
 
-    def request_error_get(*args: Any, **kwargs: Any) -> object:  # noqa: ANN401
+    def request_error_get(*args: Any, **kwargs: Any) -> object:  # ruff: ignore[any-type]
         _ = (args, kwargs)
         msg = "[Errno -3] Temporary failure in name resolution"
         raise epic_mod.curl_requests.exceptions.DNSError(msg)

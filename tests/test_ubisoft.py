@@ -41,7 +41,7 @@ def test_serialize_datetime_returns_plus_zero_for_utc() -> None:
 
 def test_serialize_datetime_returns_iso_for_naive_datetime() -> None:
     game: UbisoftGame = _make_game()
-    dt = datetime.datetime(2023, 1, 1, 12, 0, 0)  # naive datetime  # noqa: DTZ001
+    dt = datetime.datetime(2023, 1, 1, 12, 0, 0)  # naive datetime  # ruff: ignore[call-datetime-without-tzinfo]
     result: str = game.serialize_datetime(dt)
     assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
     assert "+" not in result, f"Expected no timezone offset but got {result}"
@@ -65,7 +65,7 @@ def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
 
 
 def test_validate_timezone_aware_rejects_naive_start_date() -> None:
-    start = datetime.datetime(2024, 1, 1, 10, 0, 0)  # noqa: DTZ001
+    start = datetime.datetime(2024, 1, 1, 10, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
     end = datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC)
     with pytest.raises(ValidationError) as exc:
         UbisoftGame(
@@ -85,7 +85,7 @@ def test_validate_timezone_aware_rejects_naive_start_date() -> None:
 
 def test_validate_timezone_aware_rejects_naive_end_date() -> None:
     start = datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC)
-    end = datetime.datetime(2024, 1, 2, 10, 0, 0)  # noqa: DTZ001
+    end = datetime.datetime(2024, 1, 2, 10, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
     with pytest.raises(ValidationError) as exc:
         UbisoftGame(
             id="naive_end",

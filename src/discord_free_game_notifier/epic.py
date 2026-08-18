@@ -616,7 +616,7 @@ def if_mystery_game(game: EpicGameElement) -> bool:
     return False
 
 
-def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None:  # noqa: PLR0915
+def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None:  # ruff: ignore[too-many-statements]
     """Get the free games from Epic.
 
     Returns:

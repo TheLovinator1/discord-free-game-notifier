@@ -56,13 +56,13 @@ class TestValidateTimezoneAware:
 
     def test_naive_datetime_raises_value_error(self) -> None:
         """Test that a naive datetime raises ValueError."""
-        dt = datetime.datetime(2023, 12, 1, 11, 0, 0)  # noqa: DTZ001
+        dt = datetime.datetime(2023, 12, 1, 11, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
         with pytest.raises(ValueError, match="Datetime must be timezone-aware"):
             EpicGame.validate_timezone_aware(dt)
 
     def test_datetime_with_none_tzinfo_raises_value_error(self) -> None:
         """Test that a datetime with tzinfo=None raises ValueError."""
-        dt = datetime.datetime(2023, 12, 1, 11, 0, 0, tzinfo=None)  # noqa: DTZ001
+        dt = datetime.datetime(2023, 12, 1, 11, 0, 0, tzinfo=None)  # ruff: ignore[call-datetime-without-tzinfo]
         with pytest.raises(ValueError, match="Datetime must be timezone-aware"):
             EpicGame.validate_timezone_aware(dt)
 
@@ -147,7 +147,7 @@ class TestCheckUniqueIds:
             _make_game("c"),
             _make_game("b"),
         ]
-        with pytest.raises(ValueError) as excinfo:  # noqa: PT011
+        with pytest.raises(ValueError) as excinfo:  # ruff: ignore[pytest-raises-too-broad]
             EpicFreeGames.check_unique_ids(games)
 
         msg = str(excinfo.value)
@@ -258,7 +258,7 @@ def _iso(dt: datetime.datetime) -> str:
 
 
 class TestGetEpicFreeGames:
-    def test_returns_embeds_for_unposted_unexpired_and_skips_posted_and_expired(self, monkeypatch: pytest.MonkeyPatch) -> None:  # noqa: PLR0914
+    def test_returns_embeds_for_unposted_unexpired_and_skips_posted_and_expired(self, monkeypatch: pytest.MonkeyPatch) -> None:  # ruff: ignore[too-many-locals]
         now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
 
         future_start: datetime.datetime = now - datetime.timedelta(hours=1)
