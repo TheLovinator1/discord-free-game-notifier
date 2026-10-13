@@ -28,7 +28,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # ============================================================================
 # Runtime Stage: Minimal image with only runtime dependencies
 # ============================================================================
-FROM python:3.14-slim-bookworm
+FROM python:3.15-slim-bookworm
 
 # Create non-root user for security best practices
 RUN set -eux; \
