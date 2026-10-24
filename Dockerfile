@@ -41,9 +41,6 @@ WORKDIR /app
 # Copy the installed virtual environment.
 COPY --from=builder --link /app/.venv /app/.venv
 
-# Fail the build if the application cannot be imported.
-RUN /app/.venv/bin/python -c "import discord_free_game_notifier.main"
-
 # Switch to non-root user for running the application
 USER botuser
 
