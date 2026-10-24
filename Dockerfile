@@ -1,10 +1,8 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# ============================================================================
 # Builder Stage: Compile and install Python dependencies
-# ============================================================================
-FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim AS builder
+FROM ghcr.io/astral-sh/uv:python3.15-trixie-slim AS builder
 
 # Optimize uv behavior: compile Python bytecode and copy (not symlink) files
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
@@ -25,10 +23,8 @@ ADD . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --no-dev --frozen
 
-# ============================================================================
 # Runtime Stage: Minimal image with only runtime dependencies
-# ============================================================================
-FROM python:3.15-slim-bookworm
+FROM python:3.15-slim-trixie
 
 # Create non-root user for security best practices
 RUN set -eux; \

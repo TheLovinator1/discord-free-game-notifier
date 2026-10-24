@@ -7,5 +7,17 @@
   "configMigration": true,
   "dependencyDashboard": false,
   "osvVulnerabilityAlerts": true,
-  "timezone": "Europe/Stockholm"
+  "timezone": "Europe/Stockholm",
+  "packageRules": [
+    {
+      "description": "Group Docker base image updates",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "groupName": "Docker base images"
+    }
+  ]
 }
