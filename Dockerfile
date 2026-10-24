@@ -32,7 +32,7 @@ ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONHASHSEED=random
 
 # Create non-root user for security best practices
-RUN RUN useradd --create-home botuser \
+RUN useradd --create-home botuser \
     && mkdir -p /home/botuser/.local/share/discord_free_game_notifier \
     && chown -R botuser:botuser /home/botuser/.local/share/discord_free_game_notifier
 
