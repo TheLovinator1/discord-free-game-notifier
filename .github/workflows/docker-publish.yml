@@ -14,8 +14,10 @@ on:
       - "v*.*.*"
   pull_request:
   workflow_dispatch:
+
 env:
   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -26,12 +28,12 @@ jobs:
         with:
           python-version: "3.15"
       - run: uv run pytest -q
+
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    if: github.event_name != 'pull_request'
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
@@ -44,9 +46,10 @@ jobs:
         id: version
         run: |
           VERSION=$(uv version --output-format json | jq -r '.version')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "major=$(echo $VERSION | cut -d. -f1)" >> $GITHUB_OUTPUT
-          echo "minor=$(echo $VERSION | cut -d. -f1,2)" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "major=$(echo "$VERSION" | cut -d. -f1)" >> "$GITHUB_OUTPUT"
+          echo "minor=$(echo "$VERSION" | cut -d. -f1,2)" >> "$GITHUB_OUTPUT"
+
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v6
@@ -62,15 +65,20 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-      - uses: docker/login-action@v4
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/build-push-action@v7
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v7
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/master' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
