@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 from pathlib import Path
 
@@ -33,7 +33,7 @@ class SteamGame(BaseModel):
     developer: str = Field(..., max_length=200)
 
     @field_serializer("start_date", "end_date")
-    def serialize_datetime(self, dt: datetime.datetime) -> str:
+    def serialize_datetime(self, dt: dt.datetime) -> str:
         """Serialize datetime with +00:00 format instead of Z.
 
         By default, Pydantic serializes UTC datetimes as "2023-11-27T13:00:00Z".
@@ -87,8 +87,8 @@ def create_json_file() -> None:
             id="world_of_tanks_a_present_from_vinnie_pack",
             game_name="World of Tanks — A Present From Vinnie Pack",
             game_url=HttpUrl("https://store.steampowered.com/app/2651870/World_of_Tanks__A_Present_From_Vinnie_Pack/"),
-            start_date=datetime.datetime(2023, 12, 1, 11, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 8, 6, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2023, 12, 1, 11, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 8, 6, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_a_present_from_vinnie_pack.jpg",
             ),
@@ -100,8 +100,8 @@ def create_json_file() -> None:
             id="warframe_cumulus_collection",
             game_name="Warframe: Cumulus Collection",
             game_url=HttpUrl("https://store.steampowered.com/app/2716340/Warframe_Cumulus_Collection/"),
-            start_date=datetime.datetime(2023, 12, 18, 21, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 14, 21, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2023, 12, 18, 21, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 14, 21, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/warframe_cumulus_collection.jpg"),
             description="Cirrus Armor Bundle, Cumulus Syandana, Stratus Pistol Skin, Spektaka Color Palette, and 3-day Resource Booster.",
             developer="Digital Extremes",
@@ -111,8 +111,8 @@ def create_json_file() -> None:
             id="world_of_tanks_snatch_gift_pack",
             game_name="World of Tanks — Snatch Gift Pack",
             game_url=HttpUrl("https://store.steampowered.com/app/2749320/World_of_Tanks__Snatch_Gift_Pack/"),
-            start_date=datetime.datetime(2024, 1, 11, 15, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 24, 0, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 1, 11, 15, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 24, 0, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_snatch_gift_pack.jpg"),
             description="The Snatch Gift Pack DLC includes:\n- 3 projection decals: Good Luck Charm\n- 3 Large Repair Kits\n- 3 Large First Aid Kits\n- 3 Automatic Fire Extinguishers",
             developer="Wargaming Group Limited",
@@ -122,8 +122,8 @@ def create_json_file() -> None:
             id="world_of_tanks_blitz_bene_gesserit_pack",
             game_name="World of Tanks Blitz - Bene Gesserit Pack",
             game_url=HttpUrl("https://store.steampowered.com/app/2819910/World_of_Tanks_Blitz__Bene_Gesserit_Pack/"),
-            start_date=datetime.datetime(2024, 2, 21, 19, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 3, 7, 0, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 2, 21, 19, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 3, 7, 0, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_tanks_blitz_bene_gesserit_pack.jpg",
             ),
@@ -135,8 +135,8 @@ def create_json_file() -> None:
             id="world_of_warships_azur_lane_free_intro_pack",
             game_name="World of Warships x Azur Lane: Free Intro Pack",
             game_url=HttpUrl("https://store.steampowered.com/app/2985620/World_of_Warships__Azur_Lane_Free_Intro_Pack/"),
-            start_date=datetime.datetime(2024, 5, 16, 14, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 6, 26, 0, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 5, 16, 14, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 6, 26, 0, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_free_intro_pack.jpg",
             ),
@@ -148,8 +148,8 @@ def create_json_file() -> None:
             id="world_of_warships_azur_lane_al_avrora_free_unlock",
             game_name="World of Warships x Azur Lane — AL Avrora Free Unlock",
             game_url=HttpUrl("https://store.steampowered.com/app/2985560/World_of_Warships__Azur_Lane__AL_Avrora_Free_Unlock/"),
-            start_date=datetime.datetime(2024, 5, 16, 14, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 6, 26, 0, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 5, 16, 14, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 6, 26, 0, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_azur_lane_al_avrora_free_unlock.jpg",
             ),
@@ -161,8 +161,8 @@ def create_json_file() -> None:
             id="world_of_warships_8_years_on_steam_gift_bundle",
             game_name='World of Warships — "8 Years on Steam" Gift Bundle',
             game_url=HttpUrl("https://store.steampowered.com/app/4126610/World_of_Warships__8_Years_on_Steam_Gift_Bundle/"),
-            start_date=datetime.datetime(2025, 11, 3, 0, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2025, 11, 26, 23, 59, 59, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2025, 11, 3, 0, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2025, 11, 26, 23, 59, 59, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_8_years_on_steam_gift_bundle.jpg",
             ),
@@ -174,8 +174,8 @@ def create_json_file() -> None:
             id="world_of_warships_holiday_gift",
             game_name="World of Warships: Holiday Gift",
             game_url=HttpUrl("https://store.steampowered.com/app/4134400/World_of_Warships__Holiday_Gift/"),
-            start_date=datetime.datetime(2025, 11, 28, 17, 30, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2026, 1, 6, 18, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2025, 11, 28, 17, 30, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2026, 1, 6, 18, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_holiday_gift.jpg",
             ),
@@ -217,7 +217,7 @@ def _get_notified_steam_json_games() -> list[tuple[DiscordEmbed, str]] | None:
         unix_end_date = int(game.end_date.timestamp())
 
         # Check if the game is still free
-        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        current_time = int(dt.datetime.now(tz=dt.UTC).timestamp())
         if unix_end_date < current_time:
             logger.info(f"{game.game_name} is no longer free, skipping.")
             continue

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 import re
 from typing import TYPE_CHECKING
@@ -37,8 +37,8 @@ def _make_game(game_id: str) -> EpicGame:
         id=game_id,
         game_name="Test Game",
         game_url=HttpUrl("https://example.com"),
-        start_date=datetime.datetime(2023, 11, 27, 13, 0, 0, tzinfo=datetime.UTC),
-        end_date=datetime.datetime(2023, 12, 27, 13, 0, 0, tzinfo=datetime.UTC),
+        start_date=dt.datetime(2023, 11, 27, 13, 0, 0, tzinfo=dt.UTC),
+        end_date=dt.datetime(2023, 12, 27, 13, 0, 0, tzinfo=dt.UTC),
         image_link=HttpUrl("https://example.com/image.jpg"),
         description="Test description",
         developer="Test Developer",
@@ -50,21 +50,21 @@ class TestValidateTimezoneAware:
 
     def test_valid_timezone_aware_datetime(self) -> None:
         """Test that a timezone-aware datetime passes validation."""
-        dt = datetime.datetime(2023, 12, 1, 11, 0, 0, tzinfo=datetime.UTC)
-        result = EpicGame.validate_timezone_aware(dt)
-        assert result == dt
+        date = dt.datetime(2023, 12, 1, 11, 0, 0, tzinfo=dt.UTC)
+        result = EpicGame.validate_timezone_aware(date)
+        assert result == date
 
     def test_naive_datetime_raises_value_error(self) -> None:
         """Test that a naive datetime raises ValueError."""
-        dt = datetime.datetime(2023, 12, 1, 11, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
+        date = dt.datetime(2023, 12, 1, 11, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
         with pytest.raises(ValueError, match="Datetime must be timezone-aware"):
-            EpicGame.validate_timezone_aware(dt)
+            EpicGame.validate_timezone_aware(date)
 
     def test_datetime_with_none_tzinfo_raises_value_error(self) -> None:
         """Test that a datetime with tzinfo=None raises ValueError."""
-        dt = datetime.datetime(2023, 12, 1, 11, 0, 0, tzinfo=None)  # ruff: ignore[call-datetime-without-tzinfo]
+        date = dt.datetime(2023, 12, 1, 11, 0, 0, tzinfo=None)  # ruff: ignore[call-datetime-without-tzinfo]
         with pytest.raises(ValueError, match="Datetime must be timezone-aware"):
-            EpicGame.validate_timezone_aware(dt)
+            EpicGame.validate_timezone_aware(date)
 
 
 class TestSerializeDatetime:
@@ -76,8 +76,8 @@ class TestSerializeDatetime:
             id="test_game",
             game_name="Test Game",
             game_url=HttpUrl("https://example.com"),
-            start_date=datetime.datetime(2023, 11, 27, 13, 0, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2023, 12, 27, 13, 0, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2023, 11, 27, 13, 0, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2023, 12, 27, 13, 0, 0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://example.com/image.jpg"),
             description="Test description",
             developer="Test Developer",
@@ -89,13 +89,13 @@ class TestSerializeDatetime:
 
     def test_serialize_datetime_with_different_timezone(self) -> None:
         """Test that datetime with non-UTC timezone is properly serialized."""
-        tz = datetime.timezone(datetime.timedelta(hours=5))
+        tz = dt.timezone(dt.timedelta(hours=5))
         game = EpicGame(
             id="test_game",
             game_name="Test Game",
             game_url=HttpUrl("https://example.com"),
-            start_date=datetime.datetime(2023, 11, 27, 13, 0, 0, tzinfo=tz),
-            end_date=datetime.datetime(2023, 12, 27, 13, 0, 0, tzinfo=tz),
+            start_date=dt.datetime(2023, 11, 27, 13, 0, 0, tzinfo=tz),
+            end_date=dt.datetime(2023, 12, 27, 13, 0, 0, tzinfo=tz),
             image_link=HttpUrl("https://example.com/image.jpg"),
             description="Test description",
             developer="Test Developer",
@@ -111,8 +111,8 @@ class TestSerializeDatetime:
             id="test_game",
             game_name="Test Game",
             game_url=HttpUrl("https://example.com"),
-            start_date=datetime.datetime(2023, 11, 27, 13, 0, 0, 123456, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2023, 12, 27, 13, 0, 0, 654321, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2023, 11, 27, 13, 0, 0, 123456, tzinfo=dt.UTC),
+            end_date=dt.datetime(2023, 12, 27, 13, 0, 0, 654321, tzinfo=dt.UTC),
             image_link=HttpUrl("https://example.com/image.jpg"),
             description="Test description",
             developer="Test Developer",
@@ -166,7 +166,7 @@ class TestCreateJsonFile:
         monkeypatch.chdir(tmp_path)
 
         # Act
-        now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        now: dt.datetime = dt.datetime.now(tz=dt.UTC)
         create_json_file()
 
         # Assert
@@ -199,7 +199,7 @@ class TestCreateJsonFile:
             assert iso_tz_regex.match(game["end_date"])
             assert "Z" not in game["start_date"]
             assert "Z" not in game["end_date"]
-            assert datetime.datetime.fromisoformat(game["end_date"]) >= now
+            assert dt.datetime.fromisoformat(game["end_date"]) >= now
 
         # Ensure IDs are unique
         assert len(ids) == len(set(ids)), "Duplicate game IDs found in generated JSON"
@@ -253,22 +253,22 @@ class _DummyClient:
         return self._response_factory(url)
 
 
-def _iso(dt: datetime.datetime) -> str:
+def _iso(dt: dt.datetime) -> str:
     return dt.isoformat()
 
 
 class TestGetEpicFreeGames:
     def test_returns_embeds_for_unposted_unexpired_and_skips_posted_and_expired(self, monkeypatch: pytest.MonkeyPatch) -> None:  # ruff: ignore[too-many-locals]
-        now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        now: dt.datetime = dt.datetime.now(tz=dt.UTC)
 
-        future_start: datetime.datetime = now - datetime.timedelta(hours=1)
-        future_end: datetime.datetime = now + datetime.timedelta(hours=2)
+        future_start: dt.datetime = now - dt.timedelta(hours=1)
+        future_end: dt.datetime = now + dt.timedelta(hours=2)
 
-        posted_start: datetime.datetime = now - datetime.timedelta(hours=2)
-        posted_end: datetime.datetime = now + datetime.timedelta(hours=2)
+        posted_start: dt.datetime = now - dt.timedelta(hours=2)
+        posted_end: dt.datetime = now + dt.timedelta(hours=2)
 
-        past_start: datetime.datetime = now - datetime.timedelta(days=2)
-        past_end: datetime.datetime = now - datetime.timedelta(hours=1)
+        past_start: dt.datetime = now - dt.timedelta(days=2)
+        past_end: dt.datetime = now - dt.timedelta(hours=1)
 
         payload: dict[str, list[dict[str, str]]] = {
             "free_games": [
@@ -357,14 +357,14 @@ class TestGetEpicFreeGames:
         assert results is None
 
     def test_returns_empty_list_when_all_games_posted_or_expired(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        now: dt.datetime = dt.datetime.now(tz=dt.UTC)
 
         posted_game: dict[str, str] = {
             "id": "game_posted",
             "game_name": "Posted",
             "game_url": "https://example.com/posted",
-            "start_date": _iso(now - datetime.timedelta(hours=2)),
-            "end_date": _iso(now + datetime.timedelta(hours=2)),
+            "start_date": _iso(now - dt.timedelta(hours=2)),
+            "end_date": _iso(now + dt.timedelta(hours=2)),
             "image_link": "https://example.com/posted.jpg",
             "description": "Posted Desc",
             "developer": "Posted Dev",
@@ -373,8 +373,8 @@ class TestGetEpicFreeGames:
             "id": "game_expired",
             "game_name": "Expired",
             "game_url": "https://example.com/expired",
-            "start_date": _iso(now - datetime.timedelta(days=2)),
-            "end_date": _iso(now - datetime.timedelta(hours=1)),
+            "start_date": _iso(now - dt.timedelta(days=2)),
+            "end_date": _iso(now - dt.timedelta(hours=1)),
             "image_link": "https://example.com/expired.jpg",
             "description": "Expired Desc",
             "developer": "Expired Dev",
@@ -397,7 +397,7 @@ class TestGetEpicFreeGames:
         assert results == []
 
     def test_handles_missing_image_link(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        now: dt.datetime = dt.datetime.now(tz=dt.UTC)
 
         payload: dict[str, list[dict[str, str | None]]] = {
             "free_games": [
@@ -405,8 +405,8 @@ class TestGetEpicFreeGames:
                     "id": "game_without_image",
                     "game_name": "No Image",
                     "game_url": "https://example.com/no-image",
-                    "start_date": _iso(now - datetime.timedelta(hours=1)),
-                    "end_date": _iso(now + datetime.timedelta(hours=1)),
+                    "start_date": _iso(now - dt.timedelta(hours=1)),
+                    "end_date": _iso(now + dt.timedelta(hours=1)),
                     "image_link": None,
                     "description": "No image available",
                     "developer": "Dev",

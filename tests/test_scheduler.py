@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import time
 from collections.abc import Callable
 from typing import TYPE_CHECKING
@@ -57,7 +57,7 @@ def test_add_job_with_cron_trigger() -> None:
         "cron",
         minute="1,16,31,46",
         replace_existing=True,
-        next_run_time=datetime.datetime.now(tz=datetime.UTC),
+        next_run_time=dt.datetime.now(tz=dt.UTC),
     )
 
     assert job is not None, f"Expected Job instance, got {type(job)}"

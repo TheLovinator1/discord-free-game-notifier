@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Self
@@ -43,7 +43,7 @@ class _DummyClient:
         return _DummyResponse(payload=self._payload)
 
 
-def _iso(dt: datetime.datetime) -> str:
+def _iso(dt: dt.datetime) -> str:
     return dt.isoformat()
 
 
@@ -54,9 +54,9 @@ def test_steam_free_games_model_validate_empty_payload() -> None:
 
 
 def test_get_steam_json_games_validates_response_payload(monkeypatch: pytest.MonkeyPatch) -> None:
-    now: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
-    start_date: datetime.datetime = now - datetime.timedelta(hours=1)
-    end_date: datetime.datetime = now + datetime.timedelta(hours=1)
+    now: dt.datetime = dt.datetime.now(tz=dt.UTC)
+    start_date: dt.datetime = now - dt.timedelta(hours=1)
+    end_date: dt.datetime = now + dt.timedelta(hours=1)
     payload: dict[str, Any] = {
         "free_games": [
             {

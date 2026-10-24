@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import html
 import shutil
 import tempfile
@@ -20,14 +20,14 @@ from discord_free_game_notifier.webhook import GameService
 
 @dataclass
 class _GameWithEnd:
-    end_date: datetime.datetime
+    end_date: dt.datetime
 
 
 def test_active_free_games_filters_expired_games() -> None:
-    now = datetime.datetime(2026, 5, 10, 12, 0, 0, tzinfo=datetime.UTC)
-    expired_game = _GameWithEnd(end_date=now - datetime.timedelta(seconds=1))
+    now = dt.datetime(2026, 5, 10, 12, 0, 0, tzinfo=dt.UTC)
+    expired_game = _GameWithEnd(end_date=now - dt.timedelta(seconds=1))
     ending_now_game = _GameWithEnd(end_date=now)
-    future_game = _GameWithEnd(end_date=now + datetime.timedelta(days=1))
+    future_game = _GameWithEnd(end_date=now + dt.timedelta(days=1))
 
     assert active_free_games([expired_game, ending_now_game, future_game], now=now) == [ending_now_game, future_game]
 

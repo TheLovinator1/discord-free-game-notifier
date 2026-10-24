@@ -12,7 +12,7 @@ Environment variables for local testing:
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 import os
 from pathlib import Path
@@ -52,7 +52,7 @@ class EpicMobileGame(BaseModel):
 
     @field_validator("start_date", "end_date")
     @classmethod
-    def validate_timezone_aware(cls, dt: datetime.datetime) -> datetime.datetime:
+    def validate_timezone_aware(cls, dt: dt.datetime) -> dt.datetime:
         """Validate that datetime is timezone-aware.
 
         Args:
@@ -70,7 +70,7 @@ class EpicMobileGame(BaseModel):
         return dt
 
     @field_serializer("start_date", "end_date")
-    def serialize_datetime(self, dt: datetime.datetime) -> str:
+    def serialize_datetime(self, dt: dt.datetime) -> str:
         """Serialize datetime with +00:00 format instead of Z.
 
         By default, Pydantic serializes UTC datetimes as "2023-11-27T13:00:00Z".
@@ -166,10 +166,10 @@ def create_json_file() -> None:
     The bot will use this file to check if there are any new free mobile games.
     """
     # Define event window datetimes (UTC)
-    idle_champions_start = datetime.datetime(2025, 11, 6, 16, 0, 0, tzinfo=datetime.UTC)
-    idle_champions_end = datetime.datetime(2025, 11, 13, 16, 0, 0, tzinfo=datetime.UTC)
-    shotgun_king_start = datetime.datetime(2025, 12, 18, 16, 0, 0, tzinfo=datetime.UTC)
-    shotgun_king_end = datetime.datetime(2025, 12, 25, 16, 0, 0, tzinfo=datetime.UTC)
+    idle_champions_start = dt.datetime(2025, 11, 6, 16, 0, 0, tzinfo=dt.UTC)
+    idle_champions_end = dt.datetime(2025, 11, 13, 16, 0, 0, tzinfo=dt.UTC)
+    shotgun_king_start = dt.datetime(2025, 12, 18, 16, 0, 0, tzinfo=dt.UTC)
+    shotgun_king_end = dt.datetime(2025, 12, 25, 16, 0, 0, tzinfo=dt.UTC)
 
     # Precompute unix timestamps for Discord timestamp tokens
     idle_champions_end_unix = int(idle_champions_end.timestamp())
@@ -311,7 +311,7 @@ def _get_notified_epic_mobile_json_games() -> list[tuple[DiscordEmbed, str]] | N
             continue
 
         # Check if the game is still free
-        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        current_time = int(dt.datetime.now(tz=dt.UTC).timestamp())
         unix_end_date = int(game.end_date.timestamp())
         if unix_end_date < current_time:
             logger.info(f"{game.game_name} is no longer free, skipping.")

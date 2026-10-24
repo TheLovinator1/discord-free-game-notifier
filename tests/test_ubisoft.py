@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 from typing import Any
 from typing import LiteralString
 
@@ -24,8 +24,8 @@ def _make_game() -> UbisoftGame:
         id="test_game",
         game_name="Test Game",
         game_url=HttpUrl("https://example.com/game"),
-        start_date=datetime.datetime.now(tz=datetime.UTC),
-        end_date=(datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1)),
+        start_date=dt.datetime.now(tz=dt.UTC),
+        end_date=(dt.datetime.now(tz=dt.UTC) + dt.timedelta(days=1)),
         image_link=HttpUrl("https://example.com/test_image.png"),
         description="Test description",
     )
@@ -33,24 +33,24 @@ def _make_game() -> UbisoftGame:
 
 def test_serialize_datetime_returns_plus_zero_for_utc() -> None:
     game: UbisoftGame = _make_game()
-    dt = datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=datetime.UTC)
-    result: str = game.serialize_datetime(dt)
-    assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
+    date = dt.datetime(2023, 1, 1, 12, 0, 0, tzinfo=dt.UTC)
+    result: str = game.serialize_datetime(date)
+    assert result == date.isoformat(), f"Expected {date.isoformat()} but got {result}"
     assert result.endswith("+00:00"), f"Expected timezone '+00:00' but got {result}"
 
 
 def test_serialize_datetime_returns_iso_for_naive_datetime() -> None:
     game: UbisoftGame = _make_game()
-    dt = datetime.datetime(2023, 1, 1, 12, 0, 0)  # naive datetime  # ruff: ignore[call-datetime-without-tzinfo]
-    result: str = game.serialize_datetime(dt)
-    assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
+    date = dt.datetime(2023, 1, 1, 12, 0, 0)  # naive datetime  # ruff: ignore[call-datetime-without-tzinfo]
+    result: str = game.serialize_datetime(date)
+    assert result == date.isoformat(), f"Expected {date.isoformat()} but got {result}"
     assert "+" not in result, f"Expected no timezone offset but got {result}"
     assert "Z" not in result, f"Expected no 'Z' timezone but got {result}"
 
 
 def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
-    start = datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC)
-    end = datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC)
+    start = dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC)
+    end = dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC)
     game = UbisoftGame(
         id="aware_ok",
         game_name="Aware OK",
@@ -65,8 +65,8 @@ def test_validate_timezone_aware_accepts_aware_datetimes() -> None:
 
 
 def test_validate_timezone_aware_rejects_naive_start_date() -> None:
-    start = datetime.datetime(2024, 1, 1, 10, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
-    end = datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC)
+    start = dt.datetime(2024, 1, 1, 10, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
+    end = dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC)
     with pytest.raises(ValidationError) as exc:
         UbisoftGame(
             id="naive_start",
@@ -84,8 +84,8 @@ def test_validate_timezone_aware_rejects_naive_start_date() -> None:
 
 
 def test_validate_timezone_aware_rejects_naive_end_date() -> None:
-    start = datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC)
-    end = datetime.datetime(2024, 1, 2, 10, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
+    start = dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC)
+    end = dt.datetime(2024, 1, 2, 10, 0, 0)  # ruff: ignore[call-datetime-without-tzinfo]
     with pytest.raises(ValidationError) as exc:
         UbisoftGame(
             id="naive_end",
@@ -101,9 +101,9 @@ def test_validate_timezone_aware_rejects_naive_end_date() -> None:
 
 
 def test_validate_timezone_aware_accepts_non_utc_timezone() -> None:
-    ist = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
-    start = datetime.datetime(2024, 1, 1, 15, 30, tzinfo=ist)
-    end = datetime.datetime(2024, 1, 2, 15, 30, tzinfo=ist)
+    ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
+    start = dt.datetime(2024, 1, 1, 15, 30, tzinfo=ist)
+    end = dt.datetime(2024, 1, 2, 15, 30, tzinfo=ist)
     game = UbisoftGame(
         id="non_utc_ok",
         game_name="Non-UTC OK",
@@ -125,8 +125,8 @@ def test_game_name_max_length() -> None:
             id="long_name",
             game_name=long_name,
             game_url=HttpUrl("https://example.com/game"),
-            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://example.com/test_image.png"),
             description="desc",
         )
@@ -141,8 +141,8 @@ def test_description_max_length() -> None:
             id="long_desc",
             game_name="Game",
             game_url=HttpUrl("https://example.com/game"),
-            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://example.com/test_image.png"),
             description=long_desc,
         )
@@ -156,8 +156,8 @@ def test_invalid_game_url() -> None:
             id="invalid_url",
             game_name="Game",
             game_url="not-a-url",  # pyright: ignore[reportArgumentType]
-            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://example.com/test_image.png"),
             description="desc",
         )
@@ -171,8 +171,8 @@ def test_invalid_image_link() -> None:
             id="invalid_img",
             game_name="Game",
             game_url=HttpUrl("https://example.com/game"),
-            start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC),
+            end_date=dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC),
             image_link="not-a-url",  # pyright: ignore[reportArgumentType]
             description="desc",
         )
@@ -186,8 +186,8 @@ def test_ubisoft_free_games_unique_ids() -> None:
         id="test_game2",
         game_name="Test Game 2",
         game_url=HttpUrl("https://example.com/game2"),
-        start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
-        end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+        start_date=dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC),
+        end_date=dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC),
         image_link=HttpUrl("https://example.com/test_image.png"),
         description="Test description 2",
     )
@@ -202,8 +202,8 @@ def test_ubisoft_free_games_duplicate_ids() -> None:
         id="test_game",  # Duplicate ID
         game_name="Test Game 2",
         game_url=HttpUrl("https://example.com/game2"),
-        start_date=datetime.datetime(2024, 1, 1, 10, 0, tzinfo=datetime.UTC),
-        end_date=datetime.datetime(2024, 1, 2, 10, 0, tzinfo=datetime.UTC),
+        start_date=dt.datetime(2024, 1, 1, 10, 0, tzinfo=dt.UTC),
+        end_date=dt.datetime(2024, 1, 2, 10, 0, tzinfo=dt.UTC),
         image_link=HttpUrl("https://example.com/test_image.png"),
         description="Test description 2",
     )
@@ -216,10 +216,10 @@ def test_ubisoft_free_games_duplicate_ids() -> None:
 def test_serialize_datetime_with_non_utc_timezone() -> None:
     """Test serialize_datetime with a non-UTC timezone."""
     game: UbisoftGame = _make_game()
-    est = datetime.timezone(datetime.timedelta(hours=-5))
-    dt = datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=est)
-    result: str = game.serialize_datetime(dt)
-    assert result == dt.isoformat(), f"Expected {dt.isoformat()} but got {result}"
+    est = dt.timezone(dt.timedelta(hours=-5))
+    date = dt.datetime(2023, 1, 1, 12, 0, 0, tzinfo=est)
+    result: str = game.serialize_datetime(date)
+    assert result == date.isoformat(), f"Expected {date.isoformat()} but got {result}"
     assert result.endswith("-05:00"), f"Expected timezone '-05:00' but got {result}"
 
 
@@ -240,17 +240,17 @@ def test_ubisoft_free_games_empty_list() -> None:
     assert free_games.free_games == [], f"Expected empty list but got {free_games.free_games}"
 
 
-@given(st.datetimes(timezones=st.just(datetime.UTC)))
-def test_serialize_datetime_property_is_iso_format(dt: datetime.datetime) -> None:
+@given(st.datetimes(timezones=st.just(dt.UTC)))
+def test_serialize_datetime_property_is_iso_format(date: dt.datetime) -> None:
     """Property: serialize_datetime always returns ISO format with timezone."""
     game: UbisoftGame = _make_game()
-    result: str = game.serialize_datetime(dt)
+    result: str = game.serialize_datetime(date)
     # Should be valid ISO format
     assert "T" in result, f"Expected ISO format with 'T' separator but got '{result}'"
     # Should have timezone info
     assert "+" in result or "Z" in result, f"Expected timezone in '{result}'"
     # Should round-trip parse
-    parsed: datetime.datetime = datetime.datetime.fromisoformat(result)
+    parsed: dt.datetime = dt.datetime.fromisoformat(result)
     assert parsed.tzinfo is not None, f"Expected timezone-aware datetime from '{result}'"
 
 
@@ -261,8 +261,8 @@ def test_ubisoft_game_property_accepts_valid_strings(name: str, desc: str) -> No
         id="test",
         game_name=name,
         game_url=HttpUrl("https://example.com/game"),
-        start_date=datetime.datetime.now(tz=datetime.UTC),
-        end_date=(datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(days=1)),
+        start_date=dt.datetime.now(tz=dt.UTC),
+        end_date=(dt.datetime.now(tz=dt.UTC) + dt.timedelta(days=1)),
         image_link=HttpUrl("https://example.com/test_image.png"),
         description=desc,
     )

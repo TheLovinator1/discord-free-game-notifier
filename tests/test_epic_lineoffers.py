@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import calendar
-import datetime
+import datetime as dt
 import json
 import time
 from pathlib import Path
@@ -66,7 +66,7 @@ def test_dlc_with_lineoffers_no_start_date(dlc_response: EpicGamesResponse) -> N
     # The test data doesn't have startDate in lineOffers, but has an end date
     # So it should return the current timestamp
     start_date: int = promotion_start(dlc)
-    current_time: int = round(datetime.datetime.now(tz=pytz.UTC).timestamp())
+    current_time: int = round(dt.datetime.now(tz=pytz.UTC).timestamp())
 
     # Should be close to current time (within a few seconds)
     assert start_date != 0, "Start date should not be 0 when there's an end date but no start date"

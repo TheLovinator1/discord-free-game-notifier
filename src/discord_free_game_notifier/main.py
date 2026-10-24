@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 from typing import TYPE_CHECKING
 from typing import Any
 
@@ -187,7 +187,7 @@ def main() -> None:
         check_free_games,
         "cron",
         minute="1,16,31,46",
-        next_run_time=datetime.datetime.now(tz=datetime.UTC),
+        next_run_time=dt.datetime.now(tz=dt.UTC),
     )
     logger.info("Starting scheduler")
     try:

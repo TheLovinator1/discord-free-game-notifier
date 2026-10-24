@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 from pathlib import Path
 
@@ -34,7 +34,7 @@ class EpicGame(BaseModel):
 
     @field_validator("start_date", "end_date")
     @classmethod
-    def validate_timezone_aware(cls, dt: datetime.datetime) -> datetime.datetime:
+    def validate_timezone_aware(cls, dt: dt.datetime) -> dt.datetime:
         """Validate that datetime is timezone-aware.
 
         Args:
@@ -52,7 +52,7 @@ class EpicGame(BaseModel):
         return dt
 
     @field_serializer("start_date", "end_date")
-    def serialize_datetime(self, dt: datetime.datetime) -> str:
+    def serialize_datetime(self, dt: dt.datetime) -> str:
         """Serialize datetime with +00:00 format instead of Z.
 
         By default, Pydantic serializes UTC datetimes as "2023-11-27T13:00:00Z".
@@ -105,8 +105,8 @@ def create_json_file() -> None:
             id="the_sims_4_my_first_pet_stuff",
             game_name="The Sims™ 4 My First Pet Stuff",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/the-sims-4--my-first-pet-stuff"),
-            start_date=datetime.datetime(year=2023, month=12, day=1, hour=11, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=9, hour=18, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=1, hour=11, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=9, hour=18, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/the_sims_4_my_first_pet_stuff.jpg"),
             description="Welcome home a new small animal and show love for Cats and Dogs with The Sims™ 4 My First Pet Stuff.\n\n[Instant Checkout](https://store.epicgames.com/purchase?offers=1-2a14cf8a83b149919a2399504e5686a6-7002cdb1eb2543da85ac8a3c4c6d71d5#/)",
             developer="Maxis",
@@ -115,8 +115,8 @@ def create_json_file() -> None:
             id="fall_guys_giddy_gift",
             game_name="Fall Guys - Giddy Gift",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/fall-guys--giddy-gift"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/fall_guys_giddy_gift.jpg"),
             description="May we 'present' the free Giddy Gift costume! Wrap up this Winter & earn a crown or two in Fall Guys\n\nIncludes: Giddy Gift (Whole Costume)",
             developer="Mediatonic",
@@ -125,8 +125,8 @@ def create_json_file() -> None:
             id="disney_speedstorm_monochromatic_pack",
             game_name="Disney Speedstorm - Monochromatic Pack",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/disney-speedstorm--monochromatic-pack"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/disney_speedstorm_monochromatic_pack.jpg",
             ),
@@ -139,8 +139,8 @@ def create_json_file() -> None:
             game_url=HttpUrl(
                 "https://store.epicgames.com/en-US/p/idle-champions-of-the-forgotten-realms--dark-justiciar-shadow-heart-party-pack",
             ),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl(
                 "https://thelovinator1.github.io/discord-free-game-notifier/images/dark_justiciar_shadowheart_party_pack.jpg",
             ),
@@ -151,8 +151,8 @@ def create_json_file() -> None:
             id="warframe_holiday_sale_2023",
             game_name="Warframe - Holiday Sale 2023",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/warframe"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/warframe_holiday_sale_2023.jpg"),
             description="Come celebrate the Epic Games Holiday Sale with us and claim the Atterax Weapon, a 7-Day Credit Booster and 7-Day Affinity Booster for free!\nPlayers who launch and log in to WARFRAME on Epic Games Store during the promotional period will receive an inbox message with free content upon login into the game. ",
             developer="Digital Extremes",
@@ -161,8 +161,8 @@ def create_json_file() -> None:
             id="honkai_impact_holiday_sale_2023",
             game_name="Honkai Impact - Holiday Sale 2023",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/honkai-impact-3rd"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/honkai_impact_holiday_sale_2023.jpg"),
             description="Celebrate the Epic Games Holiday Sale and get 500 Asterites and 100,000 Coins for free!\nPlayers who log in to Honkai Impact 3rd on Epic Games Store during the event period will receive the bundle via an in-game mail within one week.",
             developer="miHoYo Limited",
@@ -171,8 +171,8 @@ def create_json_file() -> None:
             id="synced_holiday_sale_2023",
             game_name="SYNCED: Winterfest Bundle",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/synced--winterfest-bundle"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/synced_holiday_sale_2023.jpg"),
             description="Unlock this Bundle of SYNCED to obtain new Runner and weapon skins, and embrace fresh challenges in the new season - Lambent Dawn.",
             developer="NExT Studios",
@@ -181,8 +181,8 @@ def create_json_file() -> None:
             id="world_of_warships_holiday_sale_2023",
             game_name="World of Warships — Frosty Celebration Pack",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/world-of-warships--frosty-celebration-pack"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/world_of_warships_holiday_sale_2023.jpg"),
             description="Embrace the magic of the winter holidays with this free DLC featuring cruiser Ning Hai and the enchanting allure of even more Premium ships that could drop from five festive Santa's Gift containers.",
             developer="Wargaming",
@@ -191,8 +191,8 @@ def create_json_file() -> None:
             id="eve_online_superluminal_pack",
             game_name="EVE Online - Superluminal Pack",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/eve-online--superluminal-pack"),
-            start_date=datetime.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2023, month=12, day=13, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=1, day=10, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/eve_online_superluminal_pack.jpg"),
             description="The Superluminal Pack is a limited-time-only FREE giveaway exclusive to Epic! It contains Semiotique Superluminal SKINs for the Heron, Magnate, Imicus, and Probe as well as unique Superluminal clothing!",
             developer="CCP Games",
@@ -201,8 +201,8 @@ def create_json_file() -> None:
             id="epic_mega_sale_2024",
             game_name="Epic Games MEGA Sale 2024",
             game_url=HttpUrl("https://store.epicgames.com/en-US/free-games"),
-            start_date=datetime.datetime(year=2024, month=5, day=16, hour=18, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=6, day=12, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2024, month=5, day=16, hour=18, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=6, day=12, hour=0, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/epic_mega_sale_2024.jpg"),
             description="Free Epic stuff:\n- [Disney Speedstorm Monochromatic Pack - Racer Stitch](https://store.epicgames.com/en-US/p/disney-speedstorm--racer-stitch)\n- [Genshin Impact MEGA Sale Bundle](https://store.epicgames.com/en-US/p/genshin-impact--mega-sale-bundle)\n- [Honkai: Star Rail MEGA Sale Bundle](https://store.epicgames.com/en-US/p/honkai-star-rail--epic-mega-sale-event-bundle)\n- [Fortnite Overclocked Combo Pack](https://store.epicgames.com/en-US/p/fortnite--overclocked-combo-pack)\n- [Fall Guys - Soda Crown](https://store.epicgames.com/en-US/p/fall-guys--soda-crown)\n- [1 Month of Discord Nitro](https://store.epicgames.com/en-US/p/discord--discord-nitro)\n- [Dauntless Golden Drake's Eye Bundle](https://store.epicgames.com/en-US/p/dauntless--golden-drakes-eye-bundle)\n- [Warframe Pyra Syandana and Fire Color Picker](https://store.epicgames.com/en-US/p/warframe)\n- [Honkai Impact 3rd Bundle](https://store.epicgames.com/en-US/p/honkai-impact-3rd)",
             developer="Epic Games et al.",
@@ -211,8 +211,8 @@ def create_json_file() -> None:
             id="wuthering_waves_echo_starter_pack",
             game_name="Wuthering Waves - Echo Starter Pack",
             game_url=HttpUrl("https://store.epicgames.com/en-US/p/wuthering-waves-echo-starter-pack-eae1db"),
-            start_date=datetime.datetime(year=2024, month=5, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2024, month=6, day=23, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2024, month=5, day=23, hour=16, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2024, month=6, day=23, hour=16, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/wuthering_waves_echo_starter_pack.jpg"),
             description="The Echo Starter Pack includes:\n- 1 Incomplete Echo\n- 10 Premium Tuner\n- 5 Advanced Sealed Tube",
             developer="KURO GAMES",
@@ -221,8 +221,8 @@ def create_json_file() -> None:
             id="epic_christmas_sale_2025_part1",
             game_name="Epic Christmas Sale 2025 (Part 1)",
             game_url=HttpUrl("https://store.epicgames.com/en-US/free-games"),
-            start_date=datetime.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=dt.UTC),
             image_link=None,
             description="Random shit for the following games:\n• [Asphalt Legends](https://store.epicgames.com/purchase?offers=1-9159cceaae3e48bc9a5ec237d7a4f388-099087585107462d9219d8654a18fdfa)\n• [Discord Nitro](https://store.epicgames.com/purchase?offers=1-5f3c898b2a3244af99e9900e015717f8-58d59510955043fb8a3dd9e6c69efc02)\n• [Disney Speedstorm](https://store.epicgames.com/purchase?offers=1-47bf168a2214456fb7bd4c217e2a4fd6-c3c12bd13f6f466fb947d44b3126dc57)\n• [Fall Guys](https://store.epicgames.com/purchase?offers=1-50118b7f954e450f8823df1614b24e80-4f5cee54a31444eebbce30e7d61399d6)\n• [Firestone](https://store.epicgames.com/purchase?offers=1-bda8d2133655435982b9118972792328-c47b928cdf9c47bb80c4c7182656d676)\n• [Fortnite](https://store.epicgames.com/purchase?offers=1-fn-fff08dea01f346c49660f3aa9dd3c890)\n• [Idle Champions](https://store.epicgames.com/purchase?offers=1-7e508f543b05465abe3a935960eb70ac-a500e9f0ac2a427db04d30d2bcc608cf)",
             developer="Happy yuletide!",
@@ -231,8 +231,8 @@ def create_json_file() -> None:
             id="epic_christmas_sale_2025_part2",
             game_name="Epic Christmas Sale 2025 (Part 2)",
             game_url=HttpUrl("https://store.epicgames.com/en-US/free-games"),
-            start_date=datetime.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=datetime.UTC),
-            end_date=datetime.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=datetime.UTC),
+            start_date=dt.datetime(year=2025, month=12, day=11, hour=0, minute=0, second=0, tzinfo=dt.UTC),
+            end_date=dt.datetime(year=2026, month=1, day=8, hour=16, minute=0, second=0, tzinfo=dt.UTC),
             image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/epic_christmas_sale_2025.jpg"),
             description="• [Infinity Nikki](https://store.epicgames.com/purchase?offers=1-ad13a7222a9b4e899e14cd021c7c5118-fd11d240818b4427aa632c6a0ca1353e)\n• [Neverwinter](https://store.epicgames.com/purchase?offers=1-9a4a6536096c4307bfb235d811f754ce-60c2ce621b3d46d6884ae3da6a3342cb)\n• [Rocket League](https://store.epicgames.com/purchase?offers=1-9773aa1aa54f4f7b80e44bef04986cea-8d2977f72fd34d42b54c62e102b9411f)\n• [SMITE 2](https://store.epicgames.com/purchase?offers=1-16ed9f15b1b449ccb59cb610b13df5b8-5e70cd48c74140e18bd152136282cf30)\n• [Star Trek Online](https://store.epicgames.com/purchase?offers=1-06a97980aac14fdfb914ef603a113792-a6c5b19271dd46c39a706d50496b29c5)\n• [World of Warships](https://store.epicgames.com/purchase?offers=1-84c76746bce94effb8e1047fabfd7eb7-d815be0a5f19422a8c8afddaef5f8cb6)",
             developer="And a happy new year! :-)",
@@ -272,7 +272,7 @@ def _get_notified_epic_json_games() -> list[tuple[DiscordEmbed, str]] | None:
         unix_end_date = int(game.end_date.timestamp())
 
         # Check if the game is still free
-        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        current_time = int(dt.datetime.now(tz=dt.UTC).timestamp())
         if unix_end_date < current_time:
             logger.info(f"{game.game_name} is no longer free, skipping.")
             continue

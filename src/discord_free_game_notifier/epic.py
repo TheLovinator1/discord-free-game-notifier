@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import calendar
-import datetime
+import datetime as dt
 import html
 import time
 
@@ -261,14 +261,14 @@ def promotion_start(game: EpicGameElement) -> int:
     if not start_candidates:
         end_date = promotion_end(game)
         if end_date > 0:
-            curr_dt: datetime.datetime = datetime.datetime.now(tz=pytz.UTC)
+            curr_dt: dt.datetime = dt.datetime.now(tz=pytz.UTC)
             current_time = round(curr_dt.timestamp())
             logger.info(f"{game.title}: No start date found but has end date, using current time: {current_time}")
             return current_time
         return 0
 
     start_date: int = min(start_candidates)
-    logger.info(f"{game.title}: Starts in: {start_date} ({datetime.datetime.fromtimestamp(start_date, tz=pytz.UTC)})")
+    logger.info(f"{game.title}: Starts in: {start_date} ({dt.datetime.fromtimestamp(start_date, tz=pytz.UTC)})")
     return start_date
 
 
@@ -395,7 +395,7 @@ def _build_search_url(count: int = 5) -> str:
     Returns:
         str: The search URL with current date parameter.
     """
-    curr_dt: datetime.datetime = datetime.datetime.now(tz=pytz.UTC)
+    curr_dt: dt.datetime = dt.datetime.now(tz=pytz.UTC)
     # Format: [,2025-12-22T19:53:46.096Z]
     date_str: str = curr_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
@@ -630,7 +630,7 @@ def get_free_epic_games() -> list[tuple[DiscordEmbed | str, str, bool]] | None: 
     notified_games: list[tuple[DiscordEmbed | str, str, bool]] = []
     unique_game_ids: set[str] = set()
 
-    curr_dt: datetime.datetime = datetime.datetime.now(tz=pytz.UTC)
+    curr_dt: dt.datetime = dt.datetime.now(tz=pytz.UTC)
     current_time: int = round(curr_dt.timestamp())
 
     for game in response.data.Catalog.searchStore.elements:
@@ -730,7 +730,7 @@ def create_embed(game: EpicGameElement) -> DiscordEmbed | None:
 
     embed.set_author(name=game_name, url=url, icon_url="https://thelovinator1.github.io/discord-free-game-notifier/images/Epic.png")
 
-    curr_dt: datetime.datetime = datetime.datetime.now(tz=pytz.UTC)
+    curr_dt: dt.datetime = dt.datetime.now(tz=pytz.UTC)
     current_time: int = round(curr_dt.timestamp())
     end_time: int = promotion_end(game)
     start_time: int = promotion_start(game)

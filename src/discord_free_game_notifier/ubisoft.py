@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 from pathlib import Path
 
@@ -34,7 +34,7 @@ class UbisoftGame(BaseModel):
 
     @field_validator("start_date", "end_date")
     @classmethod
-    def validate_timezone_aware(cls, dt: datetime.datetime) -> datetime.datetime:
+    def validate_timezone_aware(cls, dt: dt.datetime) -> dt.datetime:
         """Validate that datetime is timezone-aware.
 
         Args:
@@ -52,7 +52,7 @@ class UbisoftGame(BaseModel):
         return dt
 
     @field_serializer("start_date", "end_date")
-    def serialize_datetime(self, dt: datetime.datetime) -> str:
+    def serialize_datetime(self, dt: dt.datetime) -> str:
         """Serialize datetime with +00:00 format instead of Z.
 
         By default, Pydantic serializes UTC datetimes as "2023-11-27T13:00:00Z".
@@ -104,8 +104,8 @@ def create_json_file() -> None:
         id="ac_syndicate",
         game_name="Assassin's Creed Syndicate",
         game_url=HttpUrl("https://register.ubisoft.com/acsyndicate/"),
-        start_date=datetime.datetime(2023, 11, 27, 13, 0, 0, tzinfo=datetime.UTC),
-        end_date=datetime.datetime(2023, 12, 6, 13, 0, 0, tzinfo=datetime.UTC),
+        start_date=dt.datetime(2023, 11, 27, 13, 0, 0, tzinfo=dt.UTC),
+        end_date=dt.datetime(2023, 12, 6, 13, 0, 0, tzinfo=dt.UTC),
         image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/ac_syndicate.png"),
         description="London, 1868. In the heart of the Industrial Revolution, lead your underworld organization and grow your influence to fight those who exploit the less privileged in the name of progress.",
     )
@@ -114,8 +114,8 @@ def create_json_file() -> None:
         id="immortals_fenyx_rising",
         game_name="Immortals Fenyx Rising",
         game_url=HttpUrl("https://register.ubisoft.com/ImmortalsFenyxRising_Free/en-US"),
-        start_date=datetime.datetime(2025, 11, 13, 13, 0, 0, tzinfo=datetime.UTC),
-        end_date=datetime.datetime(2025, 12, 2, 10, 0, 0, tzinfo=datetime.UTC),
+        start_date=dt.datetime(2025, 11, 13, 13, 0, 0, tzinfo=dt.UTC),
+        end_date=dt.datetime(2025, 12, 2, 10, 0, 0, tzinfo=dt.UTC),
         image_link=HttpUrl("https://thelovinator1.github.io/discord-free-game-notifier/images/immortals_fenyx_rising.jpg"),
         description="Play as Fenyx, a new winged demigod, on a quest to save the Greek gods and their home from a dark curse. Take on mythological beasts, master the legendary powers of the gods, and defeat Typhon, the deadliest Titan in Greek mythology, in an epic fight for the ages.",
     )
@@ -153,7 +153,7 @@ def _get_notified_ubisoft_games() -> list[tuple[DiscordEmbed, str]] | None:
         unix_end_date = int(game.end_date.timestamp())
 
         # Check if the game is still free
-        current_time = int(datetime.datetime.now(tz=datetime.UTC).timestamp())
+        current_time = int(dt.datetime.now(tz=dt.UTC).timestamp())
         if unix_end_date < current_time:
             logger.info(f"{game.game_name} is no longer free, skipping.")
             continue

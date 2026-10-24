@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import html
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -15,12 +15,12 @@ if TYPE_CHECKING:
 
 
 class _HasEndDate(Protocol):
-    end_date: datetime.datetime
+    end_date: dt.datetime
 
 
-def active_free_games[GameT: _HasEndDate](games: list[GameT], *, now: datetime.datetime | None = None) -> list[GameT]:
+def active_free_games[GameT: _HasEndDate](games: list[GameT], *, now: dt.datetime | None = None) -> list[GameT]:
     """Return only games whose giveaway window has not ended."""
-    current_time: datetime.datetime = now if now is not None else datetime.datetime.now(tz=datetime.UTC)
+    current_time: dt.datetime = now if now is not None else dt.datetime.now(tz=dt.UTC)
     return [game for game in games if game.end_date >= current_time]
 
 

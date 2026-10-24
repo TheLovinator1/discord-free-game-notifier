@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 
 from hypothesis import given
 from hypothesis import strategies as st
@@ -117,8 +117,8 @@ def test_promotion_times_from_upcoming_only() -> None:
     assert e > 0
     assert e > s
     # Ensure UTC conversion: round-trip check
-    expected_s = int(datetime.datetime(2025, 12, 11, 16, 0, 0, tzinfo=datetime.UTC).timestamp())
-    expected_e = int(datetime.datetime(2026, 1, 8, 16, 0, 0, tzinfo=datetime.UTC).timestamp())
+    expected_s = int(dt.datetime(2025, 12, 11, 16, 0, 0, tzinfo=dt.UTC).timestamp())
+    expected_e = int(dt.datetime(2026, 1, 8, 16, 0, 0, tzinfo=dt.UTC).timestamp())
     assert s == expected_s
     assert e == expected_e
 
