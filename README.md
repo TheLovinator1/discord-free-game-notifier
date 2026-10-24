@@ -13,22 +13,23 @@ Discord webhook notifications for free games on Steam, Epic, GOG, and Ubisoft.
 Available tags:
 
 - `latest` - Latest build from master branch
-- `2.0.0` - Pin to specific version (recommended for stability)
-- `2.0` - Pin to minor version (gets patch updates)
+- `2.0.0` - Pin to specific version
+- `2.0` - Pin to minor version
 - `2` - Pin to major version
 
 **Direct:**
 
 ```bash
-# Install uv
+# Step 1: Install uv
 # Windows:
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 # macOS/Linux:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Configure: Copy .env.example to .env and set WEBHOOK_URL
+# Step 2:
+# Copy and rename .env.example to .env and set WEBHOOK_URL
 
-# Run (checks at :01, :16, :31, :46 each hour)
+# Run bot with
 uv run python -m discord_free_game_notifier.main
 ```
 
