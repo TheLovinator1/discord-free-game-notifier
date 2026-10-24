@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import json
 from typing import Self
 
 import httpx
@@ -80,17 +81,11 @@ class AppDetails(BaseModel):
 
 
 class QuerySummary(BaseModel):
-    num_reviews: int
-    review_score: int
-    review_score_desc: str
-    total_positive: int
-    total_negative: int
-    total_reviews: int
+    review_score_desc: str | None = None
 
 
 class ReviewsResponse(BaseModel):
-    success: int
-    query_summary: QuerySummary
+    query_summary: QuerySummary | None = None
 
 
 class MoreData(BaseModel):
@@ -266,18 +261,24 @@ def _fetch_app_details(game_id: str) -> MoreData:
 
 
 def _fetch_reviews(game_id: str, more_data: MoreData) -> None:
-    """Fetch and parse game reviews.
-
-    Args:
-        game_id: The game ID
-        more_data: The MoreData object to populate
-    """
+    """Fetch and parse game reviews."""
     logger.debug(f"Getting reviews for {game_id=}")
 
     try:
         with httpx.Client(timeout=30) as client:
             reviews_response: httpx.Response = client.get(
-                url=f"https://store.steampowered.com/appreviews/{game_id}?json=1&language=all&num_per_page=0&purchase_type=all",
+                url="https://api.steampowered.com/IUserReviewsService/GetAppReviews/v1/",
+                params={
+                    "input_json": json.dumps({
+                        "appid": int(game_id),
+                        "filter": 0,
+                        "languages": ["all"],
+                        "review_type": 0,
+                        "purchase_type": 1,
+                        "num_per_page": 1,
+                        "display_language": "english",
+                    }),
+                },
                 headers={"User-Agent": DEFAULT_USER_AGENT},
                 timeout=30,
             )
@@ -289,17 +290,21 @@ def _fetch_reviews(game_id: str, more_data: MoreData) -> None:
         return
 
     if reviews_response.is_error:
-        logger.error(f"Failed to get reviews for {game_id=}: {reviews_response.status_code} - {reviews_response.reason_phrase}")
+        logger.warning(f"Failed to get reviews for {game_id=}: {reviews_response.status_code} - {reviews_response.reason_phrase}")
         return
 
     try:
-        reviews_data: ReviewsResponse = ReviewsResponse.model_validate_json(reviews_response.text)
-        if reviews_data.success:
-            logger.debug(f"reviews={reviews_data.query_summary.review_score_desc} for {game_id=}")
-            more_data.reviews = reviews_data.query_summary.review_score_desc
+        response_data: dict[str, object] = reviews_response.json()
+        response_payload: object = response_data.get("response", response_data)
+        reviews_data: ReviewsResponse = ReviewsResponse.model_validate(response_payload)
 
-    except (ValueError, KeyError, TypeError) as e:
-        logger.error(f"Failed to parse reviews for {game_id=}: {e}")
+    except (ValueError, TypeError) as e:
+        logger.warning(f"Failed to parse reviews for {game_id=}: {e}")
+        return
+
+    if reviews_data.query_summary and reviews_data.query_summary.review_score_desc:
+        more_data.reviews = reviews_data.query_summary.review_score_desc
+        logger.debug(f"Review is {more_data.reviews} for {game_id=}")
 
 
 def _search_free_steam_games() -> list[tuple[DiscordEmbed, str]] | None:
