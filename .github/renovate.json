@@ -5,7 +5,9 @@
   ],
   "automerge": true,
   "configMigration": true,
-  "dependencyDashboard": false,
+  "dependencyDashboard": {
+    "enabled": false
+  },
   "osvVulnerabilityAlerts": true,
   "timezone": "Europe/Stockholm",
   "packageRules": [
